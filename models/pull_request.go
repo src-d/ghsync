@@ -7,7 +7,7 @@ import (
 )
 
 type PullRequest struct {
-	kallax.Model `table:"pull_requests" pk:"id" ignored:"Labels,User,MergedBy,Assignee,Milestone,Assignees,Assignees  ,RequestedReviewers,Links,Head,Base,ActiveLockReason,RequestedTeams"`
+	kallax.Model `table:"pull_requests" pk:"id" ignored:"Labels,User,MergedBy,Assignee,Milestone,Assignees,Assignees  ,RequestedReviewers,Links,Head,Base,ActiveLockReason,RequestedTeams,URL,IssueURL,StatusesURL,DiffURL,PatchURL,CommitsURL,CommentsURL,ReviewCommentsURL,ReviewCommentURL"`
 	github.PullRequest
 
 	RepositoryOwner string `kallax:"repository_owner"`

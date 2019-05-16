@@ -6,6 +6,6 @@ import (
 )
 
 type Organization struct {
-	kallax.Model `table:"organizations" pk:"id"`
+	kallax.Model `table:"organizations" pk:"id" ignored:"Plan,URL,EventsURL,HooksURL,IssuesURL,MembersURL,PublicMembersURL,ReposURL,DefaultRepoPermission,DefaultRepoSettings,MembersCanCreateRepos"`
 	github.Organization
 }

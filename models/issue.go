@@ -7,7 +7,7 @@ import (
 )
 
 type Issue struct {
-	kallax.Model `table:"issues" pk:"id" ignored:"Labels,User,Assignee,ClosedBy,Repository,Milestone,PullRequestLinks,Assignees,TextMatches"`
+	kallax.Model `table:"issues" pk:"id" ignored:"Labels,User,Assignee,ClosedBy,Repository,Milestone,PullRequestLinks,Assignees,URL,CommentsURL,EventsURL,LabelsURL,RepositoryURL,Milestone,PullRequestLinks,Reactions,ActiveLockReason,TextMatches"`
 	github.Issue
 
 	RepositoryOwner string `kallax:"repository_owner"`

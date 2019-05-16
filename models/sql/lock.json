@@ -84,14 +84,6 @@
           "Unique": false
         },
         {
-          "Name": "url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
           "Name": "htmlurl",
           "Type": "text",
           "PrimaryKey": false,
@@ -100,55 +92,7 @@
           "Unique": false
         },
         {
-          "Name": "comments_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "events_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "labels_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "repository_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "reactions",
-          "Type": "jsonb",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
           "Name": "node_id",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "active_lock_reason",
           "Type": "text",
           "PrimaryKey": false,
           "Reference": null,
@@ -457,96 +401,8 @@
           "Unique": false
         },
         {
-          "Name": "plan",
-          "Type": "jsonb",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
           "Name": "two_factor_requirement_enabled",
           "Type": "boolean",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "default_repo_permission",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "default_repo_settings",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "members_can_create_repos",
-          "Type": "boolean",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "events_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "hooks_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "issues_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "members_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "public_members_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "repos_url",
-          "Type": "text",
           "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
@@ -710,79 +566,7 @@
           "Unique": false
         },
         {
-          "Name": "url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
           "Name": "htmlurl",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "issue_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "statuses_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "diff_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "patch_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "commits_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "comments_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "review_comments_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "review_comment_url",
           "Type": "text",
           "PrimaryKey": false,
           "Reference": null,
@@ -1251,22 +1035,6 @@
           "Unique": false
         },
         {
-          "Name": "parent",
-          "Type": "jsonb",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "source",
-          "Type": "jsonb",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
           "Name": "permissions",
           "Type": "jsonb",
           "PrimaryKey": false,
@@ -1403,296 +1171,16 @@
           "Unique": false
         },
         {
-          "Name": "url",
-          "Type": "text",
+          "Name": "parent",
+          "Type": "jsonb",
           "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
           "Unique": false
         },
         {
-          "Name": "archive_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "assignees_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "blobs_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "branches_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "collaborators_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "comments_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "commits_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "compare_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "contents_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "contributors_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "deployments_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "downloads_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "events_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "forks_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "git_commits_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "git_refs_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "git_tags_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "hooks_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "issue_comment_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "issue_events_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "issues_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "keys_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "labels_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "languages_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "merges_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "milestones_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "notifications_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "pulls_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "releases_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "stargazers_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "statuses_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "subscribers_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "subscription_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "tags_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "trees_url",
-          "Type": "text",
-          "PrimaryKey": false,
-          "Reference": null,
-          "NotNull": false,
-          "Unique": false
-        },
-        {
-          "Name": "teams_url",
-          "Type": "text",
+          "Name": "source",
+          "Type": "jsonb",
           "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
@@ -1701,6 +1189,14 @@
         {
           "Name": "owner_id",
           "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "owner_type",
+          "Type": "text",
           "PrimaryKey": false,
           "Reference": null,
           "NotNull": true,
@@ -1728,6 +1224,235 @@
           "PrimaryKey": false,
           "Reference": null,
           "NotNull": true,
+          "Unique": false
+        }
+      ]
+    },
+    {
+      "Name": "users",
+      "Columns": [
+        {
+          "Name": "id",
+          "Type": "serial",
+          "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "login",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "node_id",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "avatar_url",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "htmlurl",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "gravatar_id",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "name",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "company",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "blog",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "location",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "email",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "hireable",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "bio",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "public_repos",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "public_gists",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "followers",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "following",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "created_at",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "updated_at",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "suspended_at",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "type",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "site_admin",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "total_private_repos",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "owned_private_repos",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "private_gists",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "disk_usage",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "collaborators",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "two_factor_authentication",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
           "Unique": false
         }
       ]

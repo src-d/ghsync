@@ -1,5 +1,7 @@
 BEGIN;
 
+DROP TABLE users;
+
 DROP TABLE repositories;
 
 DROP TABLE pull_requests;

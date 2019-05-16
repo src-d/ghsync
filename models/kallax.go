@@ -52,27 +52,10 @@ func (r *Issue) ColumnAddress(col string) (interface{}, error) {
 		return types.Nullable(&r.Issue.CreatedAt), nil
 	case "updated_at":
 		return types.Nullable(&r.Issue.UpdatedAt), nil
-	case "url":
-		return types.Nullable(&r.Issue.URL), nil
 	case "htmlurl":
 		return types.Nullable(&r.Issue.HTMLURL), nil
-	case "comments_url":
-		return types.Nullable(&r.Issue.CommentsURL), nil
-	case "events_url":
-		return types.Nullable(&r.Issue.EventsURL), nil
-	case "labels_url":
-		return types.Nullable(&r.Issue.LabelsURL), nil
-	case "repository_url":
-		return types.Nullable(&r.Issue.RepositoryURL), nil
-	case "reactions":
-		if r.Reactions == nil {
-			r.Reactions = new(github.Reactions)
-		}
-		return types.JSON(r.Issue.Reactions), nil
 	case "node_id":
 		return types.Nullable(&r.Issue.NodeID), nil
-	case "active_lock_reason":
-		return types.Nullable(&r.Issue.ActiveLockReason), nil
 	case "repository_owner":
 		return &r.RepositoryOwner, nil
 	case "repository_name":
@@ -158,51 +141,16 @@ func (r *Issue) Value(col string) (interface{}, error) {
 			return nil, nil
 		}
 		return r.Issue.UpdatedAt, nil
-	case "url":
-		if r.Issue.URL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Issue.URL, nil
 	case "htmlurl":
 		if r.Issue.HTMLURL == (*string)(nil) {
 			return nil, nil
 		}
 		return r.Issue.HTMLURL, nil
-	case "comments_url":
-		if r.Issue.CommentsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Issue.CommentsURL, nil
-	case "events_url":
-		if r.Issue.EventsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Issue.EventsURL, nil
-	case "labels_url":
-		if r.Issue.LabelsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Issue.LabelsURL, nil
-	case "repository_url":
-		if r.Issue.RepositoryURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Issue.RepositoryURL, nil
-	case "reactions":
-		if r.Issue.Reactions == (*github.Reactions)(nil) {
-			return nil, nil
-		}
-		return types.JSON(r.Issue.Reactions), nil
 	case "node_id":
 		if r.Issue.NodeID == (*string)(nil) {
 			return nil, nil
 		}
 		return r.Issue.NodeID, nil
-	case "active_lock_reason":
-		if r.Issue.ActiveLockReason == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Issue.ActiveLockReason, nil
 	case "repository_owner":
 		return r.RepositoryOwner, nil
 	case "repository_name":
@@ -784,33 +732,8 @@ func (r *Organization) ColumnAddress(col string) (interface{}, error) {
 		return types.Nullable(&r.Organization.BillingEmail), nil
 	case "type":
 		return types.Nullable(&r.Organization.Type), nil
-	case "plan":
-		if r.Plan == nil {
-			r.Plan = new(github.Plan)
-		}
-		return types.JSON(r.Organization.Plan), nil
 	case "two_factor_requirement_enabled":
 		return types.Nullable(&r.Organization.TwoFactorRequirementEnabled), nil
-	case "default_repo_permission":
-		return types.Nullable(&r.Organization.DefaultRepoPermission), nil
-	case "default_repo_settings":
-		return types.Nullable(&r.Organization.DefaultRepoSettings), nil
-	case "members_can_create_repos":
-		return types.Nullable(&r.Organization.MembersCanCreateRepos), nil
-	case "url":
-		return types.Nullable(&r.Organization.URL), nil
-	case "events_url":
-		return types.Nullable(&r.Organization.EventsURL), nil
-	case "hooks_url":
-		return types.Nullable(&r.Organization.HooksURL), nil
-	case "issues_url":
-		return types.Nullable(&r.Organization.IssuesURL), nil
-	case "members_url":
-		return types.Nullable(&r.Organization.MembersURL), nil
-	case "public_members_url":
-		return types.Nullable(&r.Organization.PublicMembersURL), nil
-	case "repos_url":
-		return types.Nullable(&r.Organization.ReposURL), nil
 
 	default:
 		return nil, fmt.Errorf("kallax: invalid column in Organization: %s", col)
@@ -940,66 +863,11 @@ func (r *Organization) Value(col string) (interface{}, error) {
 			return nil, nil
 		}
 		return r.Organization.Type, nil
-	case "plan":
-		if r.Organization.Plan == (*github.Plan)(nil) {
-			return nil, nil
-		}
-		return types.JSON(r.Organization.Plan), nil
 	case "two_factor_requirement_enabled":
 		if r.Organization.TwoFactorRequirementEnabled == (*bool)(nil) {
 			return nil, nil
 		}
 		return r.Organization.TwoFactorRequirementEnabled, nil
-	case "default_repo_permission":
-		if r.Organization.DefaultRepoPermission == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.DefaultRepoPermission, nil
-	case "default_repo_settings":
-		if r.Organization.DefaultRepoSettings == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.DefaultRepoSettings, nil
-	case "members_can_create_repos":
-		if r.Organization.MembersCanCreateRepos == (*bool)(nil) {
-			return nil, nil
-		}
-		return r.Organization.MembersCanCreateRepos, nil
-	case "url":
-		if r.Organization.URL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.URL, nil
-	case "events_url":
-		if r.Organization.EventsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.EventsURL, nil
-	case "hooks_url":
-		if r.Organization.HooksURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.HooksURL, nil
-	case "issues_url":
-		if r.Organization.IssuesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.IssuesURL, nil
-	case "members_url":
-		if r.Organization.MembersURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.MembersURL, nil
-	case "public_members_url":
-		if r.Organization.PublicMembersURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.PublicMembersURL, nil
-	case "repos_url":
-		if r.Organization.ReposURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Organization.ReposURL, nil
 
 	default:
 		return nil, fmt.Errorf("kallax: invalid column in Organization: %s", col)
@@ -1445,26 +1313,8 @@ func (r *PullRequest) ColumnAddress(col string) (interface{}, error) {
 		return types.Nullable(&r.PullRequest.Deletions), nil
 	case "changed_files":
 		return types.Nullable(&r.PullRequest.ChangedFiles), nil
-	case "url":
-		return types.Nullable(&r.PullRequest.URL), nil
 	case "htmlurl":
 		return types.Nullable(&r.PullRequest.HTMLURL), nil
-	case "issue_url":
-		return types.Nullable(&r.PullRequest.IssueURL), nil
-	case "statuses_url":
-		return types.Nullable(&r.PullRequest.StatusesURL), nil
-	case "diff_url":
-		return types.Nullable(&r.PullRequest.DiffURL), nil
-	case "patch_url":
-		return types.Nullable(&r.PullRequest.PatchURL), nil
-	case "commits_url":
-		return types.Nullable(&r.PullRequest.CommitsURL), nil
-	case "comments_url":
-		return types.Nullable(&r.PullRequest.CommentsURL), nil
-	case "review_comments_url":
-		return types.Nullable(&r.PullRequest.ReviewCommentsURL), nil
-	case "review_comment_url":
-		return types.Nullable(&r.PullRequest.ReviewCommentURL), nil
 	case "review_comments":
 		return types.Nullable(&r.PullRequest.ReviewComments), nil
 	case "maintainer_can_modify":
@@ -1627,56 +1477,11 @@ func (r *PullRequest) Value(col string) (interface{}, error) {
 			return nil, nil
 		}
 		return r.PullRequest.ChangedFiles, nil
-	case "url":
-		if r.PullRequest.URL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.URL, nil
 	case "htmlurl":
 		if r.PullRequest.HTMLURL == (*string)(nil) {
 			return nil, nil
 		}
 		return r.PullRequest.HTMLURL, nil
-	case "issue_url":
-		if r.PullRequest.IssueURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.IssueURL, nil
-	case "statuses_url":
-		if r.PullRequest.StatusesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.StatusesURL, nil
-	case "diff_url":
-		if r.PullRequest.DiffURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.DiffURL, nil
-	case "patch_url":
-		if r.PullRequest.PatchURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.PatchURL, nil
-	case "commits_url":
-		if r.PullRequest.CommitsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.CommitsURL, nil
-	case "comments_url":
-		if r.PullRequest.CommentsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.CommentsURL, nil
-	case "review_comments_url":
-		if r.PullRequest.ReviewCommentsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.ReviewCommentsURL, nil
-	case "review_comment_url":
-		if r.PullRequest.ReviewCommentURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.PullRequest.ReviewCommentURL, nil
 	case "review_comments":
 		if r.PullRequest.ReviewComments == (*int)(nil) {
 			return nil, nil
@@ -2391,16 +2196,6 @@ func (r *Repository) ColumnAddress(col string) (interface{}, error) {
 		return types.Nullable(&r.Repository.Size), nil
 	case "auto_init":
 		return types.Nullable(&r.Repository.AutoInit), nil
-	case "parent":
-		if r.Parent == nil {
-			r.Parent = new(github.Repository)
-		}
-		return types.JSON(r.Repository.Parent), nil
-	case "source":
-		if r.Source == nil {
-			r.Source = new(github.Repository)
-		}
-		return types.JSON(r.Repository.Source), nil
 	case "permissions":
 		if r.Permissions == nil {
 			r.Permissions = new(map[string]bool)
@@ -2441,82 +2236,20 @@ func (r *Repository) ColumnAddress(col string) (interface{}, error) {
 		return types.Nullable(&r.Repository.GitignoreTemplate), nil
 	case "team_id":
 		return types.Nullable(&r.Repository.TeamID), nil
-	case "url":
-		return types.Nullable(&r.Repository.URL), nil
-	case "archive_url":
-		return types.Nullable(&r.Repository.ArchiveURL), nil
-	case "assignees_url":
-		return types.Nullable(&r.Repository.AssigneesURL), nil
-	case "blobs_url":
-		return types.Nullable(&r.Repository.BlobsURL), nil
-	case "branches_url":
-		return types.Nullable(&r.Repository.BranchesURL), nil
-	case "collaborators_url":
-		return types.Nullable(&r.Repository.CollaboratorsURL), nil
-	case "comments_url":
-		return types.Nullable(&r.Repository.CommentsURL), nil
-	case "commits_url":
-		return types.Nullable(&r.Repository.CommitsURL), nil
-	case "compare_url":
-		return types.Nullable(&r.Repository.CompareURL), nil
-	case "contents_url":
-		return types.Nullable(&r.Repository.ContentsURL), nil
-	case "contributors_url":
-		return types.Nullable(&r.Repository.ContributorsURL), nil
-	case "deployments_url":
-		return types.Nullable(&r.Repository.DeploymentsURL), nil
-	case "downloads_url":
-		return types.Nullable(&r.Repository.DownloadsURL), nil
-	case "events_url":
-		return types.Nullable(&r.Repository.EventsURL), nil
-	case "forks_url":
-		return types.Nullable(&r.Repository.ForksURL), nil
-	case "git_commits_url":
-		return types.Nullable(&r.Repository.GitCommitsURL), nil
-	case "git_refs_url":
-		return types.Nullable(&r.Repository.GitRefsURL), nil
-	case "git_tags_url":
-		return types.Nullable(&r.Repository.GitTagsURL), nil
-	case "hooks_url":
-		return types.Nullable(&r.Repository.HooksURL), nil
-	case "issue_comment_url":
-		return types.Nullable(&r.Repository.IssueCommentURL), nil
-	case "issue_events_url":
-		return types.Nullable(&r.Repository.IssueEventsURL), nil
-	case "issues_url":
-		return types.Nullable(&r.Repository.IssuesURL), nil
-	case "keys_url":
-		return types.Nullable(&r.Repository.KeysURL), nil
-	case "labels_url":
-		return types.Nullable(&r.Repository.LabelsURL), nil
-	case "languages_url":
-		return types.Nullable(&r.Repository.LanguagesURL), nil
-	case "merges_url":
-		return types.Nullable(&r.Repository.MergesURL), nil
-	case "milestones_url":
-		return types.Nullable(&r.Repository.MilestonesURL), nil
-	case "notifications_url":
-		return types.Nullable(&r.Repository.NotificationsURL), nil
-	case "pulls_url":
-		return types.Nullable(&r.Repository.PullsURL), nil
-	case "releases_url":
-		return types.Nullable(&r.Repository.ReleasesURL), nil
-	case "stargazers_url":
-		return types.Nullable(&r.Repository.StargazersURL), nil
-	case "statuses_url":
-		return types.Nullable(&r.Repository.StatusesURL), nil
-	case "subscribers_url":
-		return types.Nullable(&r.Repository.SubscribersURL), nil
-	case "subscription_url":
-		return types.Nullable(&r.Repository.SubscriptionURL), nil
-	case "tags_url":
-		return types.Nullable(&r.Repository.TagsURL), nil
-	case "trees_url":
-		return types.Nullable(&r.Repository.TreesURL), nil
-	case "teams_url":
-		return types.Nullable(&r.Repository.TeamsURL), nil
+	case "parent":
+		if r.ParentRepository == nil {
+			r.ParentRepository = new(RepositoryReference)
+		}
+		return types.JSON(r.ParentRepository), nil
+	case "source":
+		if r.SourceRepository == nil {
+			r.SourceRepository = new(RepositoryReference)
+		}
+		return types.JSON(r.SourceRepository), nil
 	case "owner_id":
 		return &r.OwnerID, nil
+	case "owner_type":
+		return &r.OwnerType, nil
 	case "owner_login":
 		return &r.OwnerLogin, nil
 	case "organization_id":
@@ -2672,16 +2405,6 @@ func (r *Repository) Value(col string) (interface{}, error) {
 			return nil, nil
 		}
 		return r.Repository.AutoInit, nil
-	case "parent":
-		if r.Repository.Parent == (*github.Repository)(nil) {
-			return nil, nil
-		}
-		return types.JSON(r.Repository.Parent), nil
-	case "source":
-		if r.Repository.Source == (*github.Repository)(nil) {
-			return nil, nil
-		}
-		return types.JSON(r.Repository.Source), nil
 	case "permissions":
 		if r.Repository.Permissions == (*map[string]bool)(nil) {
 			return nil, nil
@@ -2764,193 +2487,20 @@ func (r *Repository) Value(col string) (interface{}, error) {
 			return nil, nil
 		}
 		return r.Repository.TeamID, nil
-	case "url":
-		if r.Repository.URL == (*string)(nil) {
+	case "parent":
+		if r.ParentRepository == (*RepositoryReference)(nil) {
 			return nil, nil
 		}
-		return r.Repository.URL, nil
-	case "archive_url":
-		if r.Repository.ArchiveURL == (*string)(nil) {
+		return types.JSON(r.ParentRepository), nil
+	case "source":
+		if r.SourceRepository == (*RepositoryReference)(nil) {
 			return nil, nil
 		}
-		return r.Repository.ArchiveURL, nil
-	case "assignees_url":
-		if r.Repository.AssigneesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.AssigneesURL, nil
-	case "blobs_url":
-		if r.Repository.BlobsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.BlobsURL, nil
-	case "branches_url":
-		if r.Repository.BranchesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.BranchesURL, nil
-	case "collaborators_url":
-		if r.Repository.CollaboratorsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.CollaboratorsURL, nil
-	case "comments_url":
-		if r.Repository.CommentsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.CommentsURL, nil
-	case "commits_url":
-		if r.Repository.CommitsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.CommitsURL, nil
-	case "compare_url":
-		if r.Repository.CompareURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.CompareURL, nil
-	case "contents_url":
-		if r.Repository.ContentsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.ContentsURL, nil
-	case "contributors_url":
-		if r.Repository.ContributorsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.ContributorsURL, nil
-	case "deployments_url":
-		if r.Repository.DeploymentsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.DeploymentsURL, nil
-	case "downloads_url":
-		if r.Repository.DownloadsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.DownloadsURL, nil
-	case "events_url":
-		if r.Repository.EventsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.EventsURL, nil
-	case "forks_url":
-		if r.Repository.ForksURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.ForksURL, nil
-	case "git_commits_url":
-		if r.Repository.GitCommitsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.GitCommitsURL, nil
-	case "git_refs_url":
-		if r.Repository.GitRefsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.GitRefsURL, nil
-	case "git_tags_url":
-		if r.Repository.GitTagsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.GitTagsURL, nil
-	case "hooks_url":
-		if r.Repository.HooksURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.HooksURL, nil
-	case "issue_comment_url":
-		if r.Repository.IssueCommentURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.IssueCommentURL, nil
-	case "issue_events_url":
-		if r.Repository.IssueEventsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.IssueEventsURL, nil
-	case "issues_url":
-		if r.Repository.IssuesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.IssuesURL, nil
-	case "keys_url":
-		if r.Repository.KeysURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.KeysURL, nil
-	case "labels_url":
-		if r.Repository.LabelsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.LabelsURL, nil
-	case "languages_url":
-		if r.Repository.LanguagesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.LanguagesURL, nil
-	case "merges_url":
-		if r.Repository.MergesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.MergesURL, nil
-	case "milestones_url":
-		if r.Repository.MilestonesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.MilestonesURL, nil
-	case "notifications_url":
-		if r.Repository.NotificationsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.NotificationsURL, nil
-	case "pulls_url":
-		if r.Repository.PullsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.PullsURL, nil
-	case "releases_url":
-		if r.Repository.ReleasesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.ReleasesURL, nil
-	case "stargazers_url":
-		if r.Repository.StargazersURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.StargazersURL, nil
-	case "statuses_url":
-		if r.Repository.StatusesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.StatusesURL, nil
-	case "subscribers_url":
-		if r.Repository.SubscribersURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.SubscribersURL, nil
-	case "subscription_url":
-		if r.Repository.SubscriptionURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.SubscriptionURL, nil
-	case "tags_url":
-		if r.Repository.TagsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.TagsURL, nil
-	case "trees_url":
-		if r.Repository.TreesURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.TreesURL, nil
-	case "teams_url":
-		if r.Repository.TeamsURL == (*string)(nil) {
-			return nil, nil
-		}
-		return r.Repository.TeamsURL, nil
+		return types.JSON(r.SourceRepository), nil
 	case "owner_id":
 		return r.OwnerID, nil
+	case "owner_type":
+		return r.OwnerType, nil
 	case "owner_login":
 		return r.OwnerLogin, nil
 	case "organization_id":
@@ -3019,9 +2569,15 @@ func (s *RepositoryStore) Insert(record *Repository) error {
 	record.SetSaving(true)
 	defer record.SetSaving(false)
 
-	record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
-	record.PushedAt.Time = record.PushedAt.Time.Truncate(time.Microsecond)
-	record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
+	if record.CreatedAt != nil {
+		record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
+	}
+	if record.PushedAt != nil {
+		record.PushedAt.Time = record.PushedAt.Time.Truncate(time.Microsecond)
+	}
+	if record.UpdatedAt != nil {
+		record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
+	}
 
 	if err := record.BeforeSave(); err != nil {
 		return err
@@ -3037,9 +2593,15 @@ func (s *RepositoryStore) Insert(record *Repository) error {
 // Only writable records can be updated. Writable objects are those that have
 // been just inserted or retrieved using a query with no custom select fields.
 func (s *RepositoryStore) Update(record *Repository, cols ...kallax.SchemaField) (updated int64, err error) {
-	record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
-	record.PushedAt.Time = record.PushedAt.Time.Truncate(time.Microsecond)
-	record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
+	if record.CreatedAt != nil {
+		record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
+	}
+	if record.PushedAt != nil {
+		record.PushedAt.Time = record.PushedAt.Time.Truncate(time.Microsecond)
+	}
+	if record.UpdatedAt != nil {
+		record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
+	}
 
 	record.SetSaving(true)
 	defer record.SetSaving(false)
@@ -3271,6 +2833,12 @@ func (q *RepositoryQuery) FindByOwnerID(cond kallax.ScalarCond, v int64) *Reposi
 	return q.Where(cond(Schema.Repository.OwnerID, v))
 }
 
+// FindByOwnerType adds a new filter to the query that will require that
+// the OwnerType property is equal to the passed value.
+func (q *RepositoryQuery) FindByOwnerType(v string) *RepositoryQuery {
+	return q.Where(kallax.Eq(Schema.Repository.OwnerType, v))
+}
+
 // FindByOwnerLogin adds a new filter to the query that will require that
 // the OwnerLogin property is equal to the passed value.
 func (q *RepositoryQuery) FindByOwnerLogin(v string) *RepositoryQuery {
@@ -3397,47 +2965,665 @@ func (rs *RepositoryResultSet) Close() error {
 	return rs.ResultSet.Close()
 }
 
+// NewUser returns a new instance of User.
+func NewUser() (record *User) {
+	return new(User)
+}
+
+// GetID returns the primary key of the model.
+func (r *User) GetID() kallax.Identifier {
+	return (*kallax.NumericID)(r.ID)
+}
+
+// ColumnAddress returns the pointer to the value of the given column.
+func (r *User) ColumnAddress(col string) (interface{}, error) {
+	switch col {
+	case "id":
+		return (*kallax.NumericID)(r.User.ID), nil
+	case "login":
+		return types.Nullable(&r.User.Login), nil
+	case "node_id":
+		return types.Nullable(&r.User.NodeID), nil
+	case "avatar_url":
+		return types.Nullable(&r.User.AvatarURL), nil
+	case "htmlurl":
+		return types.Nullable(&r.User.HTMLURL), nil
+	case "gravatar_id":
+		return types.Nullable(&r.User.GravatarID), nil
+	case "name":
+		return types.Nullable(&r.User.Name), nil
+	case "company":
+		return types.Nullable(&r.User.Company), nil
+	case "blog":
+		return types.Nullable(&r.User.Blog), nil
+	case "location":
+		return types.Nullable(&r.User.Location), nil
+	case "email":
+		return types.Nullable(&r.User.Email), nil
+	case "hireable":
+		return types.Nullable(&r.User.Hireable), nil
+	case "bio":
+		return types.Nullable(&r.User.Bio), nil
+	case "public_repos":
+		return types.Nullable(&r.User.PublicRepos), nil
+	case "public_gists":
+		return types.Nullable(&r.User.PublicGists), nil
+	case "followers":
+		return types.Nullable(&r.User.Followers), nil
+	case "following":
+		return types.Nullable(&r.User.Following), nil
+	case "created_at":
+		return (*types.Timestamp)(r.User.CreatedAt), nil
+	case "updated_at":
+		return (*types.Timestamp)(r.User.UpdatedAt), nil
+	case "suspended_at":
+		return (*types.Timestamp)(r.User.SuspendedAt), nil
+	case "type":
+		return types.Nullable(&r.User.Type), nil
+	case "site_admin":
+		return types.Nullable(&r.User.SiteAdmin), nil
+	case "total_private_repos":
+		return types.Nullable(&r.User.TotalPrivateRepos), nil
+	case "owned_private_repos":
+		return types.Nullable(&r.User.OwnedPrivateRepos), nil
+	case "private_gists":
+		return types.Nullable(&r.User.PrivateGists), nil
+	case "disk_usage":
+		return types.Nullable(&r.User.DiskUsage), nil
+	case "collaborators":
+		return types.Nullable(&r.User.Collaborators), nil
+	case "two_factor_authentication":
+		return types.Nullable(&r.User.TwoFactorAuthentication), nil
+
+	default:
+		return nil, fmt.Errorf("kallax: invalid column in User: %s", col)
+	}
+}
+
+// Value returns the value of the given column.
+func (r *User) Value(col string) (interface{}, error) {
+	switch col {
+	case "id":
+		if r.User.ID == (*int64)(nil) {
+			return nil, nil
+		}
+		return r.User.ID, nil
+	case "login":
+		if r.User.Login == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.Login, nil
+	case "node_id":
+		if r.User.NodeID == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.NodeID, nil
+	case "avatar_url":
+		if r.User.AvatarURL == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.AvatarURL, nil
+	case "htmlurl":
+		if r.User.HTMLURL == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.HTMLURL, nil
+	case "gravatar_id":
+		if r.User.GravatarID == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.GravatarID, nil
+	case "name":
+		if r.User.Name == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.Name, nil
+	case "company":
+		if r.User.Company == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.Company, nil
+	case "blog":
+		if r.User.Blog == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.Blog, nil
+	case "location":
+		if r.User.Location == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.Location, nil
+	case "email":
+		if r.User.Email == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.Email, nil
+	case "hireable":
+		if r.User.Hireable == (*bool)(nil) {
+			return nil, nil
+		}
+		return r.User.Hireable, nil
+	case "bio":
+		if r.User.Bio == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.Bio, nil
+	case "public_repos":
+		if r.User.PublicRepos == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.PublicRepos, nil
+	case "public_gists":
+		if r.User.PublicGists == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.PublicGists, nil
+	case "followers":
+		if r.User.Followers == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.Followers, nil
+	case "following":
+		if r.User.Following == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.Following, nil
+	case "created_at":
+		if r.User.CreatedAt == (*github.Timestamp)(nil) {
+			return nil, nil
+		}
+		return (*types.Timestamp)(r.User.CreatedAt), nil
+	case "updated_at":
+		if r.User.UpdatedAt == (*github.Timestamp)(nil) {
+			return nil, nil
+		}
+		return (*types.Timestamp)(r.User.UpdatedAt), nil
+	case "suspended_at":
+		if r.User.SuspendedAt == (*github.Timestamp)(nil) {
+			return nil, nil
+		}
+		return (*types.Timestamp)(r.User.SuspendedAt), nil
+	case "type":
+		if r.User.Type == (*string)(nil) {
+			return nil, nil
+		}
+		return r.User.Type, nil
+	case "site_admin":
+		if r.User.SiteAdmin == (*bool)(nil) {
+			return nil, nil
+		}
+		return r.User.SiteAdmin, nil
+	case "total_private_repos":
+		if r.User.TotalPrivateRepos == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.TotalPrivateRepos, nil
+	case "owned_private_repos":
+		if r.User.OwnedPrivateRepos == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.OwnedPrivateRepos, nil
+	case "private_gists":
+		if r.User.PrivateGists == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.PrivateGists, nil
+	case "disk_usage":
+		if r.User.DiskUsage == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.DiskUsage, nil
+	case "collaborators":
+		if r.User.Collaborators == (*int)(nil) {
+			return nil, nil
+		}
+		return r.User.Collaborators, nil
+	case "two_factor_authentication":
+		if r.User.TwoFactorAuthentication == (*bool)(nil) {
+			return nil, nil
+		}
+		return r.User.TwoFactorAuthentication, nil
+
+	default:
+		return nil, fmt.Errorf("kallax: invalid column in User: %s", col)
+	}
+}
+
+// NewRelationshipRecord returns a new record for the relatiobship in the given
+// field.
+func (r *User) NewRelationshipRecord(field string) (kallax.Record, error) {
+	return nil, fmt.Errorf("kallax: model User has no relationships")
+}
+
+// SetRelationship sets the given relationship in the given field.
+func (r *User) SetRelationship(field string, rel interface{}) error {
+	return fmt.Errorf("kallax: model User has no relationships")
+}
+
+// UserStore is the entity to access the records of the type User
+// in the database.
+type UserStore struct {
+	*kallax.Store
+}
+
+// NewUserStore creates a new instance of UserStore
+// using a SQL database.
+func NewUserStore(db *sql.DB) *UserStore {
+	return &UserStore{kallax.NewStore(db)}
+}
+
+// GenericStore returns the generic store of this store.
+func (s *UserStore) GenericStore() *kallax.Store {
+	return s.Store
+}
+
+// SetGenericStore changes the generic store of this store.
+func (s *UserStore) SetGenericStore(store *kallax.Store) {
+	s.Store = store
+}
+
+// Debug returns a new store that will print all SQL statements to stdout using
+// the log.Printf function.
+func (s *UserStore) Debug() *UserStore {
+	return &UserStore{s.Store.Debug()}
+}
+
+// DebugWith returns a new store that will print all SQL statements using the
+// given logger function.
+func (s *UserStore) DebugWith(logger kallax.LoggerFunc) *UserStore {
+	return &UserStore{s.Store.DebugWith(logger)}
+}
+
+// DisableCacher turns off prepared statements, which can be useful in some scenarios.
+func (s *UserStore) DisableCacher() *UserStore {
+	return &UserStore{s.Store.DisableCacher()}
+}
+
+// Insert inserts a User in the database. A non-persisted object is
+// required for this operation.
+func (s *UserStore) Insert(record *User) error {
+	record.SetSaving(true)
+	defer record.SetSaving(false)
+
+	if record.CreatedAt != nil {
+		record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
+	}
+	if record.UpdatedAt != nil {
+		record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
+	}
+	if record.SuspendedAt != nil {
+		record.SuspendedAt.Time = record.SuspendedAt.Time.Truncate(time.Microsecond)
+	}
+
+	return s.Store.Insert(Schema.User.BaseSchema, record)
+}
+
+// Update updates the given record on the database. If the columns are given,
+// only these columns will be updated. Otherwise all of them will be.
+// Be very careful with this, as you will have a potentially different object
+// in memory but not on the database.
+// Only writable records can be updated. Writable objects are those that have
+// been just inserted or retrieved using a query with no custom select fields.
+func (s *UserStore) Update(record *User, cols ...kallax.SchemaField) (updated int64, err error) {
+	if record.CreatedAt != nil {
+		record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
+	}
+	if record.UpdatedAt != nil {
+		record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
+	}
+	if record.SuspendedAt != nil {
+		record.SuspendedAt.Time = record.SuspendedAt.Time.Truncate(time.Microsecond)
+	}
+
+	record.SetSaving(true)
+	defer record.SetSaving(false)
+
+	return s.Store.Update(Schema.User.BaseSchema, record, cols...)
+}
+
+// Save inserts the object if the record is not persisted, otherwise it updates
+// it. Same rules of Update and Insert apply depending on the case.
+func (s *UserStore) Save(record *User) (updated bool, err error) {
+	if !record.IsPersisted() {
+		return false, s.Insert(record)
+	}
+
+	rowsUpdated, err := s.Update(record)
+	if err != nil {
+		return false, err
+	}
+
+	return rowsUpdated > 0, nil
+}
+
+// Delete removes the given record from the database.
+func (s *UserStore) Delete(record *User) error {
+	return s.Store.Delete(Schema.User.BaseSchema, record)
+}
+
+// Find returns the set of results for the given query.
+func (s *UserStore) Find(q *UserQuery) (*UserResultSet, error) {
+	rs, err := s.Store.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewUserResultSet(rs), nil
+}
+
+// MustFind returns the set of results for the given query, but panics if there
+// is any error.
+func (s *UserStore) MustFind(q *UserQuery) *UserResultSet {
+	return NewUserResultSet(s.Store.MustFind(q))
+}
+
+// Count returns the number of rows that would be retrieved with the given
+// query.
+func (s *UserStore) Count(q *UserQuery) (int64, error) {
+	return s.Store.Count(q)
+}
+
+// MustCount returns the number of rows that would be retrieved with the given
+// query, but panics if there is an error.
+func (s *UserStore) MustCount(q *UserQuery) int64 {
+	return s.Store.MustCount(q)
+}
+
+// FindOne returns the first row returned by the given query.
+// `ErrNotFound` is returned if there are no results.
+func (s *UserStore) FindOne(q *UserQuery) (*User, error) {
+	q.Limit(1)
+	q.Offset(0)
+	rs, err := s.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	if !rs.Next() {
+		return nil, kallax.ErrNotFound
+	}
+
+	record, err := rs.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rs.Close(); err != nil {
+		return nil, err
+	}
+
+	return record, nil
+}
+
+// FindAll returns a list of all the rows returned by the given query.
+func (s *UserStore) FindAll(q *UserQuery) ([]*User, error) {
+	rs, err := s.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	return rs.All()
+}
+
+// MustFindOne returns the first row retrieved by the given query. It panics
+// if there is an error or if there are no rows.
+func (s *UserStore) MustFindOne(q *UserQuery) *User {
+	record, err := s.FindOne(q)
+	if err != nil {
+		panic(err)
+	}
+	return record
+}
+
+// Reload refreshes the User with the data in the database and
+// makes it writable.
+func (s *UserStore) Reload(record *User) error {
+	return s.Store.Reload(Schema.User.BaseSchema, record)
+}
+
+// Transaction executes the given callback in a transaction and rollbacks if
+// an error is returned.
+// The transaction is only open in the store passed as a parameter to the
+// callback.
+func (s *UserStore) Transaction(callback func(*UserStore) error) error {
+	if callback == nil {
+		return kallax.ErrInvalidTxCallback
+	}
+
+	return s.Store.Transaction(func(store *kallax.Store) error {
+		return callback(&UserStore{store})
+	})
+}
+
+// UserQuery is the object used to create queries for the User
+// entity.
+type UserQuery struct {
+	*kallax.BaseQuery
+}
+
+// NewUserQuery returns a new instance of UserQuery.
+func NewUserQuery() *UserQuery {
+	return &UserQuery{
+		BaseQuery: kallax.NewBaseQuery(Schema.User.BaseSchema),
+	}
+}
+
+// Select adds columns to select in the query.
+func (q *UserQuery) Select(columns ...kallax.SchemaField) *UserQuery {
+	if len(columns) == 0 {
+		return q
+	}
+	q.BaseQuery.Select(columns...)
+	return q
+}
+
+// SelectNot excludes columns from being selected in the query.
+func (q *UserQuery) SelectNot(columns ...kallax.SchemaField) *UserQuery {
+	q.BaseQuery.SelectNot(columns...)
+	return q
+}
+
+// Copy returns a new identical copy of the query. Remember queries are mutable
+// so make a copy any time you need to reuse them.
+func (q *UserQuery) Copy() *UserQuery {
+	return &UserQuery{
+		BaseQuery: q.BaseQuery.Copy(),
+	}
+}
+
+// Order adds order clauses to the query for the given columns.
+func (q *UserQuery) Order(cols ...kallax.ColumnOrder) *UserQuery {
+	q.BaseQuery.Order(cols...)
+	return q
+}
+
+// BatchSize sets the number of items to fetch per batch when there are 1:N
+// relationships selected in the query.
+func (q *UserQuery) BatchSize(size uint64) *UserQuery {
+	q.BaseQuery.BatchSize(size)
+	return q
+}
+
+// Limit sets the max number of items to retrieve.
+func (q *UserQuery) Limit(n uint64) *UserQuery {
+	q.BaseQuery.Limit(n)
+	return q
+}
+
+// Offset sets the number of items to skip from the result set of items.
+func (q *UserQuery) Offset(n uint64) *UserQuery {
+	q.BaseQuery.Offset(n)
+	return q
+}
+
+// Where adds a condition to the query. All conditions added are concatenated
+// using a logical AND.
+func (q *UserQuery) Where(cond kallax.Condition) *UserQuery {
+	q.BaseQuery.Where(cond)
+	return q
+}
+
+// FindByCreatedAt adds a new filter to the query that will require that
+// the CreatedAt property is equal to the passed value.
+func (q *UserQuery) FindByCreatedAt(cond kallax.ScalarCond, v github.Timestamp) *UserQuery {
+	return q.Where(cond(Schema.User.CreatedAt, v))
+}
+
+// FindByUpdatedAt adds a new filter to the query that will require that
+// the UpdatedAt property is equal to the passed value.
+func (q *UserQuery) FindByUpdatedAt(cond kallax.ScalarCond, v github.Timestamp) *UserQuery {
+	return q.Where(cond(Schema.User.UpdatedAt, v))
+}
+
+// FindBySuspendedAt adds a new filter to the query that will require that
+// the SuspendedAt property is equal to the passed value.
+func (q *UserQuery) FindBySuspendedAt(cond kallax.ScalarCond, v github.Timestamp) *UserQuery {
+	return q.Where(cond(Schema.User.SuspendedAt, v))
+}
+
+// UserResultSet is the set of results returned by a query to the
+// database.
+type UserResultSet struct {
+	ResultSet kallax.ResultSet
+	last      *User
+	lastErr   error
+}
+
+// NewUserResultSet creates a new result set for rows of the type
+// User.
+func NewUserResultSet(rs kallax.ResultSet) *UserResultSet {
+	return &UserResultSet{ResultSet: rs}
+}
+
+// Next fetches the next item in the result set and returns true if there is
+// a next item.
+// The result set is closed automatically when there are no more items.
+func (rs *UserResultSet) Next() bool {
+	if !rs.ResultSet.Next() {
+		rs.lastErr = rs.ResultSet.Close()
+		rs.last = nil
+		return false
+	}
+
+	var record kallax.Record
+	record, rs.lastErr = rs.ResultSet.Get(Schema.User.BaseSchema)
+	if rs.lastErr != nil {
+		rs.last = nil
+	} else {
+		var ok bool
+		rs.last, ok = record.(*User)
+		if !ok {
+			rs.lastErr = fmt.Errorf("kallax: unable to convert record to *User")
+			rs.last = nil
+		}
+	}
+
+	return true
+}
+
+// Get retrieves the last fetched item from the result set and the last error.
+func (rs *UserResultSet) Get() (*User, error) {
+	return rs.last, rs.lastErr
+}
+
+// ForEach iterates over the complete result set passing every record found to
+// the given callback. It is possible to stop the iteration by returning
+// `kallax.ErrStop` in the callback.
+// Result set is always closed at the end.
+func (rs *UserResultSet) ForEach(fn func(*User) error) error {
+	for rs.Next() {
+		record, err := rs.Get()
+		if err != nil {
+			return err
+		}
+
+		if err := fn(record); err != nil {
+			if err == kallax.ErrStop {
+				return rs.Close()
+			}
+
+			return err
+		}
+	}
+	return nil
+}
+
+// All returns all records on the result set and closes the result set.
+func (rs *UserResultSet) All() ([]*User, error) {
+	var result []*User
+	for rs.Next() {
+		record, err := rs.Get()
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, record)
+	}
+	return result, nil
+}
+
+// One returns the first record on the result set and closes the result set.
+func (rs *UserResultSet) One() (*User, error) {
+	if !rs.Next() {
+		return nil, kallax.ErrNotFound
+	}
+
+	record, err := rs.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rs.Close(); err != nil {
+		return nil, err
+	}
+
+	return record, nil
+}
+
+// Err returns the last error occurred.
+func (rs *UserResultSet) Err() error {
+	return rs.lastErr
+}
+
+// Close closes the result set.
+func (rs *UserResultSet) Close() error {
+	return rs.ResultSet.Close()
+}
+
 type schema struct {
 	Issue        *schemaIssue
 	Organization *schemaOrganization
 	PullRequest  *schemaPullRequest
 	Repository   *schemaRepository
+	User         *schemaUser
 }
 
 type schemaIssue struct {
 	*kallax.BaseSchema
-	ID               kallax.SchemaField
-	Number           kallax.SchemaField
-	State            kallax.SchemaField
-	Locked           kallax.SchemaField
-	Title            kallax.SchemaField
-	Body             kallax.SchemaField
-	Comments         kallax.SchemaField
-	ClosedAt         kallax.SchemaField
-	CreatedAt        kallax.SchemaField
-	UpdatedAt        kallax.SchemaField
-	URL              kallax.SchemaField
-	HTMLURL          kallax.SchemaField
-	CommentsURL      kallax.SchemaField
-	EventsURL        kallax.SchemaField
-	LabelsURL        kallax.SchemaField
-	RepositoryURL    kallax.SchemaField
-	Reactions        *schemaIssueReactions
-	NodeID           kallax.SchemaField
-	ActiveLockReason kallax.SchemaField
-	RepositoryOwner  kallax.SchemaField
-	RepositoryName   kallax.SchemaField
-	LabelList        kallax.SchemaField
-	UserID           kallax.SchemaField
-	UserLogin        kallax.SchemaField
-	AssigneeID       kallax.SchemaField
-	AssigneeLogin    kallax.SchemaField
-	AssigneesList    *schemaIssueAssigneesList
-	ClosedByID       kallax.SchemaField
-	ClosedByLogin    kallax.SchemaField
-	MilestoneID      kallax.SchemaField
-	MilestoneTitle   kallax.SchemaField
-	PullRequestURL   kallax.SchemaField
+	ID              kallax.SchemaField
+	Number          kallax.SchemaField
+	State           kallax.SchemaField
+	Locked          kallax.SchemaField
+	Title           kallax.SchemaField
+	Body            kallax.SchemaField
+	Comments        kallax.SchemaField
+	ClosedAt        kallax.SchemaField
+	CreatedAt       kallax.SchemaField
+	UpdatedAt       kallax.SchemaField
+	HTMLURL         kallax.SchemaField
+	NodeID          kallax.SchemaField
+	RepositoryOwner kallax.SchemaField
+	RepositoryName  kallax.SchemaField
+	LabelList       kallax.SchemaField
+	UserID          kallax.SchemaField
+	UserLogin       kallax.SchemaField
+	AssigneeID      kallax.SchemaField
+	AssigneeLogin   kallax.SchemaField
+	AssigneesList   *schemaIssueAssigneesList
+	ClosedByID      kallax.SchemaField
+	ClosedByLogin   kallax.SchemaField
+	MilestoneID     kallax.SchemaField
+	MilestoneTitle  kallax.SchemaField
+	PullRequestURL  kallax.SchemaField
 }
 
 type schemaOrganization struct {
@@ -3466,18 +3652,7 @@ type schemaOrganization struct {
 	Collaborators               kallax.SchemaField
 	BillingEmail                kallax.SchemaField
 	Type                        kallax.SchemaField
-	Plan                        *schemaOrganizationPlan
 	TwoFactorRequirementEnabled kallax.SchemaField
-	DefaultRepoPermission       kallax.SchemaField
-	DefaultRepoSettings         kallax.SchemaField
-	MembersCanCreateRepos       kallax.SchemaField
-	URL                         kallax.SchemaField
-	EventsURL                   kallax.SchemaField
-	HooksURL                    kallax.SchemaField
-	IssuesURL                   kallax.SchemaField
-	MembersURL                  kallax.SchemaField
-	PublicMembersURL            kallax.SchemaField
-	ReposURL                    kallax.SchemaField
 }
 
 type schemaPullRequest struct {
@@ -3501,16 +3676,7 @@ type schemaPullRequest struct {
 	Additions              kallax.SchemaField
 	Deletions              kallax.SchemaField
 	ChangedFiles           kallax.SchemaField
-	URL                    kallax.SchemaField
 	HTMLURL                kallax.SchemaField
-	IssueURL               kallax.SchemaField
-	StatusesURL            kallax.SchemaField
-	DiffURL                kallax.SchemaField
-	PatchURL               kallax.SchemaField
-	CommitsURL             kallax.SchemaField
-	CommentsURL            kallax.SchemaField
-	ReviewCommentsURL      kallax.SchemaField
-	ReviewCommentURL       kallax.SchemaField
 	ReviewComments         kallax.SchemaField
 	MaintainerCanModify    kallax.SchemaField
 	AuthorAssociation      kallax.SchemaField
@@ -3572,8 +3738,6 @@ type schemaRepository struct {
 	WatchersCount     kallax.SchemaField
 	Size              kallax.SchemaField
 	AutoInit          kallax.SchemaField
-	Parent            kallax.SchemaField
-	Source            kallax.SchemaField
 	Permissions       kallax.SchemaField
 	AllowRebaseMerge  kallax.SchemaField
 	AllowSquashMerge  kallax.SchemaField
@@ -3591,47 +3755,45 @@ type schemaRepository struct {
 	LicenseTemplate   kallax.SchemaField
 	GitignoreTemplate kallax.SchemaField
 	TeamID            kallax.SchemaField
-	URL               kallax.SchemaField
-	ArchiveURL        kallax.SchemaField
-	AssigneesURL      kallax.SchemaField
-	BlobsURL          kallax.SchemaField
-	BranchesURL       kallax.SchemaField
-	CollaboratorsURL  kallax.SchemaField
-	CommentsURL       kallax.SchemaField
-	CommitsURL        kallax.SchemaField
-	CompareURL        kallax.SchemaField
-	ContentsURL       kallax.SchemaField
-	ContributorsURL   kallax.SchemaField
-	DeploymentsURL    kallax.SchemaField
-	DownloadsURL      kallax.SchemaField
-	EventsURL         kallax.SchemaField
-	ForksURL          kallax.SchemaField
-	GitCommitsURL     kallax.SchemaField
-	GitRefsURL        kallax.SchemaField
-	GitTagsURL        kallax.SchemaField
-	HooksURL          kallax.SchemaField
-	IssueCommentURL   kallax.SchemaField
-	IssueEventsURL    kallax.SchemaField
-	IssuesURL         kallax.SchemaField
-	KeysURL           kallax.SchemaField
-	LabelsURL         kallax.SchemaField
-	LanguagesURL      kallax.SchemaField
-	MergesURL         kallax.SchemaField
-	MilestonesURL     kallax.SchemaField
-	NotificationsURL  kallax.SchemaField
-	PullsURL          kallax.SchemaField
-	ReleasesURL       kallax.SchemaField
-	StargazersURL     kallax.SchemaField
-	StatusesURL       kallax.SchemaField
-	SubscribersURL    kallax.SchemaField
-	SubscriptionURL   kallax.SchemaField
-	TagsURL           kallax.SchemaField
-	TreesURL          kallax.SchemaField
-	TeamsURL          kallax.SchemaField
+	ParentRepository  *schemaRepositoryParentRepository
+	SourceRepository  *schemaRepositorySourceRepository
 	OwnerID           kallax.SchemaField
+	OwnerType         kallax.SchemaField
 	OwnerLogin        kallax.SchemaField
 	OrganizationID    kallax.SchemaField
 	OrganizationName  kallax.SchemaField
+}
+
+type schemaUser struct {
+	*kallax.BaseSchema
+	ID                      kallax.SchemaField
+	Login                   kallax.SchemaField
+	NodeID                  kallax.SchemaField
+	AvatarURL               kallax.SchemaField
+	HTMLURL                 kallax.SchemaField
+	GravatarID              kallax.SchemaField
+	Name                    kallax.SchemaField
+	Company                 kallax.SchemaField
+	Blog                    kallax.SchemaField
+	Location                kallax.SchemaField
+	Email                   kallax.SchemaField
+	Hireable                kallax.SchemaField
+	Bio                     kallax.SchemaField
+	PublicRepos             kallax.SchemaField
+	PublicGists             kallax.SchemaField
+	Followers               kallax.SchemaField
+	Following               kallax.SchemaField
+	CreatedAt               kallax.SchemaField
+	UpdatedAt               kallax.SchemaField
+	SuspendedAt             kallax.SchemaField
+	Type                    kallax.SchemaField
+	SiteAdmin               kallax.SchemaField
+	TotalPrivateRepos       kallax.SchemaField
+	OwnedPrivateRepos       kallax.SchemaField
+	PrivateGists            kallax.SchemaField
+	DiskUsage               kallax.SchemaField
+	Collaborators           kallax.SchemaField
+	TwoFactorAuthentication kallax.SchemaField
 }
 
 type schemaIssueAssigneesList struct {
@@ -3646,26 +3808,6 @@ func (s *schemaIssueAssigneesList) At(n int) *schemaIssueAssigneesList {
 		ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", fmt.Sprint(n), "ID"),
 		Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", fmt.Sprint(n), "Login"),
 	}
-}
-
-type schemaIssueReactions struct {
-	*kallax.BaseSchemaField
-	TotalCount kallax.SchemaField
-	PlusOne    kallax.SchemaField
-	MinusOne   kallax.SchemaField
-	Laugh      kallax.SchemaField
-	Confused   kallax.SchemaField
-	Heart      kallax.SchemaField
-	Hooray     kallax.SchemaField
-	URL        kallax.SchemaField
-}
-
-type schemaOrganizationPlan struct {
-	*kallax.BaseSchemaField
-	Name          kallax.SchemaField
-	Space         kallax.SchemaField
-	Collaborators kallax.SchemaField
-	PrivateRepos  kallax.SchemaField
 }
 
 type schemaPullRequestAssigneesList struct {
@@ -3700,7 +3842,6 @@ type schemaRepositoryCodeOfConduct struct {
 	*kallax.BaseSchemaField
 	Name kallax.SchemaField
 	Key  kallax.SchemaField
-	URL  kallax.SchemaField
 	Body kallax.SchemaField
 }
 
@@ -3708,7 +3849,6 @@ type schemaRepositoryLicense struct {
 	*kallax.BaseSchemaField
 	Key            kallax.SchemaField
 	Name           kallax.SchemaField
-	URL            kallax.SchemaField
 	SPDXID         kallax.SchemaField
 	HTMLURL        kallax.SchemaField
 	Featured       kallax.SchemaField
@@ -3718,6 +3858,28 @@ type schemaRepositoryLicense struct {
 	Conditions     kallax.SchemaField
 	Limitations    kallax.SchemaField
 	Body           kallax.SchemaField
+}
+
+type schemaRepositoryParentRepository struct {
+	*kallax.BaseSchemaField
+	ID         kallax.SchemaField
+	Name       kallax.SchemaField
+	Fork       kallax.SchemaField
+	Size       kallax.SchemaField
+	OwnerLogin kallax.SchemaField
+	OwnerType  kallax.SchemaField
+	OwnerID    kallax.SchemaField
+}
+
+type schemaRepositorySourceRepository struct {
+	*kallax.BaseSchemaField
+	ID         kallax.SchemaField
+	Name       kallax.SchemaField
+	Fork       kallax.SchemaField
+	Size       kallax.SchemaField
+	OwnerLogin kallax.SchemaField
+	OwnerType  kallax.SchemaField
+	OwnerID    kallax.SchemaField
 }
 
 var Schema = &schema{
@@ -3741,15 +3903,8 @@ var Schema = &schema{
 			kallax.NewSchemaField("closed_at"),
 			kallax.NewSchemaField("created_at"),
 			kallax.NewSchemaField("updated_at"),
-			kallax.NewSchemaField("url"),
 			kallax.NewSchemaField("htmlurl"),
-			kallax.NewSchemaField("comments_url"),
-			kallax.NewSchemaField("events_url"),
-			kallax.NewSchemaField("labels_url"),
-			kallax.NewSchemaField("repository_url"),
-			kallax.NewSchemaField("reactions"),
 			kallax.NewSchemaField("node_id"),
-			kallax.NewSchemaField("active_lock_reason"),
 			kallax.NewSchemaField("repository_owner"),
 			kallax.NewSchemaField("repository_name"),
 			kallax.NewSchemaField("labels"),
@@ -3764,42 +3919,25 @@ var Schema = &schema{
 			kallax.NewSchemaField("milestone_title"),
 			kallax.NewSchemaField("pull_request_url"),
 		),
-		ID:            kallax.NewSchemaField("id"),
-		Number:        kallax.NewSchemaField("number"),
-		State:         kallax.NewSchemaField("state"),
-		Locked:        kallax.NewSchemaField("locked"),
-		Title:         kallax.NewSchemaField("title"),
-		Body:          kallax.NewSchemaField("body"),
-		Comments:      kallax.NewSchemaField("comments"),
-		ClosedAt:      kallax.NewSchemaField("closed_at"),
-		CreatedAt:     kallax.NewSchemaField("created_at"),
-		UpdatedAt:     kallax.NewSchemaField("updated_at"),
-		URL:           kallax.NewSchemaField("url"),
-		HTMLURL:       kallax.NewSchemaField("htmlurl"),
-		CommentsURL:   kallax.NewSchemaField("comments_url"),
-		EventsURL:     kallax.NewSchemaField("events_url"),
-		LabelsURL:     kallax.NewSchemaField("labels_url"),
-		RepositoryURL: kallax.NewSchemaField("repository_url"),
-		Reactions: &schemaIssueReactions{
-			BaseSchemaField: kallax.NewSchemaField("reactions").(*kallax.BaseSchemaField),
-			TotalCount:      kallax.NewJSONSchemaKey(kallax.JSONInt, "issue", "reactions", "total_count"),
-			PlusOne:         kallax.NewJSONSchemaKey(kallax.JSONInt, "issue", "reactions", "+1"),
-			MinusOne:        kallax.NewJSONSchemaKey(kallax.JSONInt, "issue", "reactions", "-1"),
-			Laugh:           kallax.NewJSONSchemaKey(kallax.JSONInt, "issue", "reactions", "laugh"),
-			Confused:        kallax.NewJSONSchemaKey(kallax.JSONInt, "issue", "reactions", "confused"),
-			Heart:           kallax.NewJSONSchemaKey(kallax.JSONInt, "issue", "reactions", "heart"),
-			Hooray:          kallax.NewJSONSchemaKey(kallax.JSONInt, "issue", "reactions", "hooray"),
-			URL:             kallax.NewJSONSchemaKey(kallax.JSONText, "issue", "reactions", "url"),
-		},
-		NodeID:           kallax.NewSchemaField("node_id"),
-		ActiveLockReason: kallax.NewSchemaField("active_lock_reason"),
-		RepositoryOwner:  kallax.NewSchemaField("repository_owner"),
-		RepositoryName:   kallax.NewSchemaField("repository_name"),
-		LabelList:        kallax.NewSchemaField("labels"),
-		UserID:           kallax.NewSchemaField("user_id"),
-		UserLogin:        kallax.NewSchemaField("user_login"),
-		AssigneeID:       kallax.NewSchemaField("assignee_id"),
-		AssigneeLogin:    kallax.NewSchemaField("assignee_login"),
+		ID:              kallax.NewSchemaField("id"),
+		Number:          kallax.NewSchemaField("number"),
+		State:           kallax.NewSchemaField("state"),
+		Locked:          kallax.NewSchemaField("locked"),
+		Title:           kallax.NewSchemaField("title"),
+		Body:            kallax.NewSchemaField("body"),
+		Comments:        kallax.NewSchemaField("comments"),
+		ClosedAt:        kallax.NewSchemaField("closed_at"),
+		CreatedAt:       kallax.NewSchemaField("created_at"),
+		UpdatedAt:       kallax.NewSchemaField("updated_at"),
+		HTMLURL:         kallax.NewSchemaField("htmlurl"),
+		NodeID:          kallax.NewSchemaField("node_id"),
+		RepositoryOwner: kallax.NewSchemaField("repository_owner"),
+		RepositoryName:  kallax.NewSchemaField("repository_name"),
+		LabelList:       kallax.NewSchemaField("labels"),
+		UserID:          kallax.NewSchemaField("user_id"),
+		UserLogin:       kallax.NewSchemaField("user_login"),
+		AssigneeID:      kallax.NewSchemaField("assignee_id"),
+		AssigneeLogin:   kallax.NewSchemaField("assignee_login"),
 		AssigneesList: &schemaIssueAssigneesList{
 			BaseSchemaField: kallax.NewSchemaField("assignees").(*kallax.BaseSchemaField),
 			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", "ID"),
@@ -3845,61 +3983,33 @@ var Schema = &schema{
 			kallax.NewSchemaField("collaborators"),
 			kallax.NewSchemaField("billing_email"),
 			kallax.NewSchemaField("type"),
-			kallax.NewSchemaField("plan"),
 			kallax.NewSchemaField("two_factor_requirement_enabled"),
-			kallax.NewSchemaField("default_repo_permission"),
-			kallax.NewSchemaField("default_repo_settings"),
-			kallax.NewSchemaField("members_can_create_repos"),
-			kallax.NewSchemaField("url"),
-			kallax.NewSchemaField("events_url"),
-			kallax.NewSchemaField("hooks_url"),
-			kallax.NewSchemaField("issues_url"),
-			kallax.NewSchemaField("members_url"),
-			kallax.NewSchemaField("public_members_url"),
-			kallax.NewSchemaField("repos_url"),
 		),
-		ID:                kallax.NewSchemaField("id"),
-		Login:             kallax.NewSchemaField("login"),
-		NodeID:            kallax.NewSchemaField("node_id"),
-		AvatarURL:         kallax.NewSchemaField("avatar_url"),
-		HTMLURL:           kallax.NewSchemaField("htmlurl"),
-		Name:              kallax.NewSchemaField("name"),
-		Company:           kallax.NewSchemaField("company"),
-		Blog:              kallax.NewSchemaField("blog"),
-		Location:          kallax.NewSchemaField("location"),
-		Email:             kallax.NewSchemaField("email"),
-		Description:       kallax.NewSchemaField("description"),
-		PublicRepos:       kallax.NewSchemaField("public_repos"),
-		PublicGists:       kallax.NewSchemaField("public_gists"),
-		Followers:         kallax.NewSchemaField("followers"),
-		Following:         kallax.NewSchemaField("following"),
-		CreatedAt:         kallax.NewSchemaField("created_at"),
-		UpdatedAt:         kallax.NewSchemaField("updated_at"),
-		TotalPrivateRepos: kallax.NewSchemaField("total_private_repos"),
-		OwnedPrivateRepos: kallax.NewSchemaField("owned_private_repos"),
-		PrivateGists:      kallax.NewSchemaField("private_gists"),
-		DiskUsage:         kallax.NewSchemaField("disk_usage"),
-		Collaborators:     kallax.NewSchemaField("collaborators"),
-		BillingEmail:      kallax.NewSchemaField("billing_email"),
-		Type:              kallax.NewSchemaField("type"),
-		Plan: &schemaOrganizationPlan{
-			BaseSchemaField: kallax.NewSchemaField("plan").(*kallax.BaseSchemaField),
-			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "organization", "plan", "name"),
-			Space:           kallax.NewJSONSchemaKey(kallax.JSONInt, "organization", "plan", "space"),
-			Collaborators:   kallax.NewJSONSchemaKey(kallax.JSONInt, "organization", "plan", "collaborators"),
-			PrivateRepos:    kallax.NewJSONSchemaKey(kallax.JSONInt, "organization", "plan", "private_repos"),
-		},
+		ID:                          kallax.NewSchemaField("id"),
+		Login:                       kallax.NewSchemaField("login"),
+		NodeID:                      kallax.NewSchemaField("node_id"),
+		AvatarURL:                   kallax.NewSchemaField("avatar_url"),
+		HTMLURL:                     kallax.NewSchemaField("htmlurl"),
+		Name:                        kallax.NewSchemaField("name"),
+		Company:                     kallax.NewSchemaField("company"),
+		Blog:                        kallax.NewSchemaField("blog"),
+		Location:                    kallax.NewSchemaField("location"),
+		Email:                       kallax.NewSchemaField("email"),
+		Description:                 kallax.NewSchemaField("description"),
+		PublicRepos:                 kallax.NewSchemaField("public_repos"),
+		PublicGists:                 kallax.NewSchemaField("public_gists"),
+		Followers:                   kallax.NewSchemaField("followers"),
+		Following:                   kallax.NewSchemaField("following"),
+		CreatedAt:                   kallax.NewSchemaField("created_at"),
+		UpdatedAt:                   kallax.NewSchemaField("updated_at"),
+		TotalPrivateRepos:           kallax.NewSchemaField("total_private_repos"),
+		OwnedPrivateRepos:           kallax.NewSchemaField("owned_private_repos"),
+		PrivateGists:                kallax.NewSchemaField("private_gists"),
+		DiskUsage:                   kallax.NewSchemaField("disk_usage"),
+		Collaborators:               kallax.NewSchemaField("collaborators"),
+		BillingEmail:                kallax.NewSchemaField("billing_email"),
+		Type:                        kallax.NewSchemaField("type"),
 		TwoFactorRequirementEnabled: kallax.NewSchemaField("two_factor_requirement_enabled"),
-		DefaultRepoPermission:       kallax.NewSchemaField("default_repo_permission"),
-		DefaultRepoSettings:         kallax.NewSchemaField("default_repo_settings"),
-		MembersCanCreateRepos:       kallax.NewSchemaField("members_can_create_repos"),
-		URL:                         kallax.NewSchemaField("url"),
-		EventsURL:                   kallax.NewSchemaField("events_url"),
-		HooksURL:                    kallax.NewSchemaField("hooks_url"),
-		IssuesURL:                   kallax.NewSchemaField("issues_url"),
-		MembersURL:                  kallax.NewSchemaField("members_url"),
-		PublicMembersURL:            kallax.NewSchemaField("public_members_url"),
-		ReposURL:                    kallax.NewSchemaField("repos_url"),
 	},
 	PullRequest: &schemaPullRequest{
 		BaseSchema: kallax.NewBaseSchema(
@@ -3930,16 +4040,7 @@ var Schema = &schema{
 			kallax.NewSchemaField("additions"),
 			kallax.NewSchemaField("deletions"),
 			kallax.NewSchemaField("changed_files"),
-			kallax.NewSchemaField("url"),
 			kallax.NewSchemaField("htmlurl"),
-			kallax.NewSchemaField("issue_url"),
-			kallax.NewSchemaField("statuses_url"),
-			kallax.NewSchemaField("diff_url"),
-			kallax.NewSchemaField("patch_url"),
-			kallax.NewSchemaField("commits_url"),
-			kallax.NewSchemaField("comments_url"),
-			kallax.NewSchemaField("review_comments_url"),
-			kallax.NewSchemaField("review_comment_url"),
 			kallax.NewSchemaField("review_comments"),
 			kallax.NewSchemaField("maintainer_can_modify"),
 			kallax.NewSchemaField("author_association"),
@@ -3989,16 +4090,7 @@ var Schema = &schema{
 		Additions:           kallax.NewSchemaField("additions"),
 		Deletions:           kallax.NewSchemaField("deletions"),
 		ChangedFiles:        kallax.NewSchemaField("changed_files"),
-		URL:                 kallax.NewSchemaField("url"),
 		HTMLURL:             kallax.NewSchemaField("htmlurl"),
-		IssueURL:            kallax.NewSchemaField("issue_url"),
-		StatusesURL:         kallax.NewSchemaField("statuses_url"),
-		DiffURL:             kallax.NewSchemaField("diff_url"),
-		PatchURL:            kallax.NewSchemaField("patch_url"),
-		CommitsURL:          kallax.NewSchemaField("commits_url"),
-		CommentsURL:         kallax.NewSchemaField("comments_url"),
-		ReviewCommentsURL:   kallax.NewSchemaField("review_comments_url"),
-		ReviewCommentURL:    kallax.NewSchemaField("review_comment_url"),
 		ReviewComments:      kallax.NewSchemaField("review_comments"),
 		MaintainerCanModify: kallax.NewSchemaField("maintainer_can_modify"),
 		AuthorAssociation:   kallax.NewSchemaField("author_association"),
@@ -4075,8 +4167,6 @@ var Schema = &schema{
 			kallax.NewSchemaField("watchers_count"),
 			kallax.NewSchemaField("size"),
 			kallax.NewSchemaField("auto_init"),
-			kallax.NewSchemaField("parent"),
-			kallax.NewSchemaField("source"),
 			kallax.NewSchemaField("permissions"),
 			kallax.NewSchemaField("allow_rebase_merge"),
 			kallax.NewSchemaField("allow_squash_merge"),
@@ -4094,44 +4184,10 @@ var Schema = &schema{
 			kallax.NewSchemaField("license_template"),
 			kallax.NewSchemaField("gitignore_template"),
 			kallax.NewSchemaField("team_id"),
-			kallax.NewSchemaField("url"),
-			kallax.NewSchemaField("archive_url"),
-			kallax.NewSchemaField("assignees_url"),
-			kallax.NewSchemaField("blobs_url"),
-			kallax.NewSchemaField("branches_url"),
-			kallax.NewSchemaField("collaborators_url"),
-			kallax.NewSchemaField("comments_url"),
-			kallax.NewSchemaField("commits_url"),
-			kallax.NewSchemaField("compare_url"),
-			kallax.NewSchemaField("contents_url"),
-			kallax.NewSchemaField("contributors_url"),
-			kallax.NewSchemaField("deployments_url"),
-			kallax.NewSchemaField("downloads_url"),
-			kallax.NewSchemaField("events_url"),
-			kallax.NewSchemaField("forks_url"),
-			kallax.NewSchemaField("git_commits_url"),
-			kallax.NewSchemaField("git_refs_url"),
-			kallax.NewSchemaField("git_tags_url"),
-			kallax.NewSchemaField("hooks_url"),
-			kallax.NewSchemaField("issue_comment_url"),
-			kallax.NewSchemaField("issue_events_url"),
-			kallax.NewSchemaField("issues_url"),
-			kallax.NewSchemaField("keys_url"),
-			kallax.NewSchemaField("labels_url"),
-			kallax.NewSchemaField("languages_url"),
-			kallax.NewSchemaField("merges_url"),
-			kallax.NewSchemaField("milestones_url"),
-			kallax.NewSchemaField("notifications_url"),
-			kallax.NewSchemaField("pulls_url"),
-			kallax.NewSchemaField("releases_url"),
-			kallax.NewSchemaField("stargazers_url"),
-			kallax.NewSchemaField("statuses_url"),
-			kallax.NewSchemaField("subscribers_url"),
-			kallax.NewSchemaField("subscription_url"),
-			kallax.NewSchemaField("tags_url"),
-			kallax.NewSchemaField("trees_url"),
-			kallax.NewSchemaField("teams_url"),
+			kallax.NewSchemaField("parent"),
+			kallax.NewSchemaField("source"),
 			kallax.NewSchemaField("owner_id"),
+			kallax.NewSchemaField("owner_type"),
 			kallax.NewSchemaField("owner_login"),
 			kallax.NewSchemaField("organization_id"),
 			kallax.NewSchemaField("organization_name"),
@@ -4146,7 +4202,6 @@ var Schema = &schema{
 			BaseSchemaField: kallax.NewSchemaField("code_of_conduct").(*kallax.BaseSchemaField),
 			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "code_of_conduct", "name"),
 			Key:             kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "code_of_conduct", "key"),
-			URL:             kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "code_of_conduct", "url"),
 			Body:            kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "code_of_conduct", "body"),
 		},
 		DefaultBranch:    kallax.NewSchemaField("default_branch"),
@@ -4170,8 +4225,6 @@ var Schema = &schema{
 		WatchersCount:    kallax.NewSchemaField("watchers_count"),
 		Size:             kallax.NewSchemaField("size"),
 		AutoInit:         kallax.NewSchemaField("auto_init"),
-		Parent:           kallax.NewSchemaField("parent"),
-		Source:           kallax.NewSchemaField("source"),
 		Permissions:      kallax.NewSchemaField("permissions"),
 		AllowRebaseMerge: kallax.NewSchemaField("allow_rebase_merge"),
 		AllowSquashMerge: kallax.NewSchemaField("allow_squash_merge"),
@@ -4183,7 +4236,6 @@ var Schema = &schema{
 			BaseSchemaField: kallax.NewSchemaField("license").(*kallax.BaseSchemaField),
 			Key:             kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "license", "key"),
 			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "license", "name"),
-			URL:             kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "license", "url"),
 			SPDXID:          kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "license", "spdx_id"),
 			HTMLURL:         kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "license", "html_url"),
 			Featured:        kallax.NewJSONSchemaKey(kallax.JSONBool, "repository", "license", "featured"),
@@ -4203,46 +4255,98 @@ var Schema = &schema{
 		LicenseTemplate:   kallax.NewSchemaField("license_template"),
 		GitignoreTemplate: kallax.NewSchemaField("gitignore_template"),
 		TeamID:            kallax.NewSchemaField("team_id"),
-		URL:               kallax.NewSchemaField("url"),
-		ArchiveURL:        kallax.NewSchemaField("archive_url"),
-		AssigneesURL:      kallax.NewSchemaField("assignees_url"),
-		BlobsURL:          kallax.NewSchemaField("blobs_url"),
-		BranchesURL:       kallax.NewSchemaField("branches_url"),
-		CollaboratorsURL:  kallax.NewSchemaField("collaborators_url"),
-		CommentsURL:       kallax.NewSchemaField("comments_url"),
-		CommitsURL:        kallax.NewSchemaField("commits_url"),
-		CompareURL:        kallax.NewSchemaField("compare_url"),
-		ContentsURL:       kallax.NewSchemaField("contents_url"),
-		ContributorsURL:   kallax.NewSchemaField("contributors_url"),
-		DeploymentsURL:    kallax.NewSchemaField("deployments_url"),
-		DownloadsURL:      kallax.NewSchemaField("downloads_url"),
-		EventsURL:         kallax.NewSchemaField("events_url"),
-		ForksURL:          kallax.NewSchemaField("forks_url"),
-		GitCommitsURL:     kallax.NewSchemaField("git_commits_url"),
-		GitRefsURL:        kallax.NewSchemaField("git_refs_url"),
-		GitTagsURL:        kallax.NewSchemaField("git_tags_url"),
-		HooksURL:          kallax.NewSchemaField("hooks_url"),
-		IssueCommentURL:   kallax.NewSchemaField("issue_comment_url"),
-		IssueEventsURL:    kallax.NewSchemaField("issue_events_url"),
-		IssuesURL:         kallax.NewSchemaField("issues_url"),
-		KeysURL:           kallax.NewSchemaField("keys_url"),
-		LabelsURL:         kallax.NewSchemaField("labels_url"),
-		LanguagesURL:      kallax.NewSchemaField("languages_url"),
-		MergesURL:         kallax.NewSchemaField("merges_url"),
-		MilestonesURL:     kallax.NewSchemaField("milestones_url"),
-		NotificationsURL:  kallax.NewSchemaField("notifications_url"),
-		PullsURL:          kallax.NewSchemaField("pulls_url"),
-		ReleasesURL:       kallax.NewSchemaField("releases_url"),
-		StargazersURL:     kallax.NewSchemaField("stargazers_url"),
-		StatusesURL:       kallax.NewSchemaField("statuses_url"),
-		SubscribersURL:    kallax.NewSchemaField("subscribers_url"),
-		SubscriptionURL:   kallax.NewSchemaField("subscription_url"),
-		TagsURL:           kallax.NewSchemaField("tags_url"),
-		TreesURL:          kallax.NewSchemaField("trees_url"),
-		TeamsURL:          kallax.NewSchemaField("teams_url"),
-		OwnerID:           kallax.NewSchemaField("owner_id"),
-		OwnerLogin:        kallax.NewSchemaField("owner_login"),
-		OrganizationID:    kallax.NewSchemaField("organization_id"),
-		OrganizationName:  kallax.NewSchemaField("organization_name"),
+		ParentRepository: &schemaRepositoryParentRepository{
+			BaseSchemaField: kallax.NewSchemaField("parent").(*kallax.BaseSchemaField),
+			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "ID"),
+			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "Name"),
+			Fork:            kallax.NewJSONSchemaKey(kallax.JSONBool, "parent", "Fork"),
+			Size:            kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "Size"),
+			OwnerLogin:      kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "OwnerLogin"),
+			OwnerType:       kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "OwnerType"),
+			OwnerID:         kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "OwnerID"),
+		},
+		SourceRepository: &schemaRepositorySourceRepository{
+			BaseSchemaField: kallax.NewSchemaField("source").(*kallax.BaseSchemaField),
+			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "ID"),
+			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "source", "Name"),
+			Fork:            kallax.NewJSONSchemaKey(kallax.JSONBool, "source", "Fork"),
+			Size:            kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "Size"),
+			OwnerLogin:      kallax.NewJSONSchemaKey(kallax.JSONText, "source", "OwnerLogin"),
+			OwnerType:       kallax.NewJSONSchemaKey(kallax.JSONText, "source", "OwnerType"),
+			OwnerID:         kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "OwnerID"),
+		},
+		OwnerID:          kallax.NewSchemaField("owner_id"),
+		OwnerType:        kallax.NewSchemaField("owner_type"),
+		OwnerLogin:       kallax.NewSchemaField("owner_login"),
+		OrganizationID:   kallax.NewSchemaField("organization_id"),
+		OrganizationName: kallax.NewSchemaField("organization_name"),
+	},
+	User: &schemaUser{
+		BaseSchema: kallax.NewBaseSchema(
+			"users",
+			"__user",
+			kallax.NewSchemaField("id"),
+			kallax.ForeignKeys{},
+			func() kallax.Record {
+				return new(User)
+			},
+			false,
+			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("login"),
+			kallax.NewSchemaField("node_id"),
+			kallax.NewSchemaField("avatar_url"),
+			kallax.NewSchemaField("htmlurl"),
+			kallax.NewSchemaField("gravatar_id"),
+			kallax.NewSchemaField("name"),
+			kallax.NewSchemaField("company"),
+			kallax.NewSchemaField("blog"),
+			kallax.NewSchemaField("location"),
+			kallax.NewSchemaField("email"),
+			kallax.NewSchemaField("hireable"),
+			kallax.NewSchemaField("bio"),
+			kallax.NewSchemaField("public_repos"),
+			kallax.NewSchemaField("public_gists"),
+			kallax.NewSchemaField("followers"),
+			kallax.NewSchemaField("following"),
+			kallax.NewSchemaField("created_at"),
+			kallax.NewSchemaField("updated_at"),
+			kallax.NewSchemaField("suspended_at"),
+			kallax.NewSchemaField("type"),
+			kallax.NewSchemaField("site_admin"),
+			kallax.NewSchemaField("total_private_repos"),
+			kallax.NewSchemaField("owned_private_repos"),
+			kallax.NewSchemaField("private_gists"),
+			kallax.NewSchemaField("disk_usage"),
+			kallax.NewSchemaField("collaborators"),
+			kallax.NewSchemaField("two_factor_authentication"),
+		),
+		ID:                      kallax.NewSchemaField("id"),
+		Login:                   kallax.NewSchemaField("login"),
+		NodeID:                  kallax.NewSchemaField("node_id"),
+		AvatarURL:               kallax.NewSchemaField("avatar_url"),
+		HTMLURL:                 kallax.NewSchemaField("htmlurl"),
+		GravatarID:              kallax.NewSchemaField("gravatar_id"),
+		Name:                    kallax.NewSchemaField("name"),
+		Company:                 kallax.NewSchemaField("company"),
+		Blog:                    kallax.NewSchemaField("blog"),
+		Location:                kallax.NewSchemaField("location"),
+		Email:                   kallax.NewSchemaField("email"),
+		Hireable:                kallax.NewSchemaField("hireable"),
+		Bio:                     kallax.NewSchemaField("bio"),
+		PublicRepos:             kallax.NewSchemaField("public_repos"),
+		PublicGists:             kallax.NewSchemaField("public_gists"),
+		Followers:               kallax.NewSchemaField("followers"),
+		Following:               kallax.NewSchemaField("following"),
+		CreatedAt:               kallax.NewSchemaField("created_at"),
+		UpdatedAt:               kallax.NewSchemaField("updated_at"),
+		SuspendedAt:             kallax.NewSchemaField("suspended_at"),
+		Type:                    kallax.NewSchemaField("type"),
+		SiteAdmin:               kallax.NewSchemaField("site_admin"),
+		TotalPrivateRepos:       kallax.NewSchemaField("total_private_repos"),
+		OwnedPrivateRepos:       kallax.NewSchemaField("owned_private_repos"),
+		PrivateGists:            kallax.NewSchemaField("private_gists"),
+		DiskUsage:               kallax.NewSchemaField("disk_usage"),
+		Collaborators:           kallax.NewSchemaField("collaborators"),
+		TwoFactorAuthentication: kallax.NewSchemaField("two_factor_authentication"),
 	},
 }

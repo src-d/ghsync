@@ -6,19 +6,29 @@ import (
 )
 
 type Repository struct {
-	kallax.Model `table:"repositories" pk:"id" ignored:"Owner,Organization,TextMatches"`
+	kallax.Model `table:"repositories" pk:"id" ignored:"Owner,Parent,Source,Organization,URL,ArchiveURL,AssigneesURL,BlobsURL,BranchesURL,CollaboratorsURL,CommentsURL,CommitsURL,CompareURL,ContentsURL,ContributorsURL,DeploymentsURL,DownloadsURL,EventsURL,ForksURL,GitCommitsURL,GitRefsURL,GitTagsURL,HooksURL,IssueCommentURL,IssueEventsURL,IssuesURL,KeysURL,LabelsURL,LanguagesURL,MergesURL,MilestonesURL,NotificationsURL,PullsURL,ReleasesURL,StargazersURL,StatusesURL,SubscribersURL,SubscriptionURL,TagsURL,TreesURL,TeamsURL,TextMatches"`
 	github.Repository
 
-	OwnerID          int64  `kallax:"owner_id"`
-	OwnerLogin       string `kallax:"owner_login"`
+	ParentRepository *RepositoryReference `kallax:"parent"`
+	SourceRepository *RepositoryReference `kallax:"source"`
+
+	OwnerID    int64  `kallax:"owner_id"`
+	OwnerType  string `kallax:"owner_type"`
+	OwnerLogin string `kallax:"owner_login"`
+
 	OrganizationID   int64  `kallax:"organization_id"`
 	OrganizationName string `kallax:"organization_name"`
 }
 
 func (r *Repository) BeforeSave() error {
+
+	r.ParentRepository = NewRepositoryReference(r.Parent)
+	r.SourceRepository = NewRepositoryReference(r.Parent)
+
 	if r.Owner != nil {
 		r.OwnerID = r.Owner.GetID()
 		r.OwnerLogin = r.Owner.GetLogin()
+		r.OwnerType = r.Owner.GetType()
 	}
 
 	if r.Organization != nil {
