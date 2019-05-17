@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"net/http"
+	"os"
 
 	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
@@ -27,20 +29,33 @@ func main() {
 	}
 	defer db.Close()
 
+	org := os.Getenv("GITHUB_ORG")
+
 	http := oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: "4b56d692e95dd8bae64e9d1092cd955d0db49fc3"},
+		&oauth2.Token{AccessToken: os.Getenv("GITHUB_TOKEN")},
 	))
 
-	t := httpcache.NewTransport(diskcache.New("cache/src-d"))
-	t.Transport = utils.NewRateLimitTransport(http.Transport)
+	t := httpcache.NewTransport(diskcache.New("cache/" + org))
+	t.Transport = &RemoveHeaderTransport{utils.NewRateLimitTransport(http.Transport)}
 	http.Transport = t
 
 	client := github.NewClient(http)
 
 	broker, _ := queue.NewBroker("amqp://localhost:5672")
-	queue, _ := broker.Queue("src-d")
+	queue, _ := broker.Queue(org)
 
 	syncer := ghsync.NewSyncer(db, client, queue)
-	go syncer.DoOrganization("src-d")
+	go syncer.DoOrganization(org)
 	fmt.Println(syncer.Wait())
+}
+
+type RemoveHeaderTransport struct {
+	T http.RoundTripper
+}
+
+func (t *RemoveHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Del("X-Ratelimit-Limit")
+	req.Header.Del("X-Ratelimit-Remaining")
+	req.Header.Del("X-Ratelimit-Reset")
+	return t.T.RoundTrip(req)
 }
