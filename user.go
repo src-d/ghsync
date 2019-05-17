@@ -28,13 +28,13 @@ func (s *UserSyncer) QueueOrganization(org string) error {
 	opts.ListOptions.PerPage = 10
 
 	for {
-		repositories, r, err := s.c.Organizations.ListMembers(context.TODO(), org, opts)
+		users, r, err := s.c.Organizations.ListMembers(context.TODO(), org, opts)
 		if err != nil {
 			return err
 		}
 
-		for _, r := range repositories {
-			fmt.Println(s.Sync(r.GetLogin()))
+		for _, u := range users {
+			fmt.Println(s.Sync(u.GetLogin()))
 		}
 
 		if r.NextPage == 0 {

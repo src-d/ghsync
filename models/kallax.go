@@ -661,6 +661,539 @@ func (rs *IssueResultSet) Close() error {
 	return rs.ResultSet.Close()
 }
 
+// NewIssueComment returns a new instance of IssueComment.
+func NewIssueComment() (record *IssueComment) {
+	return new(IssueComment)
+}
+
+// GetID returns the primary key of the model.
+func (r *IssueComment) GetID() kallax.Identifier {
+	return (*kallax.NumericID)(r.ID)
+}
+
+// ColumnAddress returns the pointer to the value of the given column.
+func (r *IssueComment) ColumnAddress(col string) (interface{}, error) {
+	switch col {
+	case "id":
+		return (*kallax.NumericID)(r.IssueComment.ID), nil
+	case "node_id":
+		return types.Nullable(&r.IssueComment.NodeID), nil
+	case "body":
+		return types.Nullable(&r.IssueComment.Body), nil
+	case "reactions":
+		if r.Reactions == nil {
+			r.Reactions = new(github.Reactions)
+		}
+		return types.JSON(r.IssueComment.Reactions), nil
+	case "created_at":
+		return types.Nullable(&r.IssueComment.CreatedAt), nil
+	case "updated_at":
+		return types.Nullable(&r.IssueComment.UpdatedAt), nil
+	case "author_association":
+		return types.Nullable(&r.IssueComment.AuthorAssociation), nil
+	case "htmlurl":
+		return types.Nullable(&r.IssueComment.HTMLURL), nil
+	case "user_id":
+		return &r.UserID, nil
+	case "user_login":
+		return &r.UserLogin, nil
+	case "issue_number":
+		return &r.IssueNumber, nil
+	case "repository_owner":
+		return &r.RepositoryOwner, nil
+	case "repository_name":
+		return &r.RepositoryName, nil
+
+	default:
+		return nil, fmt.Errorf("kallax: invalid column in IssueComment: %s", col)
+	}
+}
+
+// Value returns the value of the given column.
+func (r *IssueComment) Value(col string) (interface{}, error) {
+	switch col {
+	case "id":
+		if r.IssueComment.ID == (*int64)(nil) {
+			return nil, nil
+		}
+		return r.IssueComment.ID, nil
+	case "node_id":
+		if r.IssueComment.NodeID == (*string)(nil) {
+			return nil, nil
+		}
+		return r.IssueComment.NodeID, nil
+	case "body":
+		if r.IssueComment.Body == (*string)(nil) {
+			return nil, nil
+		}
+		return r.IssueComment.Body, nil
+	case "reactions":
+		if r.IssueComment.Reactions == (*github.Reactions)(nil) {
+			return nil, nil
+		}
+		return types.JSON(r.IssueComment.Reactions), nil
+	case "created_at":
+		if r.IssueComment.CreatedAt == (*time.Time)(nil) {
+			return nil, nil
+		}
+		return r.IssueComment.CreatedAt, nil
+	case "updated_at":
+		if r.IssueComment.UpdatedAt == (*time.Time)(nil) {
+			return nil, nil
+		}
+		return r.IssueComment.UpdatedAt, nil
+	case "author_association":
+		if r.IssueComment.AuthorAssociation == (*string)(nil) {
+			return nil, nil
+		}
+		return r.IssueComment.AuthorAssociation, nil
+	case "htmlurl":
+		if r.IssueComment.HTMLURL == (*string)(nil) {
+			return nil, nil
+		}
+		return r.IssueComment.HTMLURL, nil
+	case "user_id":
+		return r.UserID, nil
+	case "user_login":
+		return r.UserLogin, nil
+	case "issue_number":
+		return r.IssueNumber, nil
+	case "repository_owner":
+		return r.RepositoryOwner, nil
+	case "repository_name":
+		return r.RepositoryName, nil
+
+	default:
+		return nil, fmt.Errorf("kallax: invalid column in IssueComment: %s", col)
+	}
+}
+
+// NewRelationshipRecord returns a new record for the relatiobship in the given
+// field.
+func (r *IssueComment) NewRelationshipRecord(field string) (kallax.Record, error) {
+	return nil, fmt.Errorf("kallax: model IssueComment has no relationships")
+}
+
+// SetRelationship sets the given relationship in the given field.
+func (r *IssueComment) SetRelationship(field string, rel interface{}) error {
+	return fmt.Errorf("kallax: model IssueComment has no relationships")
+}
+
+// IssueCommentStore is the entity to access the records of the type IssueComment
+// in the database.
+type IssueCommentStore struct {
+	*kallax.Store
+}
+
+// NewIssueCommentStore creates a new instance of IssueCommentStore
+// using a SQL database.
+func NewIssueCommentStore(db *sql.DB) *IssueCommentStore {
+	return &IssueCommentStore{kallax.NewStore(db)}
+}
+
+// GenericStore returns the generic store of this store.
+func (s *IssueCommentStore) GenericStore() *kallax.Store {
+	return s.Store
+}
+
+// SetGenericStore changes the generic store of this store.
+func (s *IssueCommentStore) SetGenericStore(store *kallax.Store) {
+	s.Store = store
+}
+
+// Debug returns a new store that will print all SQL statements to stdout using
+// the log.Printf function.
+func (s *IssueCommentStore) Debug() *IssueCommentStore {
+	return &IssueCommentStore{s.Store.Debug()}
+}
+
+// DebugWith returns a new store that will print all SQL statements using the
+// given logger function.
+func (s *IssueCommentStore) DebugWith(logger kallax.LoggerFunc) *IssueCommentStore {
+	return &IssueCommentStore{s.Store.DebugWith(logger)}
+}
+
+// DisableCacher turns off prepared statements, which can be useful in some scenarios.
+func (s *IssueCommentStore) DisableCacher() *IssueCommentStore {
+	return &IssueCommentStore{s.Store.DisableCacher()}
+}
+
+// Insert inserts a IssueComment in the database. A non-persisted object is
+// required for this operation.
+func (s *IssueCommentStore) Insert(record *IssueComment) error {
+	record.SetSaving(true)
+	defer record.SetSaving(false)
+
+	if record.CreatedAt != nil {
+		record.CreatedAt = func(t time.Time) *time.Time { return &t }(record.CreatedAt.Truncate(time.Microsecond))
+	}
+	if record.UpdatedAt != nil {
+		record.UpdatedAt = func(t time.Time) *time.Time { return &t }(record.UpdatedAt.Truncate(time.Microsecond))
+	}
+
+	if err := record.BeforeSave(); err != nil {
+		return err
+	}
+
+	return s.Store.Insert(Schema.IssueComment.BaseSchema, record)
+}
+
+// Update updates the given record on the database. If the columns are given,
+// only these columns will be updated. Otherwise all of them will be.
+// Be very careful with this, as you will have a potentially different object
+// in memory but not on the database.
+// Only writable records can be updated. Writable objects are those that have
+// been just inserted or retrieved using a query with no custom select fields.
+func (s *IssueCommentStore) Update(record *IssueComment, cols ...kallax.SchemaField) (updated int64, err error) {
+	if record.CreatedAt != nil {
+		record.CreatedAt = func(t time.Time) *time.Time { return &t }(record.CreatedAt.Truncate(time.Microsecond))
+	}
+	if record.UpdatedAt != nil {
+		record.UpdatedAt = func(t time.Time) *time.Time { return &t }(record.UpdatedAt.Truncate(time.Microsecond))
+	}
+
+	record.SetSaving(true)
+	defer record.SetSaving(false)
+
+	if err := record.BeforeSave(); err != nil {
+		return 0, err
+	}
+
+	return s.Store.Update(Schema.IssueComment.BaseSchema, record, cols...)
+}
+
+// Save inserts the object if the record is not persisted, otherwise it updates
+// it. Same rules of Update and Insert apply depending on the case.
+func (s *IssueCommentStore) Save(record *IssueComment) (updated bool, err error) {
+	if !record.IsPersisted() {
+		return false, s.Insert(record)
+	}
+
+	rowsUpdated, err := s.Update(record)
+	if err != nil {
+		return false, err
+	}
+
+	return rowsUpdated > 0, nil
+}
+
+// Delete removes the given record from the database.
+func (s *IssueCommentStore) Delete(record *IssueComment) error {
+	return s.Store.Delete(Schema.IssueComment.BaseSchema, record)
+}
+
+// Find returns the set of results for the given query.
+func (s *IssueCommentStore) Find(q *IssueCommentQuery) (*IssueCommentResultSet, error) {
+	rs, err := s.Store.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewIssueCommentResultSet(rs), nil
+}
+
+// MustFind returns the set of results for the given query, but panics if there
+// is any error.
+func (s *IssueCommentStore) MustFind(q *IssueCommentQuery) *IssueCommentResultSet {
+	return NewIssueCommentResultSet(s.Store.MustFind(q))
+}
+
+// Count returns the number of rows that would be retrieved with the given
+// query.
+func (s *IssueCommentStore) Count(q *IssueCommentQuery) (int64, error) {
+	return s.Store.Count(q)
+}
+
+// MustCount returns the number of rows that would be retrieved with the given
+// query, but panics if there is an error.
+func (s *IssueCommentStore) MustCount(q *IssueCommentQuery) int64 {
+	return s.Store.MustCount(q)
+}
+
+// FindOne returns the first row returned by the given query.
+// `ErrNotFound` is returned if there are no results.
+func (s *IssueCommentStore) FindOne(q *IssueCommentQuery) (*IssueComment, error) {
+	q.Limit(1)
+	q.Offset(0)
+	rs, err := s.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	if !rs.Next() {
+		return nil, kallax.ErrNotFound
+	}
+
+	record, err := rs.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rs.Close(); err != nil {
+		return nil, err
+	}
+
+	return record, nil
+}
+
+// FindAll returns a list of all the rows returned by the given query.
+func (s *IssueCommentStore) FindAll(q *IssueCommentQuery) ([]*IssueComment, error) {
+	rs, err := s.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	return rs.All()
+}
+
+// MustFindOne returns the first row retrieved by the given query. It panics
+// if there is an error or if there are no rows.
+func (s *IssueCommentStore) MustFindOne(q *IssueCommentQuery) *IssueComment {
+	record, err := s.FindOne(q)
+	if err != nil {
+		panic(err)
+	}
+	return record
+}
+
+// Reload refreshes the IssueComment with the data in the database and
+// makes it writable.
+func (s *IssueCommentStore) Reload(record *IssueComment) error {
+	return s.Store.Reload(Schema.IssueComment.BaseSchema, record)
+}
+
+// Transaction executes the given callback in a transaction and rollbacks if
+// an error is returned.
+// The transaction is only open in the store passed as a parameter to the
+// callback.
+func (s *IssueCommentStore) Transaction(callback func(*IssueCommentStore) error) error {
+	if callback == nil {
+		return kallax.ErrInvalidTxCallback
+	}
+
+	return s.Store.Transaction(func(store *kallax.Store) error {
+		return callback(&IssueCommentStore{store})
+	})
+}
+
+// IssueCommentQuery is the object used to create queries for the IssueComment
+// entity.
+type IssueCommentQuery struct {
+	*kallax.BaseQuery
+}
+
+// NewIssueCommentQuery returns a new instance of IssueCommentQuery.
+func NewIssueCommentQuery() *IssueCommentQuery {
+	return &IssueCommentQuery{
+		BaseQuery: kallax.NewBaseQuery(Schema.IssueComment.BaseSchema),
+	}
+}
+
+// Select adds columns to select in the query.
+func (q *IssueCommentQuery) Select(columns ...kallax.SchemaField) *IssueCommentQuery {
+	if len(columns) == 0 {
+		return q
+	}
+	q.BaseQuery.Select(columns...)
+	return q
+}
+
+// SelectNot excludes columns from being selected in the query.
+func (q *IssueCommentQuery) SelectNot(columns ...kallax.SchemaField) *IssueCommentQuery {
+	q.BaseQuery.SelectNot(columns...)
+	return q
+}
+
+// Copy returns a new identical copy of the query. Remember queries are mutable
+// so make a copy any time you need to reuse them.
+func (q *IssueCommentQuery) Copy() *IssueCommentQuery {
+	return &IssueCommentQuery{
+		BaseQuery: q.BaseQuery.Copy(),
+	}
+}
+
+// Order adds order clauses to the query for the given columns.
+func (q *IssueCommentQuery) Order(cols ...kallax.ColumnOrder) *IssueCommentQuery {
+	q.BaseQuery.Order(cols...)
+	return q
+}
+
+// BatchSize sets the number of items to fetch per batch when there are 1:N
+// relationships selected in the query.
+func (q *IssueCommentQuery) BatchSize(size uint64) *IssueCommentQuery {
+	q.BaseQuery.BatchSize(size)
+	return q
+}
+
+// Limit sets the max number of items to retrieve.
+func (q *IssueCommentQuery) Limit(n uint64) *IssueCommentQuery {
+	q.BaseQuery.Limit(n)
+	return q
+}
+
+// Offset sets the number of items to skip from the result set of items.
+func (q *IssueCommentQuery) Offset(n uint64) *IssueCommentQuery {
+	q.BaseQuery.Offset(n)
+	return q
+}
+
+// Where adds a condition to the query. All conditions added are concatenated
+// using a logical AND.
+func (q *IssueCommentQuery) Where(cond kallax.Condition) *IssueCommentQuery {
+	q.BaseQuery.Where(cond)
+	return q
+}
+
+// FindByCreatedAt adds a new filter to the query that will require that
+// the CreatedAt property is equal to the passed value.
+func (q *IssueCommentQuery) FindByCreatedAt(cond kallax.ScalarCond, v time.Time) *IssueCommentQuery {
+	return q.Where(cond(Schema.IssueComment.CreatedAt, v))
+}
+
+// FindByUpdatedAt adds a new filter to the query that will require that
+// the UpdatedAt property is equal to the passed value.
+func (q *IssueCommentQuery) FindByUpdatedAt(cond kallax.ScalarCond, v time.Time) *IssueCommentQuery {
+	return q.Where(cond(Schema.IssueComment.UpdatedAt, v))
+}
+
+// FindByUserID adds a new filter to the query that will require that
+// the UserID property is equal to the passed value.
+func (q *IssueCommentQuery) FindByUserID(cond kallax.ScalarCond, v int64) *IssueCommentQuery {
+	return q.Where(cond(Schema.IssueComment.UserID, v))
+}
+
+// FindByUserLogin adds a new filter to the query that will require that
+// the UserLogin property is equal to the passed value.
+func (q *IssueCommentQuery) FindByUserLogin(v string) *IssueCommentQuery {
+	return q.Where(kallax.Eq(Schema.IssueComment.UserLogin, v))
+}
+
+// FindByIssueNumber adds a new filter to the query that will require that
+// the IssueNumber property is equal to the passed value.
+func (q *IssueCommentQuery) FindByIssueNumber(cond kallax.ScalarCond, v int) *IssueCommentQuery {
+	return q.Where(cond(Schema.IssueComment.IssueNumber, v))
+}
+
+// FindByRepositoryOwner adds a new filter to the query that will require that
+// the RepositoryOwner property is equal to the passed value.
+func (q *IssueCommentQuery) FindByRepositoryOwner(v string) *IssueCommentQuery {
+	return q.Where(kallax.Eq(Schema.IssueComment.RepositoryOwner, v))
+}
+
+// FindByRepositoryName adds a new filter to the query that will require that
+// the RepositoryName property is equal to the passed value.
+func (q *IssueCommentQuery) FindByRepositoryName(v string) *IssueCommentQuery {
+	return q.Where(kallax.Eq(Schema.IssueComment.RepositoryName, v))
+}
+
+// IssueCommentResultSet is the set of results returned by a query to the
+// database.
+type IssueCommentResultSet struct {
+	ResultSet kallax.ResultSet
+	last      *IssueComment
+	lastErr   error
+}
+
+// NewIssueCommentResultSet creates a new result set for rows of the type
+// IssueComment.
+func NewIssueCommentResultSet(rs kallax.ResultSet) *IssueCommentResultSet {
+	return &IssueCommentResultSet{ResultSet: rs}
+}
+
+// Next fetches the next item in the result set and returns true if there is
+// a next item.
+// The result set is closed automatically when there are no more items.
+func (rs *IssueCommentResultSet) Next() bool {
+	if !rs.ResultSet.Next() {
+		rs.lastErr = rs.ResultSet.Close()
+		rs.last = nil
+		return false
+	}
+
+	var record kallax.Record
+	record, rs.lastErr = rs.ResultSet.Get(Schema.IssueComment.BaseSchema)
+	if rs.lastErr != nil {
+		rs.last = nil
+	} else {
+		var ok bool
+		rs.last, ok = record.(*IssueComment)
+		if !ok {
+			rs.lastErr = fmt.Errorf("kallax: unable to convert record to *IssueComment")
+			rs.last = nil
+		}
+	}
+
+	return true
+}
+
+// Get retrieves the last fetched item from the result set and the last error.
+func (rs *IssueCommentResultSet) Get() (*IssueComment, error) {
+	return rs.last, rs.lastErr
+}
+
+// ForEach iterates over the complete result set passing every record found to
+// the given callback. It is possible to stop the iteration by returning
+// `kallax.ErrStop` in the callback.
+// Result set is always closed at the end.
+func (rs *IssueCommentResultSet) ForEach(fn func(*IssueComment) error) error {
+	for rs.Next() {
+		record, err := rs.Get()
+		if err != nil {
+			return err
+		}
+
+		if err := fn(record); err != nil {
+			if err == kallax.ErrStop {
+				return rs.Close()
+			}
+
+			return err
+		}
+	}
+	return nil
+}
+
+// All returns all records on the result set and closes the result set.
+func (rs *IssueCommentResultSet) All() ([]*IssueComment, error) {
+	var result []*IssueComment
+	for rs.Next() {
+		record, err := rs.Get()
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, record)
+	}
+	return result, nil
+}
+
+// One returns the first record on the result set and closes the result set.
+func (rs *IssueCommentResultSet) One() (*IssueComment, error) {
+	if !rs.Next() {
+		return nil, kallax.ErrNotFound
+	}
+
+	record, err := rs.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rs.Close(); err != nil {
+		return nil, err
+	}
+
+	return record, nil
+}
+
+// Err returns the last error occurred.
+func (rs *IssueCommentResultSet) Err() error {
+	return rs.lastErr
+}
+
+// Close closes the result set.
+func (rs *IssueCommentResultSet) Close() error {
+	return rs.ResultSet.Close()
+}
+
 // NewOrganization returns a new instance of Organization.
 func NewOrganization() (record *Organization) {
 	return new(Organization)
@@ -2111,6 +2644,1106 @@ func (rs *PullRequestResultSet) Err() error {
 
 // Close closes the result set.
 func (rs *PullRequestResultSet) Close() error {
+	return rs.ResultSet.Close()
+}
+
+// NewPullRequestComment returns a new instance of PullRequestComment.
+func NewPullRequestComment() (record *PullRequestComment) {
+	return new(PullRequestComment)
+}
+
+// GetID returns the primary key of the model.
+func (r *PullRequestComment) GetID() kallax.Identifier {
+	return (*kallax.NumericID)(r.ID)
+}
+
+// ColumnAddress returns the pointer to the value of the given column.
+func (r *PullRequestComment) ColumnAddress(col string) (interface{}, error) {
+	switch col {
+	case "id":
+		return (*kallax.NumericID)(r.PullRequestComment.ID), nil
+	case "node_id":
+		return types.Nullable(&r.PullRequestComment.NodeID), nil
+	case "in_reply_to":
+		return types.Nullable(&r.PullRequestComment.InReplyTo), nil
+	case "body":
+		return types.Nullable(&r.PullRequestComment.Body), nil
+	case "path":
+		return types.Nullable(&r.PullRequestComment.Path), nil
+	case "diff_hunk":
+		return types.Nullable(&r.PullRequestComment.DiffHunk), nil
+	case "pull_request_review_id":
+		return types.Nullable(&r.PullRequestComment.PullRequestReviewID), nil
+	case "position":
+		return types.Nullable(&r.PullRequestComment.Position), nil
+	case "original_position":
+		return types.Nullable(&r.PullRequestComment.OriginalPosition), nil
+	case "commit_id":
+		return types.Nullable(&r.PullRequestComment.CommitID), nil
+	case "original_commit_id":
+		return types.Nullable(&r.PullRequestComment.OriginalCommitID), nil
+	case "reactions":
+		if r.Reactions == nil {
+			r.Reactions = new(github.Reactions)
+		}
+		return types.JSON(r.PullRequestComment.Reactions), nil
+	case "created_at":
+		return types.Nullable(&r.PullRequestComment.CreatedAt), nil
+	case "updated_at":
+		return types.Nullable(&r.PullRequestComment.UpdatedAt), nil
+	case "author_association":
+		return types.Nullable(&r.PullRequestComment.AuthorAssociation), nil
+	case "htmlurl":
+		return types.Nullable(&r.PullRequestComment.HTMLURL), nil
+	case "user_id":
+		return &r.UserID, nil
+	case "user_login":
+		return &r.UserLogin, nil
+	case "pull_request_number":
+		return &r.PullRequestNumber, nil
+	case "repository_owner":
+		return &r.RepositoryOwner, nil
+	case "repository_name":
+		return &r.RepositoryName, nil
+
+	default:
+		return nil, fmt.Errorf("kallax: invalid column in PullRequestComment: %s", col)
+	}
+}
+
+// Value returns the value of the given column.
+func (r *PullRequestComment) Value(col string) (interface{}, error) {
+	switch col {
+	case "id":
+		if r.PullRequestComment.ID == (*int64)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.ID, nil
+	case "node_id":
+		if r.PullRequestComment.NodeID == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.NodeID, nil
+	case "in_reply_to":
+		if r.PullRequestComment.InReplyTo == (*int64)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.InReplyTo, nil
+	case "body":
+		if r.PullRequestComment.Body == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.Body, nil
+	case "path":
+		if r.PullRequestComment.Path == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.Path, nil
+	case "diff_hunk":
+		if r.PullRequestComment.DiffHunk == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.DiffHunk, nil
+	case "pull_request_review_id":
+		if r.PullRequestComment.PullRequestReviewID == (*int64)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.PullRequestReviewID, nil
+	case "position":
+		if r.PullRequestComment.Position == (*int)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.Position, nil
+	case "original_position":
+		if r.PullRequestComment.OriginalPosition == (*int)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.OriginalPosition, nil
+	case "commit_id":
+		if r.PullRequestComment.CommitID == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.CommitID, nil
+	case "original_commit_id":
+		if r.PullRequestComment.OriginalCommitID == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.OriginalCommitID, nil
+	case "reactions":
+		if r.PullRequestComment.Reactions == (*github.Reactions)(nil) {
+			return nil, nil
+		}
+		return types.JSON(r.PullRequestComment.Reactions), nil
+	case "created_at":
+		if r.PullRequestComment.CreatedAt == (*time.Time)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.CreatedAt, nil
+	case "updated_at":
+		if r.PullRequestComment.UpdatedAt == (*time.Time)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.UpdatedAt, nil
+	case "author_association":
+		if r.PullRequestComment.AuthorAssociation == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.AuthorAssociation, nil
+	case "htmlurl":
+		if r.PullRequestComment.HTMLURL == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestComment.HTMLURL, nil
+	case "user_id":
+		return r.UserID, nil
+	case "user_login":
+		return r.UserLogin, nil
+	case "pull_request_number":
+		return r.PullRequestNumber, nil
+	case "repository_owner":
+		return r.RepositoryOwner, nil
+	case "repository_name":
+		return r.RepositoryName, nil
+
+	default:
+		return nil, fmt.Errorf("kallax: invalid column in PullRequestComment: %s", col)
+	}
+}
+
+// NewRelationshipRecord returns a new record for the relatiobship in the given
+// field.
+func (r *PullRequestComment) NewRelationshipRecord(field string) (kallax.Record, error) {
+	return nil, fmt.Errorf("kallax: model PullRequestComment has no relationships")
+}
+
+// SetRelationship sets the given relationship in the given field.
+func (r *PullRequestComment) SetRelationship(field string, rel interface{}) error {
+	return fmt.Errorf("kallax: model PullRequestComment has no relationships")
+}
+
+// PullRequestCommentStore is the entity to access the records of the type PullRequestComment
+// in the database.
+type PullRequestCommentStore struct {
+	*kallax.Store
+}
+
+// NewPullRequestCommentStore creates a new instance of PullRequestCommentStore
+// using a SQL database.
+func NewPullRequestCommentStore(db *sql.DB) *PullRequestCommentStore {
+	return &PullRequestCommentStore{kallax.NewStore(db)}
+}
+
+// GenericStore returns the generic store of this store.
+func (s *PullRequestCommentStore) GenericStore() *kallax.Store {
+	return s.Store
+}
+
+// SetGenericStore changes the generic store of this store.
+func (s *PullRequestCommentStore) SetGenericStore(store *kallax.Store) {
+	s.Store = store
+}
+
+// Debug returns a new store that will print all SQL statements to stdout using
+// the log.Printf function.
+func (s *PullRequestCommentStore) Debug() *PullRequestCommentStore {
+	return &PullRequestCommentStore{s.Store.Debug()}
+}
+
+// DebugWith returns a new store that will print all SQL statements using the
+// given logger function.
+func (s *PullRequestCommentStore) DebugWith(logger kallax.LoggerFunc) *PullRequestCommentStore {
+	return &PullRequestCommentStore{s.Store.DebugWith(logger)}
+}
+
+// DisableCacher turns off prepared statements, which can be useful in some scenarios.
+func (s *PullRequestCommentStore) DisableCacher() *PullRequestCommentStore {
+	return &PullRequestCommentStore{s.Store.DisableCacher()}
+}
+
+// Insert inserts a PullRequestComment in the database. A non-persisted object is
+// required for this operation.
+func (s *PullRequestCommentStore) Insert(record *PullRequestComment) error {
+	record.SetSaving(true)
+	defer record.SetSaving(false)
+
+	if record.CreatedAt != nil {
+		record.CreatedAt = func(t time.Time) *time.Time { return &t }(record.CreatedAt.Truncate(time.Microsecond))
+	}
+	if record.UpdatedAt != nil {
+		record.UpdatedAt = func(t time.Time) *time.Time { return &t }(record.UpdatedAt.Truncate(time.Microsecond))
+	}
+
+	if err := record.BeforeSave(); err != nil {
+		return err
+	}
+
+	return s.Store.Insert(Schema.PullRequestComment.BaseSchema, record)
+}
+
+// Update updates the given record on the database. If the columns are given,
+// only these columns will be updated. Otherwise all of them will be.
+// Be very careful with this, as you will have a potentially different object
+// in memory but not on the database.
+// Only writable records can be updated. Writable objects are those that have
+// been just inserted or retrieved using a query with no custom select fields.
+func (s *PullRequestCommentStore) Update(record *PullRequestComment, cols ...kallax.SchemaField) (updated int64, err error) {
+	if record.CreatedAt != nil {
+		record.CreatedAt = func(t time.Time) *time.Time { return &t }(record.CreatedAt.Truncate(time.Microsecond))
+	}
+	if record.UpdatedAt != nil {
+		record.UpdatedAt = func(t time.Time) *time.Time { return &t }(record.UpdatedAt.Truncate(time.Microsecond))
+	}
+
+	record.SetSaving(true)
+	defer record.SetSaving(false)
+
+	if err := record.BeforeSave(); err != nil {
+		return 0, err
+	}
+
+	return s.Store.Update(Schema.PullRequestComment.BaseSchema, record, cols...)
+}
+
+// Save inserts the object if the record is not persisted, otherwise it updates
+// it. Same rules of Update and Insert apply depending on the case.
+func (s *PullRequestCommentStore) Save(record *PullRequestComment) (updated bool, err error) {
+	if !record.IsPersisted() {
+		return false, s.Insert(record)
+	}
+
+	rowsUpdated, err := s.Update(record)
+	if err != nil {
+		return false, err
+	}
+
+	return rowsUpdated > 0, nil
+}
+
+// Delete removes the given record from the database.
+func (s *PullRequestCommentStore) Delete(record *PullRequestComment) error {
+	return s.Store.Delete(Schema.PullRequestComment.BaseSchema, record)
+}
+
+// Find returns the set of results for the given query.
+func (s *PullRequestCommentStore) Find(q *PullRequestCommentQuery) (*PullRequestCommentResultSet, error) {
+	rs, err := s.Store.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewPullRequestCommentResultSet(rs), nil
+}
+
+// MustFind returns the set of results for the given query, but panics if there
+// is any error.
+func (s *PullRequestCommentStore) MustFind(q *PullRequestCommentQuery) *PullRequestCommentResultSet {
+	return NewPullRequestCommentResultSet(s.Store.MustFind(q))
+}
+
+// Count returns the number of rows that would be retrieved with the given
+// query.
+func (s *PullRequestCommentStore) Count(q *PullRequestCommentQuery) (int64, error) {
+	return s.Store.Count(q)
+}
+
+// MustCount returns the number of rows that would be retrieved with the given
+// query, but panics if there is an error.
+func (s *PullRequestCommentStore) MustCount(q *PullRequestCommentQuery) int64 {
+	return s.Store.MustCount(q)
+}
+
+// FindOne returns the first row returned by the given query.
+// `ErrNotFound` is returned if there are no results.
+func (s *PullRequestCommentStore) FindOne(q *PullRequestCommentQuery) (*PullRequestComment, error) {
+	q.Limit(1)
+	q.Offset(0)
+	rs, err := s.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	if !rs.Next() {
+		return nil, kallax.ErrNotFound
+	}
+
+	record, err := rs.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rs.Close(); err != nil {
+		return nil, err
+	}
+
+	return record, nil
+}
+
+// FindAll returns a list of all the rows returned by the given query.
+func (s *PullRequestCommentStore) FindAll(q *PullRequestCommentQuery) ([]*PullRequestComment, error) {
+	rs, err := s.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	return rs.All()
+}
+
+// MustFindOne returns the first row retrieved by the given query. It panics
+// if there is an error or if there are no rows.
+func (s *PullRequestCommentStore) MustFindOne(q *PullRequestCommentQuery) *PullRequestComment {
+	record, err := s.FindOne(q)
+	if err != nil {
+		panic(err)
+	}
+	return record
+}
+
+// Reload refreshes the PullRequestComment with the data in the database and
+// makes it writable.
+func (s *PullRequestCommentStore) Reload(record *PullRequestComment) error {
+	return s.Store.Reload(Schema.PullRequestComment.BaseSchema, record)
+}
+
+// Transaction executes the given callback in a transaction and rollbacks if
+// an error is returned.
+// The transaction is only open in the store passed as a parameter to the
+// callback.
+func (s *PullRequestCommentStore) Transaction(callback func(*PullRequestCommentStore) error) error {
+	if callback == nil {
+		return kallax.ErrInvalidTxCallback
+	}
+
+	return s.Store.Transaction(func(store *kallax.Store) error {
+		return callback(&PullRequestCommentStore{store})
+	})
+}
+
+// PullRequestCommentQuery is the object used to create queries for the PullRequestComment
+// entity.
+type PullRequestCommentQuery struct {
+	*kallax.BaseQuery
+}
+
+// NewPullRequestCommentQuery returns a new instance of PullRequestCommentQuery.
+func NewPullRequestCommentQuery() *PullRequestCommentQuery {
+	return &PullRequestCommentQuery{
+		BaseQuery: kallax.NewBaseQuery(Schema.PullRequestComment.BaseSchema),
+	}
+}
+
+// Select adds columns to select in the query.
+func (q *PullRequestCommentQuery) Select(columns ...kallax.SchemaField) *PullRequestCommentQuery {
+	if len(columns) == 0 {
+		return q
+	}
+	q.BaseQuery.Select(columns...)
+	return q
+}
+
+// SelectNot excludes columns from being selected in the query.
+func (q *PullRequestCommentQuery) SelectNot(columns ...kallax.SchemaField) *PullRequestCommentQuery {
+	q.BaseQuery.SelectNot(columns...)
+	return q
+}
+
+// Copy returns a new identical copy of the query. Remember queries are mutable
+// so make a copy any time you need to reuse them.
+func (q *PullRequestCommentQuery) Copy() *PullRequestCommentQuery {
+	return &PullRequestCommentQuery{
+		BaseQuery: q.BaseQuery.Copy(),
+	}
+}
+
+// Order adds order clauses to the query for the given columns.
+func (q *PullRequestCommentQuery) Order(cols ...kallax.ColumnOrder) *PullRequestCommentQuery {
+	q.BaseQuery.Order(cols...)
+	return q
+}
+
+// BatchSize sets the number of items to fetch per batch when there are 1:N
+// relationships selected in the query.
+func (q *PullRequestCommentQuery) BatchSize(size uint64) *PullRequestCommentQuery {
+	q.BaseQuery.BatchSize(size)
+	return q
+}
+
+// Limit sets the max number of items to retrieve.
+func (q *PullRequestCommentQuery) Limit(n uint64) *PullRequestCommentQuery {
+	q.BaseQuery.Limit(n)
+	return q
+}
+
+// Offset sets the number of items to skip from the result set of items.
+func (q *PullRequestCommentQuery) Offset(n uint64) *PullRequestCommentQuery {
+	q.BaseQuery.Offset(n)
+	return q
+}
+
+// Where adds a condition to the query. All conditions added are concatenated
+// using a logical AND.
+func (q *PullRequestCommentQuery) Where(cond kallax.Condition) *PullRequestCommentQuery {
+	q.BaseQuery.Where(cond)
+	return q
+}
+
+// FindByCreatedAt adds a new filter to the query that will require that
+// the CreatedAt property is equal to the passed value.
+func (q *PullRequestCommentQuery) FindByCreatedAt(cond kallax.ScalarCond, v time.Time) *PullRequestCommentQuery {
+	return q.Where(cond(Schema.PullRequestComment.CreatedAt, v))
+}
+
+// FindByUpdatedAt adds a new filter to the query that will require that
+// the UpdatedAt property is equal to the passed value.
+func (q *PullRequestCommentQuery) FindByUpdatedAt(cond kallax.ScalarCond, v time.Time) *PullRequestCommentQuery {
+	return q.Where(cond(Schema.PullRequestComment.UpdatedAt, v))
+}
+
+// FindByUserID adds a new filter to the query that will require that
+// the UserID property is equal to the passed value.
+func (q *PullRequestCommentQuery) FindByUserID(cond kallax.ScalarCond, v int64) *PullRequestCommentQuery {
+	return q.Where(cond(Schema.PullRequestComment.UserID, v))
+}
+
+// FindByUserLogin adds a new filter to the query that will require that
+// the UserLogin property is equal to the passed value.
+func (q *PullRequestCommentQuery) FindByUserLogin(v string) *PullRequestCommentQuery {
+	return q.Where(kallax.Eq(Schema.PullRequestComment.UserLogin, v))
+}
+
+// FindByPullRequestNumber adds a new filter to the query that will require that
+// the PullRequestNumber property is equal to the passed value.
+func (q *PullRequestCommentQuery) FindByPullRequestNumber(cond kallax.ScalarCond, v int) *PullRequestCommentQuery {
+	return q.Where(cond(Schema.PullRequestComment.PullRequestNumber, v))
+}
+
+// FindByRepositoryOwner adds a new filter to the query that will require that
+// the RepositoryOwner property is equal to the passed value.
+func (q *PullRequestCommentQuery) FindByRepositoryOwner(v string) *PullRequestCommentQuery {
+	return q.Where(kallax.Eq(Schema.PullRequestComment.RepositoryOwner, v))
+}
+
+// FindByRepositoryName adds a new filter to the query that will require that
+// the RepositoryName property is equal to the passed value.
+func (q *PullRequestCommentQuery) FindByRepositoryName(v string) *PullRequestCommentQuery {
+	return q.Where(kallax.Eq(Schema.PullRequestComment.RepositoryName, v))
+}
+
+// PullRequestCommentResultSet is the set of results returned by a query to the
+// database.
+type PullRequestCommentResultSet struct {
+	ResultSet kallax.ResultSet
+	last      *PullRequestComment
+	lastErr   error
+}
+
+// NewPullRequestCommentResultSet creates a new result set for rows of the type
+// PullRequestComment.
+func NewPullRequestCommentResultSet(rs kallax.ResultSet) *PullRequestCommentResultSet {
+	return &PullRequestCommentResultSet{ResultSet: rs}
+}
+
+// Next fetches the next item in the result set and returns true if there is
+// a next item.
+// The result set is closed automatically when there are no more items.
+func (rs *PullRequestCommentResultSet) Next() bool {
+	if !rs.ResultSet.Next() {
+		rs.lastErr = rs.ResultSet.Close()
+		rs.last = nil
+		return false
+	}
+
+	var record kallax.Record
+	record, rs.lastErr = rs.ResultSet.Get(Schema.PullRequestComment.BaseSchema)
+	if rs.lastErr != nil {
+		rs.last = nil
+	} else {
+		var ok bool
+		rs.last, ok = record.(*PullRequestComment)
+		if !ok {
+			rs.lastErr = fmt.Errorf("kallax: unable to convert record to *PullRequestComment")
+			rs.last = nil
+		}
+	}
+
+	return true
+}
+
+// Get retrieves the last fetched item from the result set and the last error.
+func (rs *PullRequestCommentResultSet) Get() (*PullRequestComment, error) {
+	return rs.last, rs.lastErr
+}
+
+// ForEach iterates over the complete result set passing every record found to
+// the given callback. It is possible to stop the iteration by returning
+// `kallax.ErrStop` in the callback.
+// Result set is always closed at the end.
+func (rs *PullRequestCommentResultSet) ForEach(fn func(*PullRequestComment) error) error {
+	for rs.Next() {
+		record, err := rs.Get()
+		if err != nil {
+			return err
+		}
+
+		if err := fn(record); err != nil {
+			if err == kallax.ErrStop {
+				return rs.Close()
+			}
+
+			return err
+		}
+	}
+	return nil
+}
+
+// All returns all records on the result set and closes the result set.
+func (rs *PullRequestCommentResultSet) All() ([]*PullRequestComment, error) {
+	var result []*PullRequestComment
+	for rs.Next() {
+		record, err := rs.Get()
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, record)
+	}
+	return result, nil
+}
+
+// One returns the first record on the result set and closes the result set.
+func (rs *PullRequestCommentResultSet) One() (*PullRequestComment, error) {
+	if !rs.Next() {
+		return nil, kallax.ErrNotFound
+	}
+
+	record, err := rs.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rs.Close(); err != nil {
+		return nil, err
+	}
+
+	return record, nil
+}
+
+// Err returns the last error occurred.
+func (rs *PullRequestCommentResultSet) Err() error {
+	return rs.lastErr
+}
+
+// Close closes the result set.
+func (rs *PullRequestCommentResultSet) Close() error {
+	return rs.ResultSet.Close()
+}
+
+// NewPullRequestReview returns a new instance of PullRequestReview.
+func NewPullRequestReview() (record *PullRequestReview) {
+	return new(PullRequestReview)
+}
+
+// GetID returns the primary key of the model.
+func (r *PullRequestReview) GetID() kallax.Identifier {
+	return (*kallax.NumericID)(r.ID)
+}
+
+// ColumnAddress returns the pointer to the value of the given column.
+func (r *PullRequestReview) ColumnAddress(col string) (interface{}, error) {
+	switch col {
+	case "id":
+		return (*kallax.NumericID)(r.PullRequestReview.ID), nil
+	case "node_id":
+		return types.Nullable(&r.PullRequestReview.NodeID), nil
+	case "body":
+		return types.Nullable(&r.PullRequestReview.Body), nil
+	case "submitted_at":
+		return types.Nullable(&r.PullRequestReview.SubmittedAt), nil
+	case "commit_id":
+		return types.Nullable(&r.PullRequestReview.CommitID), nil
+	case "htmlurl":
+		return types.Nullable(&r.PullRequestReview.HTMLURL), nil
+	case "state":
+		return types.Nullable(&r.PullRequestReview.State), nil
+	case "user_id":
+		return &r.UserID, nil
+	case "user_login":
+		return &r.UserLogin, nil
+	case "pull_request_number":
+		return &r.PullRequestNumber, nil
+	case "repository_owner":
+		return &r.RepositoryOwner, nil
+	case "repository_name":
+		return &r.RepositoryName, nil
+
+	default:
+		return nil, fmt.Errorf("kallax: invalid column in PullRequestReview: %s", col)
+	}
+}
+
+// Value returns the value of the given column.
+func (r *PullRequestReview) Value(col string) (interface{}, error) {
+	switch col {
+	case "id":
+		if r.PullRequestReview.ID == (*int64)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestReview.ID, nil
+	case "node_id":
+		if r.PullRequestReview.NodeID == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestReview.NodeID, nil
+	case "body":
+		if r.PullRequestReview.Body == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestReview.Body, nil
+	case "submitted_at":
+		if r.PullRequestReview.SubmittedAt == (*time.Time)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestReview.SubmittedAt, nil
+	case "commit_id":
+		if r.PullRequestReview.CommitID == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestReview.CommitID, nil
+	case "htmlurl":
+		if r.PullRequestReview.HTMLURL == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestReview.HTMLURL, nil
+	case "state":
+		if r.PullRequestReview.State == (*string)(nil) {
+			return nil, nil
+		}
+		return r.PullRequestReview.State, nil
+	case "user_id":
+		return r.UserID, nil
+	case "user_login":
+		return r.UserLogin, nil
+	case "pull_request_number":
+		return r.PullRequestNumber, nil
+	case "repository_owner":
+		return r.RepositoryOwner, nil
+	case "repository_name":
+		return r.RepositoryName, nil
+
+	default:
+		return nil, fmt.Errorf("kallax: invalid column in PullRequestReview: %s", col)
+	}
+}
+
+// NewRelationshipRecord returns a new record for the relatiobship in the given
+// field.
+func (r *PullRequestReview) NewRelationshipRecord(field string) (kallax.Record, error) {
+	return nil, fmt.Errorf("kallax: model PullRequestReview has no relationships")
+}
+
+// SetRelationship sets the given relationship in the given field.
+func (r *PullRequestReview) SetRelationship(field string, rel interface{}) error {
+	return fmt.Errorf("kallax: model PullRequestReview has no relationships")
+}
+
+// PullRequestReviewStore is the entity to access the records of the type PullRequestReview
+// in the database.
+type PullRequestReviewStore struct {
+	*kallax.Store
+}
+
+// NewPullRequestReviewStore creates a new instance of PullRequestReviewStore
+// using a SQL database.
+func NewPullRequestReviewStore(db *sql.DB) *PullRequestReviewStore {
+	return &PullRequestReviewStore{kallax.NewStore(db)}
+}
+
+// GenericStore returns the generic store of this store.
+func (s *PullRequestReviewStore) GenericStore() *kallax.Store {
+	return s.Store
+}
+
+// SetGenericStore changes the generic store of this store.
+func (s *PullRequestReviewStore) SetGenericStore(store *kallax.Store) {
+	s.Store = store
+}
+
+// Debug returns a new store that will print all SQL statements to stdout using
+// the log.Printf function.
+func (s *PullRequestReviewStore) Debug() *PullRequestReviewStore {
+	return &PullRequestReviewStore{s.Store.Debug()}
+}
+
+// DebugWith returns a new store that will print all SQL statements using the
+// given logger function.
+func (s *PullRequestReviewStore) DebugWith(logger kallax.LoggerFunc) *PullRequestReviewStore {
+	return &PullRequestReviewStore{s.Store.DebugWith(logger)}
+}
+
+// DisableCacher turns off prepared statements, which can be useful in some scenarios.
+func (s *PullRequestReviewStore) DisableCacher() *PullRequestReviewStore {
+	return &PullRequestReviewStore{s.Store.DisableCacher()}
+}
+
+// Insert inserts a PullRequestReview in the database. A non-persisted object is
+// required for this operation.
+func (s *PullRequestReviewStore) Insert(record *PullRequestReview) error {
+	record.SetSaving(true)
+	defer record.SetSaving(false)
+
+	if record.SubmittedAt != nil {
+		record.SubmittedAt = func(t time.Time) *time.Time { return &t }(record.SubmittedAt.Truncate(time.Microsecond))
+	}
+
+	if err := record.BeforeSave(); err != nil {
+		return err
+	}
+
+	return s.Store.Insert(Schema.PullRequestReview.BaseSchema, record)
+}
+
+// Update updates the given record on the database. If the columns are given,
+// only these columns will be updated. Otherwise all of them will be.
+// Be very careful with this, as you will have a potentially different object
+// in memory but not on the database.
+// Only writable records can be updated. Writable objects are those that have
+// been just inserted or retrieved using a query with no custom select fields.
+func (s *PullRequestReviewStore) Update(record *PullRequestReview, cols ...kallax.SchemaField) (updated int64, err error) {
+	if record.SubmittedAt != nil {
+		record.SubmittedAt = func(t time.Time) *time.Time { return &t }(record.SubmittedAt.Truncate(time.Microsecond))
+	}
+
+	record.SetSaving(true)
+	defer record.SetSaving(false)
+
+	if err := record.BeforeSave(); err != nil {
+		return 0, err
+	}
+
+	return s.Store.Update(Schema.PullRequestReview.BaseSchema, record, cols...)
+}
+
+// Save inserts the object if the record is not persisted, otherwise it updates
+// it. Same rules of Update and Insert apply depending on the case.
+func (s *PullRequestReviewStore) Save(record *PullRequestReview) (updated bool, err error) {
+	if !record.IsPersisted() {
+		return false, s.Insert(record)
+	}
+
+	rowsUpdated, err := s.Update(record)
+	if err != nil {
+		return false, err
+	}
+
+	return rowsUpdated > 0, nil
+}
+
+// Delete removes the given record from the database.
+func (s *PullRequestReviewStore) Delete(record *PullRequestReview) error {
+	return s.Store.Delete(Schema.PullRequestReview.BaseSchema, record)
+}
+
+// Find returns the set of results for the given query.
+func (s *PullRequestReviewStore) Find(q *PullRequestReviewQuery) (*PullRequestReviewResultSet, error) {
+	rs, err := s.Store.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewPullRequestReviewResultSet(rs), nil
+}
+
+// MustFind returns the set of results for the given query, but panics if there
+// is any error.
+func (s *PullRequestReviewStore) MustFind(q *PullRequestReviewQuery) *PullRequestReviewResultSet {
+	return NewPullRequestReviewResultSet(s.Store.MustFind(q))
+}
+
+// Count returns the number of rows that would be retrieved with the given
+// query.
+func (s *PullRequestReviewStore) Count(q *PullRequestReviewQuery) (int64, error) {
+	return s.Store.Count(q)
+}
+
+// MustCount returns the number of rows that would be retrieved with the given
+// query, but panics if there is an error.
+func (s *PullRequestReviewStore) MustCount(q *PullRequestReviewQuery) int64 {
+	return s.Store.MustCount(q)
+}
+
+// FindOne returns the first row returned by the given query.
+// `ErrNotFound` is returned if there are no results.
+func (s *PullRequestReviewStore) FindOne(q *PullRequestReviewQuery) (*PullRequestReview, error) {
+	q.Limit(1)
+	q.Offset(0)
+	rs, err := s.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	if !rs.Next() {
+		return nil, kallax.ErrNotFound
+	}
+
+	record, err := rs.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rs.Close(); err != nil {
+		return nil, err
+	}
+
+	return record, nil
+}
+
+// FindAll returns a list of all the rows returned by the given query.
+func (s *PullRequestReviewStore) FindAll(q *PullRequestReviewQuery) ([]*PullRequestReview, error) {
+	rs, err := s.Find(q)
+	if err != nil {
+		return nil, err
+	}
+
+	return rs.All()
+}
+
+// MustFindOne returns the first row retrieved by the given query. It panics
+// if there is an error or if there are no rows.
+func (s *PullRequestReviewStore) MustFindOne(q *PullRequestReviewQuery) *PullRequestReview {
+	record, err := s.FindOne(q)
+	if err != nil {
+		panic(err)
+	}
+	return record
+}
+
+// Reload refreshes the PullRequestReview with the data in the database and
+// makes it writable.
+func (s *PullRequestReviewStore) Reload(record *PullRequestReview) error {
+	return s.Store.Reload(Schema.PullRequestReview.BaseSchema, record)
+}
+
+// Transaction executes the given callback in a transaction and rollbacks if
+// an error is returned.
+// The transaction is only open in the store passed as a parameter to the
+// callback.
+func (s *PullRequestReviewStore) Transaction(callback func(*PullRequestReviewStore) error) error {
+	if callback == nil {
+		return kallax.ErrInvalidTxCallback
+	}
+
+	return s.Store.Transaction(func(store *kallax.Store) error {
+		return callback(&PullRequestReviewStore{store})
+	})
+}
+
+// PullRequestReviewQuery is the object used to create queries for the PullRequestReview
+// entity.
+type PullRequestReviewQuery struct {
+	*kallax.BaseQuery
+}
+
+// NewPullRequestReviewQuery returns a new instance of PullRequestReviewQuery.
+func NewPullRequestReviewQuery() *PullRequestReviewQuery {
+	return &PullRequestReviewQuery{
+		BaseQuery: kallax.NewBaseQuery(Schema.PullRequestReview.BaseSchema),
+	}
+}
+
+// Select adds columns to select in the query.
+func (q *PullRequestReviewQuery) Select(columns ...kallax.SchemaField) *PullRequestReviewQuery {
+	if len(columns) == 0 {
+		return q
+	}
+	q.BaseQuery.Select(columns...)
+	return q
+}
+
+// SelectNot excludes columns from being selected in the query.
+func (q *PullRequestReviewQuery) SelectNot(columns ...kallax.SchemaField) *PullRequestReviewQuery {
+	q.BaseQuery.SelectNot(columns...)
+	return q
+}
+
+// Copy returns a new identical copy of the query. Remember queries are mutable
+// so make a copy any time you need to reuse them.
+func (q *PullRequestReviewQuery) Copy() *PullRequestReviewQuery {
+	return &PullRequestReviewQuery{
+		BaseQuery: q.BaseQuery.Copy(),
+	}
+}
+
+// Order adds order clauses to the query for the given columns.
+func (q *PullRequestReviewQuery) Order(cols ...kallax.ColumnOrder) *PullRequestReviewQuery {
+	q.BaseQuery.Order(cols...)
+	return q
+}
+
+// BatchSize sets the number of items to fetch per batch when there are 1:N
+// relationships selected in the query.
+func (q *PullRequestReviewQuery) BatchSize(size uint64) *PullRequestReviewQuery {
+	q.BaseQuery.BatchSize(size)
+	return q
+}
+
+// Limit sets the max number of items to retrieve.
+func (q *PullRequestReviewQuery) Limit(n uint64) *PullRequestReviewQuery {
+	q.BaseQuery.Limit(n)
+	return q
+}
+
+// Offset sets the number of items to skip from the result set of items.
+func (q *PullRequestReviewQuery) Offset(n uint64) *PullRequestReviewQuery {
+	q.BaseQuery.Offset(n)
+	return q
+}
+
+// Where adds a condition to the query. All conditions added are concatenated
+// using a logical AND.
+func (q *PullRequestReviewQuery) Where(cond kallax.Condition) *PullRequestReviewQuery {
+	q.BaseQuery.Where(cond)
+	return q
+}
+
+// FindBySubmittedAt adds a new filter to the query that will require that
+// the SubmittedAt property is equal to the passed value.
+func (q *PullRequestReviewQuery) FindBySubmittedAt(cond kallax.ScalarCond, v time.Time) *PullRequestReviewQuery {
+	return q.Where(cond(Schema.PullRequestReview.SubmittedAt, v))
+}
+
+// FindByUserID adds a new filter to the query that will require that
+// the UserID property is equal to the passed value.
+func (q *PullRequestReviewQuery) FindByUserID(cond kallax.ScalarCond, v int64) *PullRequestReviewQuery {
+	return q.Where(cond(Schema.PullRequestReview.UserID, v))
+}
+
+// FindByUserLogin adds a new filter to the query that will require that
+// the UserLogin property is equal to the passed value.
+func (q *PullRequestReviewQuery) FindByUserLogin(v string) *PullRequestReviewQuery {
+	return q.Where(kallax.Eq(Schema.PullRequestReview.UserLogin, v))
+}
+
+// FindByPullRequestNumber adds a new filter to the query that will require that
+// the PullRequestNumber property is equal to the passed value.
+func (q *PullRequestReviewQuery) FindByPullRequestNumber(cond kallax.ScalarCond, v int) *PullRequestReviewQuery {
+	return q.Where(cond(Schema.PullRequestReview.PullRequestNumber, v))
+}
+
+// FindByRepositoryOwner adds a new filter to the query that will require that
+// the RepositoryOwner property is equal to the passed value.
+func (q *PullRequestReviewQuery) FindByRepositoryOwner(v string) *PullRequestReviewQuery {
+	return q.Where(kallax.Eq(Schema.PullRequestReview.RepositoryOwner, v))
+}
+
+// FindByRepositoryName adds a new filter to the query that will require that
+// the RepositoryName property is equal to the passed value.
+func (q *PullRequestReviewQuery) FindByRepositoryName(v string) *PullRequestReviewQuery {
+	return q.Where(kallax.Eq(Schema.PullRequestReview.RepositoryName, v))
+}
+
+// PullRequestReviewResultSet is the set of results returned by a query to the
+// database.
+type PullRequestReviewResultSet struct {
+	ResultSet kallax.ResultSet
+	last      *PullRequestReview
+	lastErr   error
+}
+
+// NewPullRequestReviewResultSet creates a new result set for rows of the type
+// PullRequestReview.
+func NewPullRequestReviewResultSet(rs kallax.ResultSet) *PullRequestReviewResultSet {
+	return &PullRequestReviewResultSet{ResultSet: rs}
+}
+
+// Next fetches the next item in the result set and returns true if there is
+// a next item.
+// The result set is closed automatically when there are no more items.
+func (rs *PullRequestReviewResultSet) Next() bool {
+	if !rs.ResultSet.Next() {
+		rs.lastErr = rs.ResultSet.Close()
+		rs.last = nil
+		return false
+	}
+
+	var record kallax.Record
+	record, rs.lastErr = rs.ResultSet.Get(Schema.PullRequestReview.BaseSchema)
+	if rs.lastErr != nil {
+		rs.last = nil
+	} else {
+		var ok bool
+		rs.last, ok = record.(*PullRequestReview)
+		if !ok {
+			rs.lastErr = fmt.Errorf("kallax: unable to convert record to *PullRequestReview")
+			rs.last = nil
+		}
+	}
+
+	return true
+}
+
+// Get retrieves the last fetched item from the result set and the last error.
+func (rs *PullRequestReviewResultSet) Get() (*PullRequestReview, error) {
+	return rs.last, rs.lastErr
+}
+
+// ForEach iterates over the complete result set passing every record found to
+// the given callback. It is possible to stop the iteration by returning
+// `kallax.ErrStop` in the callback.
+// Result set is always closed at the end.
+func (rs *PullRequestReviewResultSet) ForEach(fn func(*PullRequestReview) error) error {
+	for rs.Next() {
+		record, err := rs.Get()
+		if err != nil {
+			return err
+		}
+
+		if err := fn(record); err != nil {
+			if err == kallax.ErrStop {
+				return rs.Close()
+			}
+
+			return err
+		}
+	}
+	return nil
+}
+
+// All returns all records on the result set and closes the result set.
+func (rs *PullRequestReviewResultSet) All() ([]*PullRequestReview, error) {
+	var result []*PullRequestReview
+	for rs.Next() {
+		record, err := rs.Get()
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, record)
+	}
+	return result, nil
+}
+
+// One returns the first record on the result set and closes the result set.
+func (rs *PullRequestReviewResultSet) One() (*PullRequestReview, error) {
+	if !rs.Next() {
+		return nil, kallax.ErrNotFound
+	}
+
+	record, err := rs.Get()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := rs.Close(); err != nil {
+		return nil, err
+	}
+
+	return record, nil
+}
+
+// Err returns the last error occurred.
+func (rs *PullRequestReviewResultSet) Err() error {
+	return rs.lastErr
+}
+
+// Close closes the result set.
+func (rs *PullRequestReviewResultSet) Close() error {
 	return rs.ResultSet.Close()
 }
 
@@ -3580,11 +5213,14 @@ func (rs *UserResultSet) Close() error {
 }
 
 type schema struct {
-	Issue        *schemaIssue
-	Organization *schemaOrganization
-	PullRequest  *schemaPullRequest
-	Repository   *schemaRepository
-	User         *schemaUser
+	Issue              *schemaIssue
+	IssueComment       *schemaIssueComment
+	Organization       *schemaOrganization
+	PullRequest        *schemaPullRequest
+	PullRequestComment *schemaPullRequestComment
+	PullRequestReview  *schemaPullRequestReview
+	Repository         *schemaRepository
+	User               *schemaUser
 }
 
 type schemaIssue struct {
@@ -3613,6 +5249,23 @@ type schemaIssue struct {
 	ClosedByLogin   kallax.SchemaField
 	MilestoneID     kallax.SchemaField
 	MilestoneTitle  kallax.SchemaField
+}
+
+type schemaIssueComment struct {
+	*kallax.BaseSchema
+	ID                kallax.SchemaField
+	NodeID            kallax.SchemaField
+	Body              kallax.SchemaField
+	Reactions         *schemaIssueCommentReactions
+	CreatedAt         kallax.SchemaField
+	UpdatedAt         kallax.SchemaField
+	AuthorAssociation kallax.SchemaField
+	HTMLURL           kallax.SchemaField
+	UserID            kallax.SchemaField
+	UserLogin         kallax.SchemaField
+	IssueNumber       kallax.SchemaField
+	RepositoryOwner   kallax.SchemaField
+	RepositoryName    kallax.SchemaField
 }
 
 type schemaOrganization struct {
@@ -3695,6 +5348,47 @@ type schemaPullRequest struct {
 	BaseUser               kallax.SchemaField
 	BaseRepositoryOwner    kallax.SchemaField
 	BaseRepositoryName     kallax.SchemaField
+}
+
+type schemaPullRequestComment struct {
+	*kallax.BaseSchema
+	ID                  kallax.SchemaField
+	NodeID              kallax.SchemaField
+	InReplyTo           kallax.SchemaField
+	Body                kallax.SchemaField
+	Path                kallax.SchemaField
+	DiffHunk            kallax.SchemaField
+	PullRequestReviewID kallax.SchemaField
+	Position            kallax.SchemaField
+	OriginalPosition    kallax.SchemaField
+	CommitID            kallax.SchemaField
+	OriginalCommitID    kallax.SchemaField
+	Reactions           *schemaPullRequestCommentReactions
+	CreatedAt           kallax.SchemaField
+	UpdatedAt           kallax.SchemaField
+	AuthorAssociation   kallax.SchemaField
+	HTMLURL             kallax.SchemaField
+	UserID              kallax.SchemaField
+	UserLogin           kallax.SchemaField
+	PullRequestNumber   kallax.SchemaField
+	RepositoryOwner     kallax.SchemaField
+	RepositoryName      kallax.SchemaField
+}
+
+type schemaPullRequestReview struct {
+	*kallax.BaseSchema
+	ID                kallax.SchemaField
+	NodeID            kallax.SchemaField
+	Body              kallax.SchemaField
+	SubmittedAt       kallax.SchemaField
+	CommitID          kallax.SchemaField
+	HTMLURL           kallax.SchemaField
+	State             kallax.SchemaField
+	UserID            kallax.SchemaField
+	UserLogin         kallax.SchemaField
+	PullRequestNumber kallax.SchemaField
+	RepositoryOwner   kallax.SchemaField
+	RepositoryName    kallax.SchemaField
 }
 
 type schemaRepository struct {
@@ -3799,6 +5493,17 @@ func (s *schemaIssueAssigneesList) At(n int) *schemaIssueAssigneesList {
 	}
 }
 
+type schemaIssueCommentReactions struct {
+	*kallax.BaseSchemaField
+	TotalCount kallax.SchemaField
+	PlusOne    kallax.SchemaField
+	MinusOne   kallax.SchemaField
+	Laugh      kallax.SchemaField
+	Confused   kallax.SchemaField
+	Heart      kallax.SchemaField
+	Hooray     kallax.SchemaField
+}
+
 type schemaPullRequestAssigneesList struct {
 	*kallax.BaseSchemaField
 	ID    kallax.SchemaField
@@ -3811,6 +5516,17 @@ func (s *schemaPullRequestAssigneesList) At(n int) *schemaPullRequestAssigneesLi
 		ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", fmt.Sprint(n), "id"),
 		Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", fmt.Sprint(n), "login"),
 	}
+}
+
+type schemaPullRequestCommentReactions struct {
+	*kallax.BaseSchemaField
+	TotalCount kallax.SchemaField
+	PlusOne    kallax.SchemaField
+	MinusOne   kallax.SchemaField
+	Laugh      kallax.SchemaField
+	Confused   kallax.SchemaField
+	Heart      kallax.SchemaField
+	Hooray     kallax.SchemaField
 }
 
 type schemaPullRequestRequestedReviewersList struct {
@@ -3935,6 +5651,53 @@ var Schema = &schema{
 		ClosedByLogin:  kallax.NewSchemaField("closed_by_login"),
 		MilestoneID:    kallax.NewSchemaField("milestone_id"),
 		MilestoneTitle: kallax.NewSchemaField("milestone_title"),
+	},
+	IssueComment: &schemaIssueComment{
+		BaseSchema: kallax.NewBaseSchema(
+			"issue_comments",
+			"__issuecomment",
+			kallax.NewSchemaField("id"),
+			kallax.ForeignKeys{},
+			func() kallax.Record {
+				return new(IssueComment)
+			},
+			false,
+			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("node_id"),
+			kallax.NewSchemaField("body"),
+			kallax.NewSchemaField("reactions"),
+			kallax.NewSchemaField("created_at"),
+			kallax.NewSchemaField("updated_at"),
+			kallax.NewSchemaField("author_association"),
+			kallax.NewSchemaField("htmlurl"),
+			kallax.NewSchemaField("user_id"),
+			kallax.NewSchemaField("user_login"),
+			kallax.NewSchemaField("issue_number"),
+			kallax.NewSchemaField("repository_owner"),
+			kallax.NewSchemaField("repository_name"),
+		),
+		ID:     kallax.NewSchemaField("id"),
+		NodeID: kallax.NewSchemaField("node_id"),
+		Body:   kallax.NewSchemaField("body"),
+		Reactions: &schemaIssueCommentReactions{
+			BaseSchemaField: kallax.NewSchemaField("reactions").(*kallax.BaseSchemaField),
+			TotalCount:      kallax.NewJSONSchemaKey(kallax.JSONInt, "issue_comment", "reactions", "total_count"),
+			PlusOne:         kallax.NewJSONSchemaKey(kallax.JSONInt, "issue_comment", "reactions", "+1"),
+			MinusOne:        kallax.NewJSONSchemaKey(kallax.JSONInt, "issue_comment", "reactions", "-1"),
+			Laugh:           kallax.NewJSONSchemaKey(kallax.JSONInt, "issue_comment", "reactions", "laugh"),
+			Confused:        kallax.NewJSONSchemaKey(kallax.JSONInt, "issue_comment", "reactions", "confused"),
+			Heart:           kallax.NewJSONSchemaKey(kallax.JSONInt, "issue_comment", "reactions", "heart"),
+			Hooray:          kallax.NewJSONSchemaKey(kallax.JSONInt, "issue_comment", "reactions", "hooray"),
+		},
+		CreatedAt:         kallax.NewSchemaField("created_at"),
+		UpdatedAt:         kallax.NewSchemaField("updated_at"),
+		AuthorAssociation: kallax.NewSchemaField("author_association"),
+		HTMLURL:           kallax.NewSchemaField("htmlurl"),
+		UserID:            kallax.NewSchemaField("user_id"),
+		UserLogin:         kallax.NewSchemaField("user_login"),
+		IssueNumber:       kallax.NewSchemaField("issue_number"),
+		RepositoryOwner:   kallax.NewSchemaField("repository_owner"),
+		RepositoryName:    kallax.NewSchemaField("repository_name"),
 	},
 	Organization: &schemaOrganization{
 		BaseSchema: kallax.NewBaseSchema(
@@ -4115,6 +5878,105 @@ var Schema = &schema{
 		BaseUser:            kallax.NewSchemaField("base_user"),
 		BaseRepositoryOwner: kallax.NewSchemaField("base_repository_owner"),
 		BaseRepositoryName:  kallax.NewSchemaField("base_repository_name"),
+	},
+	PullRequestComment: &schemaPullRequestComment{
+		BaseSchema: kallax.NewBaseSchema(
+			"pull_request_comments",
+			"__pullrequestcomment",
+			kallax.NewSchemaField("id"),
+			kallax.ForeignKeys{},
+			func() kallax.Record {
+				return new(PullRequestComment)
+			},
+			false,
+			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("node_id"),
+			kallax.NewSchemaField("in_reply_to"),
+			kallax.NewSchemaField("body"),
+			kallax.NewSchemaField("path"),
+			kallax.NewSchemaField("diff_hunk"),
+			kallax.NewSchemaField("pull_request_review_id"),
+			kallax.NewSchemaField("position"),
+			kallax.NewSchemaField("original_position"),
+			kallax.NewSchemaField("commit_id"),
+			kallax.NewSchemaField("original_commit_id"),
+			kallax.NewSchemaField("reactions"),
+			kallax.NewSchemaField("created_at"),
+			kallax.NewSchemaField("updated_at"),
+			kallax.NewSchemaField("author_association"),
+			kallax.NewSchemaField("htmlurl"),
+			kallax.NewSchemaField("user_id"),
+			kallax.NewSchemaField("user_login"),
+			kallax.NewSchemaField("pull_request_number"),
+			kallax.NewSchemaField("repository_owner"),
+			kallax.NewSchemaField("repository_name"),
+		),
+		ID:                  kallax.NewSchemaField("id"),
+		NodeID:              kallax.NewSchemaField("node_id"),
+		InReplyTo:           kallax.NewSchemaField("in_reply_to"),
+		Body:                kallax.NewSchemaField("body"),
+		Path:                kallax.NewSchemaField("path"),
+		DiffHunk:            kallax.NewSchemaField("diff_hunk"),
+		PullRequestReviewID: kallax.NewSchemaField("pull_request_review_id"),
+		Position:            kallax.NewSchemaField("position"),
+		OriginalPosition:    kallax.NewSchemaField("original_position"),
+		CommitID:            kallax.NewSchemaField("commit_id"),
+		OriginalCommitID:    kallax.NewSchemaField("original_commit_id"),
+		Reactions: &schemaPullRequestCommentReactions{
+			BaseSchemaField: kallax.NewSchemaField("reactions").(*kallax.BaseSchemaField),
+			TotalCount:      kallax.NewJSONSchemaKey(kallax.JSONInt, "pull_request_comment", "reactions", "total_count"),
+			PlusOne:         kallax.NewJSONSchemaKey(kallax.JSONInt, "pull_request_comment", "reactions", "+1"),
+			MinusOne:        kallax.NewJSONSchemaKey(kallax.JSONInt, "pull_request_comment", "reactions", "-1"),
+			Laugh:           kallax.NewJSONSchemaKey(kallax.JSONInt, "pull_request_comment", "reactions", "laugh"),
+			Confused:        kallax.NewJSONSchemaKey(kallax.JSONInt, "pull_request_comment", "reactions", "confused"),
+			Heart:           kallax.NewJSONSchemaKey(kallax.JSONInt, "pull_request_comment", "reactions", "heart"),
+			Hooray:          kallax.NewJSONSchemaKey(kallax.JSONInt, "pull_request_comment", "reactions", "hooray"),
+		},
+		CreatedAt:         kallax.NewSchemaField("created_at"),
+		UpdatedAt:         kallax.NewSchemaField("updated_at"),
+		AuthorAssociation: kallax.NewSchemaField("author_association"),
+		HTMLURL:           kallax.NewSchemaField("htmlurl"),
+		UserID:            kallax.NewSchemaField("user_id"),
+		UserLogin:         kallax.NewSchemaField("user_login"),
+		PullRequestNumber: kallax.NewSchemaField("pull_request_number"),
+		RepositoryOwner:   kallax.NewSchemaField("repository_owner"),
+		RepositoryName:    kallax.NewSchemaField("repository_name"),
+	},
+	PullRequestReview: &schemaPullRequestReview{
+		BaseSchema: kallax.NewBaseSchema(
+			"pull_request_reviews",
+			"__pullrequestreview",
+			kallax.NewSchemaField("id"),
+			kallax.ForeignKeys{},
+			func() kallax.Record {
+				return new(PullRequestReview)
+			},
+			false,
+			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("node_id"),
+			kallax.NewSchemaField("body"),
+			kallax.NewSchemaField("submitted_at"),
+			kallax.NewSchemaField("commit_id"),
+			kallax.NewSchemaField("htmlurl"),
+			kallax.NewSchemaField("state"),
+			kallax.NewSchemaField("user_id"),
+			kallax.NewSchemaField("user_login"),
+			kallax.NewSchemaField("pull_request_number"),
+			kallax.NewSchemaField("repository_owner"),
+			kallax.NewSchemaField("repository_name"),
+		),
+		ID:                kallax.NewSchemaField("id"),
+		NodeID:            kallax.NewSchemaField("node_id"),
+		Body:              kallax.NewSchemaField("body"),
+		SubmittedAt:       kallax.NewSchemaField("submitted_at"),
+		CommitID:          kallax.NewSchemaField("commit_id"),
+		HTMLURL:           kallax.NewSchemaField("htmlurl"),
+		State:             kallax.NewSchemaField("state"),
+		UserID:            kallax.NewSchemaField("user_id"),
+		UserLogin:         kallax.NewSchemaField("user_login"),
+		PullRequestNumber: kallax.NewSchemaField("pull_request_number"),
+		RepositoryOwner:   kallax.NewSchemaField("repository_owner"),
+		RepositoryName:    kallax.NewSchemaField("repository_name"),
 	},
 	Repository: &schemaRepository{
 		BaseSchema: kallax.NewBaseSchema(

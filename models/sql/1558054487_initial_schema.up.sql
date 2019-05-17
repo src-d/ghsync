@@ -24,8 +24,24 @@ CREATE TABLE issues (
 	closed_by_id bigint NOT NULL,
 	closed_by_login text NOT NULL,
 	milestone_id bigint NOT NULL,
-	milestone_title text NOT NULL,
-	pull_request_url text NOT NULL
+	milestone_title text NOT NULL
+);
+
+
+CREATE TABLE issue_comments (
+	id serial PRIMARY KEY,
+	node_id text,
+	body text,
+	reactions jsonb,
+	created_at timestamptz,
+	updated_at timestamptz,
+	author_association text,
+	htmlurl text,
+	user_id bigint NOT NULL,
+	user_login text NOT NULL,
+	issue_number bigint NOT NULL,
+	repository_owner text NOT NULL,
+	repository_name text NOT NULL
 );
 
 
@@ -108,6 +124,47 @@ CREATE TABLE pull_requests (
 	base_user text NOT NULL,
 	base_repository_owner text NOT NULL,
 	base_repository_name text NOT NULL
+);
+
+
+CREATE TABLE pull_request_comments (
+	id serial PRIMARY KEY,
+	node_id text,
+	in_reply_to bigint,
+	body text,
+	path text,
+	diff_hunk text,
+	pull_request_review_id bigint,
+	position bigint,
+	original_position bigint,
+	commit_id text,
+	original_commit_id text,
+	reactions jsonb,
+	created_at timestamptz,
+	updated_at timestamptz,
+	author_association text,
+	htmlurl text,
+	user_id bigint NOT NULL,
+	user_login text NOT NULL,
+	pull_request_number bigint NOT NULL,
+	repository_owner text NOT NULL,
+	repository_name text NOT NULL
+);
+
+
+CREATE TABLE pull_request_reviews (
+	id serial PRIMARY KEY,
+	node_id text,
+	body text,
+	submitted_at timestamptz,
+	commit_id text,
+	htmlurl text,
+	state text,
+	user_id bigint NOT NULL,
+	user_login text NOT NULL,
+	pull_request_number bigint NOT NULL,
+	repository_owner text NOT NULL,
+	repository_name text NOT NULL
 );
 
 

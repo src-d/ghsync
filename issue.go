@@ -34,12 +34,12 @@ func (s *IssueSyncer) QueueRepository(owner, repo string) error {
 			return err
 		}
 
-		for _, r := range issues {
-			if r.PullRequestLinks != nil {
+		for _, i := range issues {
+			if i.PullRequestLinks != nil {
 				continue
 			}
 
-			fmt.Println(s.Sync(owner, repo, r.GetNumber()))
+			fmt.Println(s.Sync(owner, repo, i.GetNumber()))
 		}
 
 		if r.NextPage == 0 {

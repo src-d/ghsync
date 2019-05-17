@@ -39,8 +39,19 @@ func main() {
 	fmt.Println(syncIssue.Sync("src-d", "go-git", 785))
 	//syncIssue.QueueRepository("src-d", "go-git")
 
+	syncIssueComments := ghsync.NewIssueCommentsSyncer(db, client)
+	fmt.Println(syncIssueComments.Sync("src-d", "go-git", 493190516))
+	//syncIssueComments.QueueIssue("src-d", "go-git", 760)
+
 	syncPullRequest := ghsync.NewPullRequestSyncer(db, client)
 	fmt.Println(syncPullRequest.Sync("src-d", "go-git", 1045))
 	//syncPullRequest.QueueRepository("src-d", "go-git")
 
+	syncPullRequestComments := ghsync.NewPullRequestCommentSyncer(db, client)
+	fmt.Println(syncPullRequestComments.Sync("src-d", "go-git", 272235788))
+	//syncPullRequestComments.QueuePullRequest("src-d", "go-git", 1097)
+
+	syncPullRequestReview := ghsync.NewPullRequestReviewSyncer(db, client)
+	fmt.Println(syncPullRequestReview.Sync("src-d", "go-git", 1097, 222836287))
+	//syncPullRequestReview.QueuePullRequest("src-d", "go-git", 1097)
 }

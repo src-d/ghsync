@@ -29,12 +29,12 @@ func (s *PullRequestSyncer) QueueRepository(owner, repo string) error {
 	opts.State = "all"
 
 	for {
-		issues, r, err := s.c.PullRequests.List(context.TODO(), owner, repo, opts)
+		requests, r, err := s.c.PullRequests.List(context.TODO(), owner, repo, opts)
 		if err != nil {
 			return err
 		}
 
-		for _, r := range issues {
+		for _, r := range requests {
 			fmt.Println(s.Sync(owner, repo, r.GetNumber()))
 		}
 
