@@ -107,3 +107,32 @@ func logFieldsFromPayload(payload map[interface{}]interface{}) log.Fields {
 
 	return fields
 }
+
+func toInt(v interface{}) int {
+	switch n := v.(type) {
+	case int64:
+		return int(n)
+	case uint64:
+		return int(n)
+	case int32:
+		return int(n)
+	case uint32:
+		return int(n)
+	case int8:
+		return int(n)
+	case uint8:
+		return int(n)
+	case int16:
+		return int(n)
+	case uint16:
+		return int(n)
+	case uint:
+		return int(n)
+	case int:
+		return n
+	case float64:
+		return int(n)
+	}
+
+	return 0
+}

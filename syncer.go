@@ -90,6 +90,17 @@ func (s *Syncer) handleSyncTasks(task *SyncTasks) error {
 	logger := log.New(log.Fields{"type": task.Type}).New(logFieldsFromPayload(payload))
 	logger.Infof("handling request")
 
+	if err := s.doHandleSyncTasks(logger, task); err != nil {
+		logger.Errorf(err, "error handling request")
+		return nil
+	}
+
+	return nil
+}
+
+func (s *Syncer) doHandleSyncTasks(logger log.Logger, task *SyncTasks) error {
+	payload := task.Payload.(map[interface{}]interface{})
+
 	switch task.Type {
 	case RepositorySyncTask:
 		owner, name := payload["Owner"].(string), payload["Name"].(string)
@@ -106,17 +117,17 @@ func (s *Syncer) handleSyncTasks(task *SyncTasks) error {
 		login := payload["Login"].(string)
 		return s.User.Sync(login)
 	case IssueSyncTask:
-		owner, name, number := payload["Owner"].(string), payload["Name"].(string), payload["Number"].(uint64)
+		owner, name, number := payload["Owner"].(string), payload["Name"].(string), toInt(payload["Number"])
 		if err := s.IssueComment.QueueIssue(s.q, owner, name, int(number)); err != nil {
 			return err
 		}
 
 		return s.Issues.Sync(owner, name, int(number))
 	case IssueCommentSyncTask:
-		owner, name, id := payload["Owner"].(string), payload["Name"].(string), payload["CommentID"].(uint64)
+		owner, name, id := payload["Owner"].(string), payload["Name"].(string), toInt(payload["CommentID"])
 		return s.IssueComment.Sync(owner, name, int64(id))
 	case PullRequestSyncTask:
-		owner, name, number := payload["Owner"].(string), payload["Name"].(string), payload["Number"].(uint64)
+		owner, name, number := payload["Owner"].(string), payload["Name"].(string), toInt(payload["Number"])
 		if err := s.PullRequestComment.QueuePullRequest(s.q, owner, name, int(number)); err != nil {
 			return err
 		}
@@ -127,11 +138,11 @@ func (s *Syncer) handleSyncTasks(task *SyncTasks) error {
 
 		return s.PullRequest.Sync(owner, name, int(number))
 	case PullRequestCommentSyncTask:
-		owner, name, id := payload["Owner"].(string), payload["Name"].(string), payload["CommentID"].(uint64)
+		owner, name, id := payload["Owner"].(string), payload["Name"].(string), toInt(payload["CommentID"])
 		return s.PullRequestComment.Sync(owner, name, int64(id))
 	case PullRequestReviewSyncTask:
 		owner, name := payload["Owner"].(string), payload["Name"].(string)
-		number, id := payload["Number"].(uint), payload["CommentID"].(uint64)
+		number, id := toInt(payload["Number"]), toInt(payload["CommentID"])
 
 		return s.PullRequestReview.Sync(owner, name, int(number), int64(id))
 	}
