@@ -3,6 +3,7 @@ package ghsync
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/src-d/ghsync/models"
 
@@ -20,6 +21,31 @@ func NewPullRequestSyncer(db *sql.DB, c *github.Client) *PullRequestSyncer {
 		s: models.NewPullRequestStore(db),
 		c: c,
 	}
+}
+
+func (s *PullRequestSyncer) QueueRepository(owner, repo string) error {
+	opts := &github.PullRequestListOptions{}
+	opts.ListOptions.PerPage = 10
+	opts.State = "all"
+
+	for {
+		issues, r, err := s.c.PullRequests.List(context.TODO(), owner, repo, opts)
+		if err != nil {
+			return err
+		}
+
+		for _, r := range issues {
+			fmt.Println(s.Sync(owner, repo, r.GetNumber()))
+		}
+
+		if r.NextPage == 0 {
+			break
+		}
+
+		opts.Page = r.NextPage
+	}
+
+	return nil
 }
 
 func (s *PullRequestSyncer) Sync(owner string, repo string, number int) error {

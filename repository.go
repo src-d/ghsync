@@ -3,6 +3,7 @@ package ghsync
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/src-d/ghsync/models"
 
@@ -20,6 +21,30 @@ func NewRepositorySyncer(db *sql.DB, c *github.Client) *RepositorySyncer {
 		s: models.NewRepositoryStore(db),
 		c: c,
 	}
+}
+
+func (s *RepositorySyncer) QueueOrganization(owner string) error {
+	opts := &github.RepositoryListOptions{}
+	opts.ListOptions.PerPage = 10
+
+	for {
+		repositories, r, err := s.c.Repositories.List(context.TODO(), owner, opts)
+		if err != nil {
+			return err
+		}
+
+		for _, r := range repositories {
+			fmt.Println(s.Sync(owner, r.GetName()))
+		}
+
+		if r.NextPage == 0 {
+			break
+		}
+
+		opts.Page = r.NextPage
+	}
+
+	return nil
 }
 
 func (s *RepositorySyncer) Sync(owner, name string) error {

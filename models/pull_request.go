@@ -52,6 +52,7 @@ func (i *PullRequest) BeforeSave() error {
 	i.AssigneesList = NewUserRefernceList(i.Assignees)
 	i.RequestedReviewersList = NewUserRefernceList(i.RequestedReviewers)
 
+	i.LabelList = make([]string, 0)
 	for _, l := range i.Labels {
 		i.LabelList = append(i.LabelList, l.GetName())
 	}

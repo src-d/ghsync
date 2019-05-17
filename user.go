@@ -3,6 +3,7 @@ package ghsync
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/src-d/ghsync/models"
 
@@ -20,6 +21,30 @@ func NewUserSyncer(db *sql.DB, c *github.Client) *UserSyncer {
 		s: models.NewUserStore(db),
 		c: c,
 	}
+}
+
+func (s *UserSyncer) QueueOrganization(org string) error {
+	opts := &github.ListMembersOptions{}
+	opts.ListOptions.PerPage = 10
+
+	for {
+		repositories, r, err := s.c.Organizations.ListMembers(context.TODO(), org, opts)
+		if err != nil {
+			return err
+		}
+
+		for _, r := range repositories {
+			fmt.Println(s.Sync(r.GetLogin()))
+		}
+
+		if r.NextPage == 0 {
+			break
+		}
+
+		opts.Page = r.NextPage
+	}
+
+	return nil
 }
 
 func (s *UserSyncer) Sync(login string) error {

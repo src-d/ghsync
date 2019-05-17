@@ -25,8 +25,6 @@ type Issue struct {
 
 	MilestoneID    int64  `kallax:"milestone_id"`
 	MilestoneTitle string `kallax:"milestone_title"`
-
-	PullRequestURL string `kallax:"pull_request_url"`
 }
 
 func (i *Issue) BeforeSave() error {
@@ -38,6 +36,7 @@ func (i *Issue) BeforeSave() error {
 
 	i.AssigneesList = NewUserRefernceList(i.Assignees)
 
+	i.LabelList = make([]string, 0)
 	for _, l := range i.Labels {
 		i.LabelList = append(i.LabelList, l.GetName())
 	}
@@ -60,10 +59,6 @@ func (i *Issue) BeforeSave() error {
 	if i.Milestone != nil {
 		i.MilestoneID = i.Milestone.GetID()
 		i.MilestoneTitle = i.Milestone.GetTitle()
-	}
-
-	if i.PullRequestLinks != nil {
-		i.PullRequestURL = i.PullRequestLinks.GetURL()
 	}
 
 	return nil

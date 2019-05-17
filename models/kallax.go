@@ -80,8 +80,6 @@ func (r *Issue) ColumnAddress(col string) (interface{}, error) {
 		return &r.MilestoneID, nil
 	case "milestone_title":
 		return &r.MilestoneTitle, nil
-	case "pull_request_url":
-		return &r.PullRequestURL, nil
 
 	default:
 		return nil, fmt.Errorf("kallax: invalid column in Issue: %s", col)
@@ -175,8 +173,6 @@ func (r *Issue) Value(col string) (interface{}, error) {
 		return r.MilestoneID, nil
 	case "milestone_title":
 		return r.MilestoneTitle, nil
-	case "pull_request_url":
-		return r.PullRequestURL, nil
 
 	default:
 		return nil, fmt.Errorf("kallax: invalid column in Issue: %s", col)
@@ -555,12 +551,6 @@ func (q *IssueQuery) FindByMilestoneID(cond kallax.ScalarCond, v int64) *IssueQu
 // the MilestoneTitle property is equal to the passed value.
 func (q *IssueQuery) FindByMilestoneTitle(v string) *IssueQuery {
 	return q.Where(kallax.Eq(Schema.Issue.MilestoneTitle, v))
-}
-
-// FindByPullRequestURL adds a new filter to the query that will require that
-// the PullRequestURL property is equal to the passed value.
-func (q *IssueQuery) FindByPullRequestURL(v string) *IssueQuery {
-	return q.Where(kallax.Eq(Schema.Issue.PullRequestURL, v))
 }
 
 // IssueResultSet is the set of results returned by a query to the
@@ -3623,7 +3613,6 @@ type schemaIssue struct {
 	ClosedByLogin   kallax.SchemaField
 	MilestoneID     kallax.SchemaField
 	MilestoneTitle  kallax.SchemaField
-	PullRequestURL  kallax.SchemaField
 }
 
 type schemaOrganization struct {
@@ -3805,8 +3794,8 @@ type schemaIssueAssigneesList struct {
 func (s *schemaIssueAssigneesList) At(n int) *schemaIssueAssigneesList {
 	return &schemaIssueAssigneesList{
 		BaseSchemaField: kallax.NewSchemaField("assignees").(*kallax.BaseSchemaField),
-		ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", fmt.Sprint(n), "ID"),
-		Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", fmt.Sprint(n), "Login"),
+		ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", fmt.Sprint(n), "id"),
+		Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", fmt.Sprint(n), "login"),
 	}
 }
 
@@ -3819,8 +3808,8 @@ type schemaPullRequestAssigneesList struct {
 func (s *schemaPullRequestAssigneesList) At(n int) *schemaPullRequestAssigneesList {
 	return &schemaPullRequestAssigneesList{
 		BaseSchemaField: kallax.NewSchemaField("assignees").(*kallax.BaseSchemaField),
-		ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", fmt.Sprint(n), "ID"),
-		Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", fmt.Sprint(n), "Login"),
+		ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", fmt.Sprint(n), "id"),
+		Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", fmt.Sprint(n), "login"),
 	}
 }
 
@@ -3833,8 +3822,8 @@ type schemaPullRequestRequestedReviewersList struct {
 func (s *schemaPullRequestRequestedReviewersList) At(n int) *schemaPullRequestRequestedReviewersList {
 	return &schemaPullRequestRequestedReviewersList{
 		BaseSchemaField: kallax.NewSchemaField("requested_reviewers").(*kallax.BaseSchemaField),
-		ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "requested_reviewers", fmt.Sprint(n), "ID"),
-		Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "requested_reviewers", fmt.Sprint(n), "Login"),
+		ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "requested_reviewers", fmt.Sprint(n), "id"),
+		Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "requested_reviewers", fmt.Sprint(n), "login"),
 	}
 }
 
@@ -3917,7 +3906,6 @@ var Schema = &schema{
 			kallax.NewSchemaField("closed_by_login"),
 			kallax.NewSchemaField("milestone_id"),
 			kallax.NewSchemaField("milestone_title"),
-			kallax.NewSchemaField("pull_request_url"),
 		),
 		ID:              kallax.NewSchemaField("id"),
 		Number:          kallax.NewSchemaField("number"),
@@ -3940,14 +3928,13 @@ var Schema = &schema{
 		AssigneeLogin:   kallax.NewSchemaField("assignee_login"),
 		AssigneesList: &schemaIssueAssigneesList{
 			BaseSchemaField: kallax.NewSchemaField("assignees").(*kallax.BaseSchemaField),
-			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", "ID"),
-			Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", "Login"),
+			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", "id"),
+			Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", "login"),
 		},
 		ClosedByID:     kallax.NewSchemaField("closed_by_id"),
 		ClosedByLogin:  kallax.NewSchemaField("closed_by_login"),
 		MilestoneID:    kallax.NewSchemaField("milestone_id"),
 		MilestoneTitle: kallax.NewSchemaField("milestone_title"),
-		PullRequestURL: kallax.NewSchemaField("pull_request_url"),
 	},
 	Organization: &schemaOrganization{
 		BaseSchema: kallax.NewBaseSchema(
@@ -4106,13 +4093,13 @@ var Schema = &schema{
 		AssigneeLogin:       kallax.NewSchemaField("assignee_login"),
 		AssigneesList: &schemaPullRequestAssigneesList{
 			BaseSchemaField: kallax.NewSchemaField("assignees").(*kallax.BaseSchemaField),
-			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", "ID"),
-			Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", "Login"),
+			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "assignees", "id"),
+			Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "assignees", "login"),
 		},
 		RequestedReviewersList: &schemaPullRequestRequestedReviewersList{
 			BaseSchemaField: kallax.NewSchemaField("requested_reviewers").(*kallax.BaseSchemaField),
-			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "requested_reviewers", "ID"),
-			Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "requested_reviewers", "Login"),
+			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "requested_reviewers", "id"),
+			Login:           kallax.NewJSONSchemaKey(kallax.JSONText, "requested_reviewers", "login"),
 		},
 		MilestoneID:         kallax.NewSchemaField("milestone_id"),
 		MilestoneTitle:      kallax.NewSchemaField("milestone_title"),
@@ -4257,23 +4244,23 @@ var Schema = &schema{
 		TeamID:            kallax.NewSchemaField("team_id"),
 		ParentRepository: &schemaRepositoryParentRepository{
 			BaseSchemaField: kallax.NewSchemaField("parent").(*kallax.BaseSchemaField),
-			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "ID"),
-			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "Name"),
-			Fork:            kallax.NewJSONSchemaKey(kallax.JSONBool, "parent", "Fork"),
-			Size:            kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "Size"),
-			OwnerLogin:      kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "OwnerLogin"),
-			OwnerType:       kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "OwnerType"),
-			OwnerID:         kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "OwnerID"),
+			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "id"),
+			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "name"),
+			Fork:            kallax.NewJSONSchemaKey(kallax.JSONBool, "parent", "fork"),
+			Size:            kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "size"),
+			OwnerLogin:      kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "owner_login"),
+			OwnerType:       kallax.NewJSONSchemaKey(kallax.JSONText, "parent", "owner_type"),
+			OwnerID:         kallax.NewJSONSchemaKey(kallax.JSONInt, "parent", "owner_id"),
 		},
 		SourceRepository: &schemaRepositorySourceRepository{
 			BaseSchemaField: kallax.NewSchemaField("source").(*kallax.BaseSchemaField),
-			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "ID"),
-			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "source", "Name"),
-			Fork:            kallax.NewJSONSchemaKey(kallax.JSONBool, "source", "Fork"),
-			Size:            kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "Size"),
-			OwnerLogin:      kallax.NewJSONSchemaKey(kallax.JSONText, "source", "OwnerLogin"),
-			OwnerType:       kallax.NewJSONSchemaKey(kallax.JSONText, "source", "OwnerType"),
-			OwnerID:         kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "OwnerID"),
+			ID:              kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "id"),
+			Name:            kallax.NewJSONSchemaKey(kallax.JSONText, "source", "name"),
+			Fork:            kallax.NewJSONSchemaKey(kallax.JSONBool, "source", "fork"),
+			Size:            kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "size"),
+			OwnerLogin:      kallax.NewJSONSchemaKey(kallax.JSONText, "source", "owner_login"),
+			OwnerType:       kallax.NewJSONSchemaKey(kallax.JSONText, "source", "owner_type"),
+			OwnerID:         kallax.NewJSONSchemaKey(kallax.JSONInt, "source", "owner_id"),
 		},
 		OwnerID:          kallax.NewSchemaField("owner_id"),
 		OwnerType:        kallax.NewSchemaField("owner_type"),
