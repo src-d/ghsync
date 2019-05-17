@@ -1,6 +1,11 @@
 package ghsync
 
-import "gopkg.in/src-d/go-queue.v1"
+import (
+	"strings"
+
+	"gopkg.in/src-d/go-log.v1"
+	"gopkg.in/src-d/go-queue.v1"
+)
 
 type SyncTaskType string
 
@@ -92,4 +97,13 @@ type PullRequestReviewSyncPayload struct {
 func NewPullRequestReviewSyncJob(owner, name string, number int, id int64) (*queue.Job, error) {
 	return newSyncTasks(PullRequestReviewSyncTask,
 		PullRequestReviewSyncPayload{owner, name, uint64(number), uint64(id)})
+}
+
+func logFieldsFromPayload(payload map[interface{}]interface{}) log.Fields {
+	fields := make(log.Fields, len(payload))
+	for k, v := range payload {
+		fields[strings.ToLower(k.(string))] = v
+	}
+
+	return fields
 }

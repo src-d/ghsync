@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	log "gopkg.in/src-d/go-log.v1"
 	"gopkg.in/src-d/go-queue.v1"
 )
 
@@ -27,6 +28,11 @@ func (s *IssueCommentsSyncer) QueueIssue(q queue.Queue, owner, repo string, numb
 	opts := &github.IssueListCommentsOptions{}
 	opts.ListOptions.PerPage = 10
 
+	logger := log.New(log.Fields{
+		"type":  IssueCommentSyncTask,
+		"owner": owner, "repo": repo, "number": number,
+	})
+
 	for {
 		comments, r, err := s.c.Issues.ListComments(context.TODO(), owner, repo, number, opts)
 		if err != nil {
@@ -39,8 +45,10 @@ func (s *IssueCommentsSyncer) QueueIssue(q queue.Queue, owner, repo string, numb
 				return err
 			}
 
+			logger.Infof("queue request")
 			if err := q.Publish(j); err != nil {
-				return err
+				logger.Errorf(err, "publishing job")
+				return nil
 			}
 		}
 

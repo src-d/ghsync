@@ -6,7 +6,11 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/github"
+	"github.com/gregjones/httpcache"
+	"github.com/gregjones/httpcache/diskcache"
+
 	"github.com/src-d/ghsync"
+	"github.com/src-d/ghsync/utils"
 	"golang.org/x/oauth2"
 	"gopkg.in/src-d/go-queue.v1"
 	_ "gopkg.in/src-d/go-queue.v1/amqp"
@@ -23,9 +27,15 @@ func main() {
 	}
 	defer db.Close()
 
-	client := github.NewClient(oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: "7317b6ae552baec41d1304d8ac13b58f92dce868"},
-	)))
+	http := oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: "4b56d692e95dd8bae64e9d1092cd955d0db49fc3"},
+	))
+
+	t := httpcache.NewTransport(diskcache.New("cache/src-d"))
+	t.Transport = utils.NewRateLimitTransport(http.Transport)
+	http.Transport = t
+
+	client := github.NewClient(http)
 
 	broker, _ := queue.NewBroker("amqp://localhost:5672")
 	queue, _ := broker.Queue("src-d")

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/go-github/github"
+	"gopkg.in/src-d/go-log.v1"
 	"gopkg.in/src-d/go-queue.v1"
 )
 
@@ -84,9 +85,10 @@ func (s *Syncer) Wait() error {
 }
 
 func (s *Syncer) handleSyncTasks(task *SyncTasks) error {
-	fmt.Printf("Handling %q: %s\n", task.Type, task.Payload)
-
 	payload := task.Payload.(map[interface{}]interface{})
+
+	logger := log.New(log.Fields{"type": task.Type}).New(logFieldsFromPayload(payload))
+	logger.Infof("handling request")
 
 	switch task.Type {
 	case RepositorySyncTask:

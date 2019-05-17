@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	log "gopkg.in/src-d/go-log.v1"
 	"gopkg.in/src-d/go-queue.v1"
 )
 
@@ -28,6 +29,8 @@ func (s *IssueSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 	opts.ListOptions.PerPage = 10
 	opts.State = "all"
 
+	logger := log.New(log.Fields{"type": IssueSyncTask, "owner": owner, "repo": repo})
+
 	for {
 		issues, r, err := s.c.Issues.ListByRepo(context.TODO(), owner, repo, opts)
 		if err != nil {
@@ -44,8 +47,10 @@ func (s *IssueSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 				return err
 			}
 
+			logger.Infof("queue request")
 			if err := q.Publish(j); err != nil {
-				return err
+				logger.Errorf(err, "publishing job")
+				return nil
 			}
 		}
 
