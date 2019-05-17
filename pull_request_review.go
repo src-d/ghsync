@@ -3,13 +3,12 @@ package ghsync
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/src-d/ghsync/models"
-	"github.com/src-d/ghsync/utils"
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	"gopkg.in/src-d/go-queue.v1"
 )
 
 type PullRequestReviewSyncer struct {
@@ -24,7 +23,7 @@ func NewPullRequestReviewSyncer(db *sql.DB, c *github.Client) *PullRequestReview
 	}
 }
 
-func (s *PullRequestReviewSyncer) QueuePullRequest(owner, repo string, number int) error {
+func (s *PullRequestReviewSyncer) QueuePullRequest(q queue.Queue, owner, repo string, number int) error {
 	opts := &github.ListOptions{}
 	opts.PerPage = 10
 
@@ -35,8 +34,14 @@ func (s *PullRequestReviewSyncer) QueuePullRequest(owner, repo string, number in
 		}
 
 		for _, r := range reviews {
-			_, _, number, _ := utils.ParsePullRequestURL(r.GetPullRequestURL())
-			fmt.Println(s.Sync(owner, repo, number, r.GetID()))
+			j, err := NewPullRequestReviewSyncJob(owner, repo, number, r.GetID())
+			if err != nil {
+				return err
+			}
+
+			if err := q.Publish(j); err != nil {
+				return err
+			}
 		}
 
 		if r.NextPage == 0 {

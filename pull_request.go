@@ -3,12 +3,12 @@ package ghsync
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/src-d/ghsync/models"
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	"gopkg.in/src-d/go-queue.v1"
 )
 
 type PullRequestSyncer struct {
@@ -23,7 +23,7 @@ func NewPullRequestSyncer(db *sql.DB, c *github.Client) *PullRequestSyncer {
 	}
 }
 
-func (s *PullRequestSyncer) QueueRepository(owner, repo string) error {
+func (s *PullRequestSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 	opts := &github.PullRequestListOptions{}
 	opts.ListOptions.PerPage = 10
 	opts.State = "all"
@@ -35,7 +35,14 @@ func (s *PullRequestSyncer) QueueRepository(owner, repo string) error {
 		}
 
 		for _, r := range requests {
-			fmt.Println(s.Sync(owner, repo, r.GetNumber()))
+			j, err := NewPullRequestSyncJob(owner, repo, r.GetNumber())
+			if err != nil {
+				return err
+			}
+
+			if err := q.Publish(j); err != nil {
+				return err
+			}
 		}
 
 		if r.NextPage == 0 {
@@ -56,9 +63,7 @@ func (s *PullRequestSyncer) Sync(owner string, repo string, number int) error {
 
 	record, err := s.s.FindOne(models.NewPullRequestQuery().
 		Where(kallax.And(
-			kallax.Eq(models.Schema.PullRequest.RepositoryOwner, owner),
-			kallax.Eq(models.Schema.PullRequest.RepositoryName, repo),
-			kallax.Eq(models.Schema.PullRequest.Number, number),
+			kallax.Eq(models.Schema.PullRequest.ID, pr.GetID()),
 		)),
 	)
 	if record == nil {

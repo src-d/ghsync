@@ -3,12 +3,12 @@ package ghsync
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/src-d/ghsync/models"
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	"gopkg.in/src-d/go-queue.v1"
 )
 
 type UserSyncer struct {
@@ -23,7 +23,7 @@ func NewUserSyncer(db *sql.DB, c *github.Client) *UserSyncer {
 	}
 }
 
-func (s *UserSyncer) QueueOrganization(org string) error {
+func (s *UserSyncer) QueueOrganization(q queue.Queue, org string) error {
 	opts := &github.ListMembersOptions{}
 	opts.ListOptions.PerPage = 10
 
@@ -34,7 +34,14 @@ func (s *UserSyncer) QueueOrganization(org string) error {
 		}
 
 		for _, u := range users {
-			fmt.Println(s.Sync(u.GetLogin()))
+			j, err := NewUserSyncJob(u.GetLogin())
+			if err != nil {
+				return err
+			}
+
+			if err := q.Publish(j); err != nil {
+				return err
+			}
 		}
 
 		if r.NextPage == 0 {

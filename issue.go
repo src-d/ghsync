@@ -3,12 +3,12 @@ package ghsync
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/src-d/ghsync/models"
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	"gopkg.in/src-d/go-queue.v1"
 )
 
 type IssueSyncer struct {
@@ -23,7 +23,7 @@ func NewIssueSyncer(db *sql.DB, c *github.Client) *IssueSyncer {
 	}
 }
 
-func (s *IssueSyncer) QueueRepository(owner, repo string) error {
+func (s *IssueSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 	opts := &github.IssueListByRepoOptions{}
 	opts.ListOptions.PerPage = 10
 	opts.State = "all"
@@ -39,7 +39,14 @@ func (s *IssueSyncer) QueueRepository(owner, repo string) error {
 				continue
 			}
 
-			fmt.Println(s.Sync(owner, repo, i.GetNumber()))
+			j, err := NewIssueSyncJob(owner, repo, i.GetNumber())
+			if err != nil {
+				return err
+			}
+
+			if err := q.Publish(j); err != nil {
+				return err
+			}
 		}
 
 		if r.NextPage == 0 {

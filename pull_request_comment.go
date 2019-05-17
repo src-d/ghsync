@@ -3,12 +3,12 @@ package ghsync
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/src-d/ghsync/models"
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	"gopkg.in/src-d/go-queue.v1"
 )
 
 type PullRequestCommentSyncer struct {
@@ -23,7 +23,7 @@ func NewPullRequestCommentSyncer(db *sql.DB, c *github.Client) *PullRequestComme
 	}
 }
 
-func (s *PullRequestCommentSyncer) QueuePullRequest(owner, repo string, number int) error {
+func (s *PullRequestCommentSyncer) QueuePullRequest(q queue.Queue, owner, repo string, number int) error {
 	opts := &github.PullRequestListCommentsOptions{}
 	opts.ListOptions.PerPage = 10
 
@@ -34,7 +34,14 @@ func (s *PullRequestCommentSyncer) QueuePullRequest(owner, repo string, number i
 		}
 
 		for _, c := range comments {
-			fmt.Println(s.Sync(owner, repo, c.GetID()))
+			j, err := NewPullRequestCommentSyncJob(owner, repo, c.GetID())
+			if err != nil {
+				return err
+			}
+
+			if err := q.Publish(j); err != nil {
+				return err
+			}
 		}
 
 		if r.NextPage == 0 {
