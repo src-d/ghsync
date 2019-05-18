@@ -112,25 +112,26 @@ func (s *Syncer) doHandleSyncTasks(logger log.Logger, task *SyncTasks) error {
 			return err
 		}
 
+		if err := s.PullRequestComment.QueuePullRequest(s.q, owner, name, 0); err != nil {
+			return err
+		}
+
+		if err := s.IssueComment.QueueIssue(s.q, owner, name, 0); err != nil {
+			return err
+		}
+
 		return s.Repository.Sync(owner, name)
 	case UserSyncTask:
 		login := payload["Login"].(string)
 		return s.User.Sync(login)
 	case IssueSyncTask:
 		owner, name, number := payload["Owner"].(string), payload["Name"].(string), toInt(payload["Number"])
-		if err := s.IssueComment.QueueIssue(s.q, owner, name, int(number)); err != nil {
-			return err
-		}
-
 		return s.Issues.Sync(owner, name, int(number))
 	case IssueCommentSyncTask:
 		owner, name, id := payload["Owner"].(string), payload["Name"].(string), toInt(payload["CommentID"])
 		return s.IssueComment.Sync(owner, name, int64(id))
 	case PullRequestSyncTask:
 		owner, name, number := payload["Owner"].(string), payload["Name"].(string), toInt(payload["Number"])
-		if err := s.PullRequestComment.QueuePullRequest(s.q, owner, name, int(number)); err != nil {
-			return err
-		}
 
 		if err := s.PullRequestReview.QueuePullRequest(s.q, owner, name, int(number)); err != nil {
 			return err
@@ -142,7 +143,7 @@ func (s *Syncer) doHandleSyncTasks(logger log.Logger, task *SyncTasks) error {
 		return s.PullRequestComment.Sync(owner, name, int64(id))
 	case PullRequestReviewSyncTask:
 		owner, name := payload["Owner"].(string), payload["Name"].(string)
-		number, id := toInt(payload["Number"]), toInt(payload["CommentID"])
+		number, id := toInt(payload["Number"]), toInt(payload["ReviewID"])
 
 		return s.PullRequestReview.Sync(owner, name, int(number), int64(id))
 	}
