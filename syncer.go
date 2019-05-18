@@ -112,11 +112,15 @@ func (s *Syncer) doHandleSyncTasks(logger log.Logger, task *SyncTasks) error {
 			return err
 		}
 
-		if err := s.PullRequestComment.QueuePullRequest(s.q, owner, name, 0); err != nil {
+		if err := s.PullRequestComment.SyncRepository(owner, name); err != nil {
 			return err
 		}
 
-		if err := s.IssueComment.QueueIssue(s.q, owner, name, 0); err != nil {
+		if err := s.PullRequestReview.SyncRepository(owner, name); err != nil {
+			return err
+		}
+
+		if err := s.IssueComment.SyncRepository(owner, name); err != nil {
 			return err
 		}
 
@@ -127,24 +131,20 @@ func (s *Syncer) doHandleSyncTasks(logger log.Logger, task *SyncTasks) error {
 	case IssueSyncTask:
 		owner, name, number := payload["Owner"].(string), payload["Name"].(string), toInt(payload["Number"])
 		return s.Issues.Sync(owner, name, int(number))
+	case PullRequestSyncTask:
+		owner, name, number := payload["Owner"].(string), payload["Name"].(string), toInt(payload["Number"])
+		return s.PullRequest.Sync(owner, name, int(number))
+
+	// Obsolote?
 	case IssueCommentSyncTask:
 		owner, name, id := payload["Owner"].(string), payload["Name"].(string), toInt(payload["CommentID"])
 		return s.IssueComment.Sync(owner, name, int64(id))
-	case PullRequestSyncTask:
-		owner, name, number := payload["Owner"].(string), payload["Name"].(string), toInt(payload["Number"])
-
-		if err := s.PullRequestReview.QueuePullRequest(s.q, owner, name, int(number)); err != nil {
-			return err
-		}
-
-		return s.PullRequest.Sync(owner, name, int(number))
 	case PullRequestCommentSyncTask:
 		owner, name, id := payload["Owner"].(string), payload["Name"].(string), toInt(payload["CommentID"])
 		return s.PullRequestComment.Sync(owner, name, int64(id))
 	case PullRequestReviewSyncTask:
 		owner, name := payload["Owner"].(string), payload["Name"].(string)
 		number, id := toInt(payload["Number"]), toInt(payload["ReviewID"])
-
 		return s.PullRequestReview.Sync(owner, name, int(number), int64(id))
 	}
 

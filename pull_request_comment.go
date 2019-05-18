@@ -9,7 +9,6 @@ import (
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
 	log "gopkg.in/src-d/go-log.v1"
-	"gopkg.in/src-d/go-queue.v1"
 )
 
 type PullRequestCommentSyncer struct {
@@ -24,7 +23,11 @@ func NewPullRequestCommentSyncer(db *sql.DB, c *github.Client) *PullRequestComme
 	}
 }
 
-func (s *PullRequestCommentSyncer) QueuePullRequest(q queue.Queue, owner, repo string, number int) error {
+func (s *PullRequestCommentSyncer) SyncRepository(owner, repo string) error {
+	return s.SyncPullRequest(owner, repo, 0)
+}
+
+func (s *PullRequestCommentSyncer) SyncPullRequest(owner, repo string, number int) error {
 	opts := &github.PullRequestListCommentsOptions{}
 	opts.ListOptions.PerPage = 10
 
@@ -40,15 +43,8 @@ func (s *PullRequestCommentSyncer) QueuePullRequest(q queue.Queue, owner, repo s
 		}
 
 		for _, c := range comments {
-			j, err := NewPullRequestCommentSyncJob(owner, repo, c.GetID())
-			if err != nil {
-				return err
-			}
-
-			logger.Infof("queue request")
-			if err := q.Publish(j); err != nil {
-				logger.Errorf(err, "publishing job")
-				return nil
+			if err := s.doSync(c); err != nil {
+				logger.Errorf(err, "issue sync error")
 			}
 		}
 
@@ -68,11 +64,16 @@ func (s *PullRequestCommentSyncer) Sync(owner string, repo string, commentID int
 		return err
 	}
 
+	return s.doSync(comment)
+}
+
+func (s *PullRequestCommentSyncer) doSync(comment *github.PullRequestComment) error {
 	record, err := s.s.FindOne(models.NewPullRequestCommentQuery().
 		Where(kallax.And(
-			kallax.Eq(models.Schema.PullRequestComment.ID, commentID),
+			kallax.Eq(models.Schema.PullRequestComment.ID, comment.GetID()),
 		)),
 	)
+
 	if record == nil {
 		record = models.NewPullRequestComment()
 		record.PullRequestComment = *comment

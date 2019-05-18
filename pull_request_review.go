@@ -8,7 +8,6 @@ import (
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
-	"gopkg.in/src-d/go-queue.v1"
 )
 
 type PullRequestReviewSyncer struct {
@@ -22,8 +21,11 @@ func NewPullRequestReviewSyncer(db *sql.DB, c *github.Client) *PullRequestReview
 		c: c,
 	}
 }
+func (s *PullRequestReviewSyncer) SyncRepository(owner, repo string) error {
+	return s.SyncPullRequest(owner, repo, 0)
+}
 
-func (s *PullRequestReviewSyncer) QueuePullRequest(q queue.Queue, owner, repo string, number int) error {
+func (s *PullRequestReviewSyncer) SyncPullRequest(owner, repo string, number int) error {
 	opts := &github.ListOptions{}
 	opts.PerPage = 10
 
@@ -34,12 +36,7 @@ func (s *PullRequestReviewSyncer) QueuePullRequest(q queue.Queue, owner, repo st
 		}
 
 		for _, r := range reviews {
-			j, err := NewPullRequestReviewSyncJob(owner, repo, number, r.GetID())
-			if err != nil {
-				return err
-			}
-
-			if err := q.Publish(j); err != nil {
+			if err := s.doSync(r); err != nil {
 				return err
 			}
 		}
@@ -60,9 +57,13 @@ func (s *PullRequestReviewSyncer) Sync(owner string, repo string, number int, re
 		return err
 	}
 
+	return s.doSync(review)
+}
+
+func (s *PullRequestReviewSyncer) doSync(review *github.PullRequestReview) error {
 	record, err := s.s.FindOne(models.NewPullRequestReviewQuery().
 		Where(kallax.And(
-			kallax.Eq(models.Schema.PullRequestReview.ID, reviewID),
+			kallax.Eq(models.Schema.PullRequestReview.ID, review.GetID()),
 		)),
 	)
 	if record == nil {

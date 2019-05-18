@@ -9,7 +9,6 @@ import (
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
 	log "gopkg.in/src-d/go-log.v1"
-	"gopkg.in/src-d/go-queue.v1"
 )
 
 type IssueCommentsSyncer struct {
@@ -24,7 +23,11 @@ func NewIssueCommentsSyncer(db *sql.DB, c *github.Client) *IssueCommentsSyncer {
 	}
 }
 
-func (s *IssueCommentsSyncer) QueueIssue(q queue.Queue, owner, repo string, number int) error {
+func (s *IssueCommentsSyncer) SyncRepository(owner, repo string) error {
+	return s.SyncIssue(owner, repo, 0)
+}
+
+func (s *IssueCommentsSyncer) SyncIssue(owner, repo string, number int) error {
 	opts := &github.IssueListCommentsOptions{}
 	opts.ListOptions.PerPage = 10
 
@@ -40,15 +43,8 @@ func (s *IssueCommentsSyncer) QueueIssue(q queue.Queue, owner, repo string, numb
 		}
 
 		for _, c := range comments {
-			j, err := NewIssueCommentSyncJob(owner, repo, c.GetID())
-			if err != nil {
-				return err
-			}
-
-			logger.Infof("queue request")
-			if err := q.Publish(j); err != nil {
-				logger.Errorf(err, "publishing job")
-				return nil
+			if err := s.doSync(c); err != nil {
+				logger.Errorf(err, "issue sync error")
 			}
 		}
 
@@ -68,6 +64,10 @@ func (s *IssueCommentsSyncer) Sync(owner string, repo string, commentID int64) e
 		return err
 	}
 
+	return s.doSync(comment)
+}
+
+func (s *IssueCommentsSyncer) doSync(comment *github.IssueComment) error {
 	record, err := s.s.FindOne(models.NewIssueCommentQuery().
 		Where(kallax.Eq(models.Schema.IssueComment.ID, comment.GetID())),
 	)
