@@ -120,10 +120,6 @@ func (s *Syncer) doHandleSyncTasks(logger log.Logger, task *SyncTasks) error {
 			return err
 		}
 
-		if err := s.PullRequestReview.SyncRepository(owner, name); err != nil {
-			return err
-		}
-
 		return s.Repository.Sync(owner, name)
 	case UserSyncTask:
 		login := payload["Login"].(string)
@@ -133,6 +129,11 @@ func (s *Syncer) doHandleSyncTasks(logger log.Logger, task *SyncTasks) error {
 		return s.Issues.Sync(owner, name, int(number))
 	case PullRequestSyncTask:
 		owner, name, number := payload["Owner"].(string), payload["Name"].(string), toInt(payload["Number"])
+
+		if err := s.PullRequestReview.SyncPullRequest(owner, name, number); err != nil {
+			return err
+		}
+
 		return s.PullRequest.Sync(owner, name, int(number))
 
 	// Obsolote?

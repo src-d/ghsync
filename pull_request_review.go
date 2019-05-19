@@ -21,9 +21,6 @@ func NewPullRequestReviewSyncer(db *sql.DB, c *github.Client) *PullRequestReview
 		c: c,
 	}
 }
-func (s *PullRequestReviewSyncer) SyncRepository(owner, repo string) error {
-	return s.SyncPullRequest(owner, repo, 0)
-}
 
 func (s *PullRequestReviewSyncer) SyncPullRequest(owner, repo string, number int) error {
 	opts := &github.ListOptions{}
