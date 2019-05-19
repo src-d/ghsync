@@ -116,11 +116,11 @@ func (s *Syncer) doHandleSyncTasks(logger log.Logger, task *SyncTasks) error {
 			return err
 		}
 
-		if err := s.PullRequestReview.SyncRepository(owner, name); err != nil {
+		if err := s.IssueComment.SyncRepository(owner, name); err != nil {
 			return err
 		}
 
-		if err := s.IssueComment.SyncRepository(owner, name); err != nil {
+		if err := s.PullRequestReview.SyncRepository(owner, name); err != nil {
 			return err
 		}
 
