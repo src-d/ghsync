@@ -14,18 +14,37 @@ import (
 	"github.com/src-d/ghsync"
 	"github.com/src-d/ghsync/utils"
 	"golang.org/x/oauth2"
+	"gopkg.in/src-d/go-cli.v0"
 	"gopkg.in/src-d/go-queue.v1"
 	_ "gopkg.in/src-d/go-queue.v1/amqp"
 	_ "gopkg.in/src-d/go-queue.v1/memory"
 )
 
+// rewritten during the CI build step
+var (
+	version = "master"
+	build   = "dev"
+)
+
+var app = cli.New("ghsync", version, build, "GitHub metadata sync")
+
 func main() {
+	app.AddCommand(&syncCommand{})
+
+	app.RunMain()
+}
+
+type syncCommand struct {
+	cli.Command `name:"sync"`
+}
+
+func (c *syncCommand) Execute(args []string) error {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		"localhost", 5432, "superset", "superset", "ghsync")
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer db.Close()
 
@@ -41,12 +60,21 @@ func main() {
 
 	client := github.NewClient(http)
 
-	broker, _ := queue.NewBroker("amqp://localhost:5672")
-	queue, _ := broker.Queue(org)
+	broker, err := queue.NewBroker("amqp://localhost:5672")
+	if err != nil {
+		return err
+	}
+
+	queue, err := broker.Queue(org)
+	if err != nil {
+		return err
+	}
 
 	syncer := ghsync.NewSyncer(db, client, queue)
 	go syncer.DoOrganization(org)
 	fmt.Println(syncer.Wait())
+
+	return nil
 }
 
 type RemoveHeaderTransport struct {

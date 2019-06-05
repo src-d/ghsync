@@ -23,7 +23,9 @@ require (
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-github/v25 v25.1.1 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc
+	github.com/jessevdk/go-flags v1.4.0 // indirect
 	github.com/jpillora/backoff v0.0.0-20180909062703-3050d21c67d7 // indirect
+	github.com/kami-zh/go-capturer v0.0.0-20171211120116-e492ea43421d // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lib/pq v1.1.1 // indirect
@@ -42,6 +44,7 @@ require (
 	golang.org/x/crypto v0.0.0-20190530122614-20be4c3c3ed5 // indirect
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
+	gopkg.in/src-d/go-cli.v0 v0.0.0-20190422143124-3a646154da79
 	gopkg.in/src-d/go-errors.v0 v0.1.0 // indirect
 	gopkg.in/src-d/go-errors.v1 v1.0.0 // indirect
 	gopkg.in/src-d/go-kallax.v1 v1.3.5
