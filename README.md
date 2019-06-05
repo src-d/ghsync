@@ -1,5 +1,22 @@
 # ghsync
 
+## Build
+
+This project does not support building as a go module. It needs to be compiled in `$GOPATH/src/github.com/src-d/ghsync`.
+
+To build use:
+
+```shell
+make build
+```
+
+To update the vendor dependencies, run 
+
+```shell
+GO111MODULE=on go mod tidy
+GO111MODULE=on go mod vendor
+```
+
 ## Kallax Models
 
 In order to update the kallax models, place this project in `$GOPATH/src/github.com/src-d/ghsync`.
