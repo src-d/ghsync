@@ -14,6 +14,7 @@ import (
 	"github.com/gregjones/httpcache/diskcache"
 	"golang.org/x/oauth2"
 	"gopkg.in/src-d/go-cli.v0"
+	"gopkg.in/src-d/go-log.v1"
 	"gopkg.in/src-d/go-queue.v1"
 	_ "gopkg.in/src-d/go-queue.v1/amqp"
 	_ "gopkg.in/src-d/go-queue.v1/memory"
@@ -94,10 +95,15 @@ func (c *syncCommand) Execute(args []string) error {
 	}
 
 	syncer := ghsync.NewSyncer(db, client, queue)
-	go syncer.DoOrganization(c.Org)
-	fmt.Println(syncer.Wait())
 
-	return nil
+	go func() {
+		err := syncer.DoOrganization(c.Org)
+		if err != nil {
+			log.Errorf(err, "syncer.DoOrganization finished with error")
+		}
+	}()
+
+	return syncer.Wait()
 }
 
 type RemoveHeaderTransport struct {
