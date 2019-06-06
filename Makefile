@@ -4,6 +4,11 @@ COMMANDS = cmd/ghsync
 
 PKG_OS = darwin linux
 
+vendor:
+	GO111MODULE=on go mod vendor
+
+build: vendor
+
 # Including ci Makefile
 CI_REPOSITORY ?= https://github.com/src-d/ci.git
 CI_BRANCH ?= v1
@@ -13,7 +18,3 @@ $(MAKEFILE):
 	git clone --quiet --depth 1 -b $(CI_BRANCH) $(CI_REPOSITORY) $(CI_PATH);
 -include $(MAKEFILE)
 
-vendor:
-	GO111MODULE=on go mod vendor
-
-build: vendor
