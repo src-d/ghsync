@@ -26,7 +26,7 @@ func NewPullRequestSyncer(db *sql.DB, c *github.Client) *PullRequestSyncer {
 
 func (s *PullRequestSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 	opts := &github.PullRequestListOptions{}
-	opts.ListOptions.PerPage = 10
+	opts.ListOptions.PerPage = listOptionsPerPage
 	opts.State = "all"
 
 	logger := log.New(log.Fields{"type": PullRequestSyncTask, "owner": owner, "repo": repo})

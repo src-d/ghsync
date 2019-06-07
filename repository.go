@@ -25,7 +25,7 @@ func NewRepositorySyncer(db *sql.DB, c *github.Client) *RepositorySyncer {
 
 func (s *RepositorySyncer) QueueOrganization(q queue.Queue, owner string) error {
 	opts := &github.RepositoryListOptions{}
-	opts.ListOptions.PerPage = 10
+	opts.ListOptions.PerPage = listOptionsPerPage
 
 	for {
 		repositories, r, err := s.c.Repositories.List(context.TODO(), owner, opts)

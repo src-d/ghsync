@@ -29,7 +29,7 @@ func (s *IssueCommentsSyncer) SyncRepository(owner, repo string) error {
 
 func (s *IssueCommentsSyncer) SyncIssue(owner, repo string, number int) error {
 	opts := &github.IssueListCommentsOptions{}
-	opts.ListOptions.PerPage = 10
+	opts.ListOptions.PerPage = listOptionsPerPage
 
 	logger := log.New(log.Fields{
 		"type":  IssueCommentSyncTask,

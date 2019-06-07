@@ -17,6 +17,8 @@ const (
 	PullRequestSyncTask        SyncTaskType = "pull-request"
 	PullRequestCommentSyncTask SyncTaskType = "pull-request-comment"
 	PullRequestReviewSyncTask  SyncTaskType = "pull-request-review"
+
+	listOptionsPerPage = 100
 )
 
 type SyncTasks struct {
