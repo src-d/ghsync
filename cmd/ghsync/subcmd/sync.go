@@ -3,11 +3,13 @@ package subcmd
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/src-d/ghsync"
 	"github.com/src-d/ghsync/utils"
 
+	"github.com/golang-migrate/migrate/v4"
 	"github.com/google/go-github/github"
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
@@ -34,16 +36,11 @@ type SyncCommand struct {
 }
 
 func (c *SyncCommand) Execute(args []string) error {
-	db, err := sql.Open("postgres", c.Postgres.URL())
+	db, err := c.initDB()
 	if err != nil {
 		return err
 	}
 	defer db.Close()
-
-	err = db.Ping()
-	if err != nil {
-		return err
-	}
 
 	http := oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: c.Token},
@@ -79,6 +76,45 @@ func (c *SyncCommand) Execute(args []string) error {
 	}()
 
 	return syncer.Wait()
+}
+
+func (c *SyncCommand) initDB() (db *sql.DB, err error) {
+	db, err = sql.Open("postgres", c.Postgres.URL())
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if err != nil {
+			db.Close()
+			db = nil
+		}
+	}()
+
+	if err = db.Ping(); err != nil {
+		return db, err
+	}
+
+	m, err := newMigrate(c.Postgres.URL())
+	if err != nil {
+		return db, err
+	}
+
+	dbVersion, _, err := m.Version()
+
+	if err != nil && err != migrate.ErrNilVersion {
+		return db, err
+	}
+
+	if dbVersion != maxVersion {
+		return db, fmt.Errorf(
+			"database version mismatch. Current version is %v, but this binary needs version %v. "+
+				"Use the 'migrate' subcommand to upgrade your database", dbVersion, maxVersion)
+	}
+
+	log.With(log.Fields{"db-version": dbVersion}).Debugf("the DB version is up to date")
+	log.Infof("connection with the DB established")
+	return db, nil
 }
 
 type RemoveHeaderTransport struct {
