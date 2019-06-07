@@ -24,7 +24,7 @@ func NewPullRequestReviewSyncer(db *sql.DB, c *github.Client) *PullRequestReview
 
 func (s *PullRequestReviewSyncer) SyncPullRequest(owner, repo string, number int) error {
 	opts := &github.ListOptions{}
-	opts.PerPage = 10
+	opts.PerPage = listOptionsPerPage
 
 	for {
 		reviews, r, err := s.c.PullRequests.ListReviews(context.TODO(), owner, repo, number, opts)

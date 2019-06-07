@@ -26,7 +26,7 @@ func NewIssueSyncer(db *sql.DB, c *github.Client) *IssueSyncer {
 
 func (s *IssueSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 	opts := &github.IssueListByRepoOptions{}
-	opts.ListOptions.PerPage = 10
+	opts.ListOptions.PerPage = listOptionsPerPage
 	opts.State = "all"
 
 	logger := log.New(log.Fields{"type": IssueSyncTask, "owner": owner, "repo": repo})

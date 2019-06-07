@@ -29,7 +29,7 @@ func (s *PullRequestCommentSyncer) SyncRepository(owner, repo string) error {
 
 func (s *PullRequestCommentSyncer) SyncPullRequest(owner, repo string, number int) error {
 	opts := &github.PullRequestListCommentsOptions{}
-	opts.ListOptions.PerPage = 10
+	opts.ListOptions.PerPage = listOptionsPerPage
 
 	logger := log.New(log.Fields{
 		"type":  PullRequestCommentSyncTask,

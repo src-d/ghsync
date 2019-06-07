@@ -25,7 +25,7 @@ func NewUserSyncer(db *sql.DB, c *github.Client) *UserSyncer {
 
 func (s *UserSyncer) QueueOrganization(q queue.Queue, org string) error {
 	opts := &github.ListMembersOptions{}
-	opts.ListOptions.PerPage = 10
+	opts.ListOptions.PerPage = listOptionsPerPage
 
 	for {
 		users, r, err := s.c.Organizations.ListMembers(context.TODO(), org, opts)
