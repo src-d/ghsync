@@ -4,10 +4,8 @@ COMMANDS = cmd/ghsync
 
 PKG_OS = darwin linux
 
-vendor:
-	GO111MODULE=on go mod vendor
-
-build: vendor
+# Add prerequisites
+build: vendor bindata
 
 # Including ci Makefile
 CI_REPOSITORY ?= https://github.com/src-d/ci.git
@@ -18,3 +16,16 @@ $(MAKEFILE):
 	git clone --quiet --depth 1 -b $(CI_BRANCH) $(CI_REPOSITORY) $(CI_PATH);
 -include $(MAKEFILE)
 
+.PHONY: vendor
+vendor:
+	GO111MODULE=on go mod vendor
+
+.PHONY: bindata
+bindata:
+	go get -u github.com/jteeuwen/go-bindata/... && \
+	go-bindata \
+		-pkg migrations \
+		-o ./models/migrations/bindata.go \
+		-prefix models/sql \
+		-modtime 1 \
+		models/sql/...

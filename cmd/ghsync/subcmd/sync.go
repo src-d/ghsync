@@ -3,7 +3,6 @@ package subcmd
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"net/http"
 
 	"github.com/src-d/ghsync"
@@ -31,21 +30,11 @@ type SyncCommand struct {
 		Broker string `long:"broker" env:"GHSYNC_BROKER" default:"amqp://localhost:5672" description:"broker service URI"`
 	} `group:"go-queue connection options"`
 
-	PostgresOpt struct {
-		DB       string `long:"postgres-db" env:"GHSYNC_POSTGRES_DB" description:"PostgreSQL DB" default:"ghsync"`
-		User     string `long:"postgres-user" env:"GHSYNC_POSTGRES_USER" description:"PostgreSQL user" default:"superset"`
-		Password string `long:"postgres-password" env:"GHSYNC_POSTGRES_PASSWORD" description:"PostgreSQL password" default:"superset"`
-		Host     string `long:"postgres-host" env:"GHSYNC_POSTGRES_HOST" description:"PostgreSQL host" default:"localhost"`
-		Port     int    `long:"postgres-port" env:"GHSYNC_POSTGRES_PORT" description:"PostgreSQL port" default:"5432"`
-	} `group:"PostgreSQL connection options"`
+	Postgres PostgresOpt `group:"PostgreSQL connection options"`
 }
 
 func (c *SyncCommand) Execute(args []string) error {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		c.PostgresOpt.Host, c.PostgresOpt.Port, c.PostgresOpt.User,
-		c.PostgresOpt.Password, c.PostgresOpt.DB)
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err := sql.Open("postgres", c.Postgres.URL())
 	if err != nil {
 		return err
 	}

@@ -27,13 +27,12 @@ jobs:
     - stage: tests
       name: 'Unit Tests'
       script:
-        - make packages
-        - make test-coverage
-
-    - name: 'Generated code'
-      script:
         - GO111MODULE=on go mod tidy
         - make no-changes-in-commit
+        - make bindata
+        - make no-changes-in-commit
+        - make packages
+        - make test-coverage
 
     - stage: release
       name: 'Release to GitHub and Docker Hub'
