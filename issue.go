@@ -30,6 +30,7 @@ func (s *IssueSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 	opts.State = "all"
 
 	logger := log.New(log.Fields{"type": IssueSyncTask, "owner": owner, "repo": repo})
+	logger.Infof("starting to publish queue jobs")
 
 	for {
 		issues, r, err := s.c.Issues.ListByRepo(context.TODO(), owner, repo, opts)
@@ -47,9 +48,10 @@ func (s *IssueSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 				return err
 			}
 
-			logger.Infof("queue request")
+			l := logger.With(log.Fields{"issue": i.GetNumber()})
+			l.Debugf("queue request")
 			if err := q.Publish(j); err != nil {
-				logger.Errorf(err, "publishing job")
+				l.Errorf(err, "publishing job")
 				return nil
 			}
 		}
@@ -60,6 +62,8 @@ func (s *IssueSyncer) QueueRepository(q queue.Queue, owner, repo string) error {
 
 		opts.Page = r.NextPage
 	}
+
+	logger.Infof("finished to publish queue jobs")
 
 	return nil
 }

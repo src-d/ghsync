@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	"gopkg.in/src-d/go-log.v1"
 	"gopkg.in/src-d/go-queue.v1"
 )
 
@@ -27,6 +28,9 @@ func (s *UserSyncer) QueueOrganization(q queue.Queue, org string) error {
 	opts := &github.ListMembersOptions{}
 	opts.ListOptions.PerPage = listOptionsPerPage
 
+	logger := log.New(log.Fields{"type": UserSyncTask, "owner": org})
+	logger.Infof("starting to publish queue jobs")
+
 	for {
 		users, r, err := s.c.Organizations.ListMembers(context.TODO(), org, opts)
 		if err != nil {
@@ -39,6 +43,7 @@ func (s *UserSyncer) QueueOrganization(q queue.Queue, org string) error {
 				return err
 			}
 
+			logger.With(log.Fields{"user": u.GetLogin()}).Debugf("queue request")
 			if err := q.Publish(j); err != nil {
 				return err
 			}
@@ -50,6 +55,8 @@ func (s *UserSyncer) QueueOrganization(q queue.Queue, org string) error {
 
 		opts.Page = r.NextPage
 	}
+
+	logger.Infof("finished to publish queue jobs")
 
 	return nil
 }

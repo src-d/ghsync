@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/go-github/github"
 	"gopkg.in/src-d/go-kallax.v1"
+	"gopkg.in/src-d/go-log.v1"
 	"gopkg.in/src-d/go-queue.v1"
 )
 
@@ -27,6 +28,9 @@ func (s *RepositorySyncer) QueueOrganization(q queue.Queue, owner string) error 
 	opts := &github.RepositoryListOptions{}
 	opts.ListOptions.PerPage = listOptionsPerPage
 
+	logger := log.New(log.Fields{"type": RepositorySyncTask, "owner": owner})
+	logger.Infof("starting to publish queue jobs")
+
 	for {
 		repositories, r, err := s.c.Repositories.List(context.TODO(), owner, opts)
 		if err != nil {
@@ -39,6 +43,7 @@ func (s *RepositorySyncer) QueueOrganization(q queue.Queue, owner string) error 
 				return err
 			}
 
+			logger.With(log.Fields{"repo": r.GetName()}).Debugf("queue request")
 			if err := q.Publish(j); err != nil {
 				return err
 			}
@@ -50,6 +55,8 @@ func (s *RepositorySyncer) QueueOrganization(q queue.Queue, owner string) error 
 
 		opts.Page = r.NextPage
 	}
+
+	logger.Infof("finished to publish queue jobs")
 
 	return nil
 }
