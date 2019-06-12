@@ -47,4 +47,4 @@ jobs:
         on:
           all_branches: true
       after_deploy:
-        # - make docker-push-latest-release
+        - make docker-push-latest-release
