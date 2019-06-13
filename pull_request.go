@@ -30,6 +30,7 @@ func (s *PullRequestSyncer) QueueRepository(q queue.Queue, owner, repo string) e
 	opts.State = "all"
 
 	logger := log.New(log.Fields{"type": PullRequestSyncTask, "owner": owner, "repo": repo})
+	logger.Infof("starting to publish queue jobs")
 
 	for {
 		requests, r, err := s.c.PullRequests.List(context.TODO(), owner, repo, opts)
@@ -43,9 +44,10 @@ func (s *PullRequestSyncer) QueueRepository(q queue.Queue, owner, repo string) e
 				return err
 			}
 
-			logger.Infof("queue request")
+			l := logger.With(log.Fields{"pull-request": r.GetNumber()})
+			l.Debugf("queue request")
 			if err := q.Publish(j); err != nil {
-				logger.Errorf(err, "publishing job")
+				l.Errorf(err, "publishing job")
 				return nil
 			}
 		}
@@ -56,6 +58,8 @@ func (s *PullRequestSyncer) QueueRepository(q queue.Queue, owner, repo string) e
 
 		opts.Page = r.NextPage
 	}
+
+	logger.Infof("finished to publish queue jobs")
 
 	return nil
 }
