@@ -4,9 +4,9 @@ services:
     image: postgres:10
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ghsync
-      POSTGRES_PASSWORD: superset
-      POSTGRES_USER: superset
+      POSTGRES_DB: ${POSTGRES_DB:-ghsync}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-superset}
+      POSTGRES_USER: ${POSTGRES_USER:-superset}
     ports:
       - 5432:5432
     volumes:
@@ -18,6 +18,25 @@ services:
     ports:
       - "8081:15672"
       - "5672:5672"
+
+  ghsync:
+    image: srcd/ghsync
+    entrypoint: ["/bin/sh"]
+    command: ["-c", "sleep 30s && ghsync migrate && ghsync sync"]
+    depends_on:
+      - postgres
+      - rabbitmq
+    environment:
+      GHSYNC_TOKEN: ${GHSYNC_TOKEN}
+      GHSYNC_ORG: ${GHSYNC_ORG}
+
+      GHSYNC_POSTGRES_DB: ${POSTGRES_DB:-ghsync}
+      GHSYNC_POSTGRES_USER: ${POSTGRES_USER:-superset}
+      GHSYNC_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-superset}
+      GHSYNC_POSTGRES_HOST: postgres
+      GHSYNC_POSTGRES_PORT: 5432
+
+      GHSYNC_BROKER: amqp://rabbitmq:5672
 
 volumes:
   postgres:

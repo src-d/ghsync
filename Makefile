@@ -2,6 +2,7 @@
 PROJECT = ghsync
 COMMANDS = cmd/ghsync
 
+GO_BUILD_ENV = CGO_ENABLED=0
 PKG_OS = darwin linux
 
 # Add prerequisites
