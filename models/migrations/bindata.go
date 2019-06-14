@@ -85,7 +85,7 @@ func _1560510971_initial_schemaDownSql() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "1560510971_initial_schema.down.sql", size: 232, mode: os.FileMode(493), modTime: time.Unix(1, 0)}
+	info := bindataFileInfo{name: "1560510971_initial_schema.down.sql", size: 232, mode: os.FileMode(509), modTime: time.Unix(1, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -105,7 +105,7 @@ func _1560510971_initial_schemaUpSql() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "1560510971_initial_schema.up.sql", size: 5551, mode: os.FileMode(493), modTime: time.Unix(1, 0)}
+	info := bindataFileInfo{name: "1560510971_initial_schema.up.sql", size: 5551, mode: os.FileMode(509), modTime: time.Unix(1, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -125,7 +125,7 @@ func lockJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "lock.json", size: 45687, mode: os.FileMode(493), modTime: time.Unix(1, 0)}
+	info := bindataFileInfo{name: "lock.json", size: 45687, mode: os.FileMode(509), modTime: time.Unix(1, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
