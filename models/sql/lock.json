@@ -4,9 +4,17 @@
       "Name": "issues",
       "Columns": [
         {
-          "Name": "id",
+          "Name": "kallax_id",
           "Type": "serial",
           "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "id",
+          "Type": "bigint",
+          "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
           "Unique": false
@@ -201,9 +209,17 @@
       "Name": "issue_comments",
       "Columns": [
         {
-          "Name": "id",
+          "Name": "kallax_id",
           "Type": "serial",
           "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "id",
+          "Type": "bigint",
+          "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
           "Unique": false
@@ -310,16 +326,24 @@
       "Name": "organizations",
       "Columns": [
         {
-          "Name": "id",
+          "Name": "kallax_id",
           "Type": "serial",
           "PrimaryKey": true,
           "Reference": null,
-          "NotNull": false,
+          "NotNull": true,
           "Unique": false
         },
         {
           "Name": "login",
           "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "id",
+          "Type": "bigint",
           "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
@@ -515,9 +539,17 @@
       "Name": "pull_requests",
       "Columns": [
         {
-          "Name": "id",
+          "Name": "kallax_id",
           "Type": "serial",
           "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "id",
+          "Type": "bigint",
+          "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
           "Unique": false
@@ -912,9 +944,17 @@
       "Name": "pull_request_comments",
       "Columns": [
         {
-          "Name": "id",
+          "Name": "kallax_id",
           "Type": "serial",
           "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "id",
+          "Type": "bigint",
+          "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
           "Unique": false
@@ -1085,9 +1125,17 @@
       "Name": "pull_request_reviews",
       "Columns": [
         {
-          "Name": "id",
+          "Name": "kallax_id",
           "Type": "serial",
           "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "id",
+          "Type": "bigint",
+          "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
           "Unique": false
@@ -1186,9 +1234,17 @@
       "Name": "repositories",
       "Columns": [
         {
-          "Name": "id",
+          "Name": "kallax_id",
           "Type": "serial",
           "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "id",
+          "Type": "bigint",
+          "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,
           "Unique": false
@@ -1607,16 +1663,24 @@
       "Name": "users",
       "Columns": [
         {
-          "Name": "id",
+          "Name": "kallax_id",
           "Type": "serial",
           "PrimaryKey": true,
           "Reference": null,
-          "NotNull": false,
+          "NotNull": true,
           "Unique": false
         },
         {
           "Name": "login",
           "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "id",
+          "Type": "bigint",
           "PrimaryKey": false,
           "Reference": null,
           "NotNull": false,

@@ -7,8 +7,11 @@ import (
 )
 
 type PullRequestReview struct {
-	kallax.Model `table:"pull_request_reviews" pk:"id" ignored:"User,PullRequestURL"`
+	kallax.Model `table:"pull_request_reviews" pk:"kallax_id" ignored:"User,PullRequestURL"`
 	github.PullRequestReview
+
+	// int64 replacement for PullRequestReview.ID *int64, to be used as primary key
+	KallaxID int64 `kallax:"kallax_id"`
 
 	UserID            int64  `kallax:"user_id"`
 	UserLogin         string `kallax:"user_login"`
@@ -18,6 +21,8 @@ type PullRequestReview struct {
 }
 
 func (i *PullRequestReview) BeforeSave() error {
+	i.KallaxID = i.PullRequestReview.GetID()
+
 	var err error
 	i.RepositoryOwner, i.RepositoryName, i.PullRequestNumber, err = utils.ParsePullRequestURL(i.GetPullRequestURL())
 	if err != nil {

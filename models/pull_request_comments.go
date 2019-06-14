@@ -7,8 +7,11 @@ import (
 )
 
 type PullRequestComment struct {
-	kallax.Model `table:"pull_request_comments" pk:"id" ignored:"User,URL,PullRequestURL"`
+	kallax.Model `table:"pull_request_comments" pk:"kallax_id" ignored:"User,URL,PullRequestURL"`
 	github.PullRequestComment
+
+	// int64 replacement for PullRequestComment.ID *int64, to be used as primary key
+	KallaxID int64 `kallax:"kallax_id"`
 
 	UserID            int64  `kallax:"user_id"`
 	UserLogin         string `kallax:"user_login"`
@@ -18,6 +21,8 @@ type PullRequestComment struct {
 }
 
 func (i *PullRequestComment) BeforeSave() error {
+	i.KallaxID = i.PullRequestComment.GetID()
+
 	var err error
 	i.RepositoryOwner, i.RepositoryName, i.PullRequestNumber, err = utils.ParsePullRequestURL(i.GetPullRequestURL())
 	if err != nil {

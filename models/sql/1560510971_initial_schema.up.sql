@@ -1,7 +1,8 @@
 BEGIN;
 
 CREATE TABLE issues (
-	id serial PRIMARY KEY,
+	kallax_id serial NOT NULL PRIMARY KEY,
+	id bigint,
 	number bigint,
 	state text,
 	locked boolean,
@@ -29,7 +30,8 @@ CREATE TABLE issues (
 
 
 CREATE TABLE issue_comments (
-	id serial PRIMARY KEY,
+	kallax_id serial NOT NULL PRIMARY KEY,
+	id bigint,
 	node_id text,
 	body text,
 	reactions jsonb,
@@ -46,8 +48,9 @@ CREATE TABLE issue_comments (
 
 
 CREATE TABLE organizations (
-	id serial PRIMARY KEY,
+	kallax_id serial NOT NULL PRIMARY KEY,
 	login text,
+	id bigint,
 	node_id text,
 	avatar_url text,
 	htmlurl text,
@@ -75,7 +78,8 @@ CREATE TABLE organizations (
 
 
 CREATE TABLE pull_requests (
-	id serial PRIMARY KEY,
+	kallax_id serial NOT NULL PRIMARY KEY,
+	id bigint,
 	number bigint,
 	state text,
 	title text,
@@ -128,7 +132,8 @@ CREATE TABLE pull_requests (
 
 
 CREATE TABLE pull_request_comments (
-	id serial PRIMARY KEY,
+	kallax_id serial NOT NULL PRIMARY KEY,
+	id bigint,
 	node_id text,
 	in_reply_to bigint,
 	body text,
@@ -153,7 +158,8 @@ CREATE TABLE pull_request_comments (
 
 
 CREATE TABLE pull_request_reviews (
-	id serial PRIMARY KEY,
+	kallax_id serial NOT NULL PRIMARY KEY,
+	id bigint,
 	node_id text,
 	body text,
 	submitted_at timestamptz,
@@ -169,7 +175,8 @@ CREATE TABLE pull_request_reviews (
 
 
 CREATE TABLE repositories (
-	id serial PRIMARY KEY,
+	kallax_id serial NOT NULL PRIMARY KEY,
+	id bigint,
 	node_id text,
 	name text,
 	full_name text,
@@ -225,8 +232,9 @@ CREATE TABLE repositories (
 
 
 CREATE TABLE users (
-	id serial PRIMARY KEY,
+	kallax_id serial NOT NULL PRIMARY KEY,
 	login text,
+	id bigint,
 	node_id text,
 	avatar_url text,
 	htmlurl text,

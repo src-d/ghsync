@@ -49,4 +49,10 @@ GO111MODULE=on go mod vendor
 
 # Run kallax generation
 go generate ./...
+
+# Create the migration files
+kallax migrate --input models --out models/sql --name some_name
+
+# Update bindata
+make bindata
 ```

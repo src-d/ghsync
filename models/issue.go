@@ -7,8 +7,11 @@ import (
 )
 
 type Issue struct {
-	kallax.Model `table:"issues" pk:"id" ignored:"Labels,User,Assignee,ClosedBy,Repository,Milestone,PullRequestLinks,Assignees,URL,CommentsURL,EventsURL,LabelsURL,RepositoryURL,Milestone,PullRequestLinks,Reactions,ActiveLockReason,TextMatches"`
+	kallax.Model `table:"issues" pk:"kallax_id" ignored:"Labels,User,Assignee,ClosedBy,Repository,Milestone,PullRequestLinks,Assignees,URL,CommentsURL,EventsURL,LabelsURL,RepositoryURL,Milestone,PullRequestLinks,Reactions,ActiveLockReason,TextMatches"`
 	github.Issue
+
+	// int64 replacement for Issue.ID *int64, to be used as primary key
+	KallaxID int64 `kallax:"kallax_id"`
 
 	RepositoryOwner string `kallax:"repository_owner"`
 	RepositoryName  string `kallax:"repository_name"`
@@ -28,6 +31,8 @@ type Issue struct {
 }
 
 func (i *Issue) BeforeSave() error {
+	i.KallaxID = i.Issue.GetID()
+
 	var err error
 	i.RepositoryOwner, i.RepositoryName, _, err = utils.ParseIssueURL(i.GetURL())
 	if err != nil {
