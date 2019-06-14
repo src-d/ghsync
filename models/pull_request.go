@@ -7,8 +7,11 @@ import (
 )
 
 type PullRequest struct {
-	kallax.Model `table:"pull_requests" pk:"id" ignored:"Labels,User,MergedBy,Assignee,Milestone,Assignees,Assignees  ,RequestedReviewers,Links,Head,Base,ActiveLockReason,RequestedTeams,URL,IssueURL,StatusesURL,DiffURL,PatchURL,CommitsURL,CommentsURL,ReviewCommentsURL,ReviewCommentURL"`
+	kallax.Model `table:"pull_requests" pk:"kallax_id" ignored:"Labels,User,MergedBy,Assignee,Milestone,Assignees,Assignees  ,RequestedReviewers,Links,Head,Base,ActiveLockReason,RequestedTeams,URL,IssueURL,StatusesURL,DiffURL,PatchURL,CommitsURL,CommentsURL,ReviewCommentsURL,ReviewCommentURL"`
 	github.PullRequest
+
+	// int64 replacement for PullRequest.ID *int64, to be used as primary key
+	KallaxID int64 `kallax:"kallax_id"`
 
 	RepositoryOwner string `kallax:"repository_owner"`
 	RepositoryName  string `kallax:"repository_name"`
@@ -43,6 +46,8 @@ type PullRequest struct {
 }
 
 func (i *PullRequest) BeforeSave() error {
+	i.KallaxID = i.PullRequest.GetID()
+
 	var err error
 	i.RepositoryOwner, i.RepositoryName, _, err = utils.ParsePullRequestURL(i.GetURL())
 	if err != nil {

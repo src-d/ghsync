@@ -6,8 +6,11 @@ import (
 )
 
 type Repository struct {
-	kallax.Model `table:"repositories" pk:"id" ignored:"Owner,Parent,Source,Organization,URL,ArchiveURL,AssigneesURL,BlobsURL,BranchesURL,CollaboratorsURL,CommentsURL,CommitsURL,CompareURL,ContentsURL,ContributorsURL,DeploymentsURL,DownloadsURL,EventsURL,ForksURL,GitCommitsURL,GitRefsURL,GitTagsURL,HooksURL,IssueCommentURL,IssueEventsURL,IssuesURL,KeysURL,LabelsURL,LanguagesURL,MergesURL,MilestonesURL,NotificationsURL,PullsURL,ReleasesURL,StargazersURL,StatusesURL,SubscribersURL,SubscriptionURL,TagsURL,TreesURL,TeamsURL,TextMatches"`
+	kallax.Model `table:"repositories" pk:"kallax_id" ignored:"Owner,Parent,Source,Organization,URL,ArchiveURL,AssigneesURL,BlobsURL,BranchesURL,CollaboratorsURL,CommentsURL,CommitsURL,CompareURL,ContentsURL,ContributorsURL,DeploymentsURL,DownloadsURL,EventsURL,ForksURL,GitCommitsURL,GitRefsURL,GitTagsURL,HooksURL,IssueCommentURL,IssueEventsURL,IssuesURL,KeysURL,LabelsURL,LanguagesURL,MergesURL,MilestonesURL,NotificationsURL,PullsURL,ReleasesURL,StargazersURL,StatusesURL,SubscribersURL,SubscriptionURL,TagsURL,TreesURL,TeamsURL,TextMatches"`
 	github.Repository
+
+	// int64 replacement for Repository.ID *int64, to be used as primary key
+	KallaxID int64 `kallax:"kallax_id"`
 
 	ParentRepository *RepositoryReference `kallax:"parent"`
 	SourceRepository *RepositoryReference `kallax:"source"`
@@ -21,6 +24,7 @@ type Repository struct {
 }
 
 func (r *Repository) BeforeSave() error {
+	r.KallaxID = r.Repository.GetID()
 
 	r.ParentRepository = NewRepositoryReference(r.Parent)
 	r.SourceRepository = NewRepositoryReference(r.Parent)
