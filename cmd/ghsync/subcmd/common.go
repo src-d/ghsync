@@ -10,7 +10,7 @@ import (
 	bindata "github.com/golang-migrate/migrate/v4/source/go_bindata"
 )
 
-const maxVersion uint = 1558054487
+const maxVersion uint = 1560510971
 
 type PostgresOpt struct {
 	DB       string `long:"postgres-db" env:"GHSYNC_POSTGRES_DB" description:"PostgreSQL DB" default:"ghsync"`

@@ -26,14 +26,16 @@ func NewIssue() (record *Issue) {
 
 // GetID returns the primary key of the model.
 func (r *Issue) GetID() kallax.Identifier {
-	return (*kallax.NumericID)(r.ID)
+	return (*kallax.NumericID)(&r.KallaxID)
 }
 
 // ColumnAddress returns the pointer to the value of the given column.
 func (r *Issue) ColumnAddress(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return (*kallax.NumericID)(&r.KallaxID), nil
 	case "id":
-		return (*kallax.NumericID)(r.Issue.ID), nil
+		return types.Nullable(&r.Issue.ID), nil
 	case "number":
 		return types.Nullable(&r.Issue.Number), nil
 	case "state":
@@ -89,6 +91,8 @@ func (r *Issue) ColumnAddress(col string) (interface{}, error) {
 // Value returns the value of the given column.
 func (r *Issue) Value(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return r.KallaxID, nil
 	case "id":
 		if r.Issue.ID == (*int64)(nil) {
 			return nil, nil
@@ -461,6 +465,20 @@ func (q *IssueQuery) Where(cond kallax.Condition) *IssueQuery {
 	return q
 }
 
+// FindByKallaxID adds a new filter to the query that will require that
+// the KallaxID property is equal to one of the passed values; if no passed values,
+// it will do nothing.
+func (q *IssueQuery) FindByKallaxID(v ...int64) *IssueQuery {
+	if len(v) == 0 {
+		return q
+	}
+	values := make([]interface{}, len(v))
+	for i, val := range v {
+		values[i] = val
+	}
+	return q.Where(kallax.In(Schema.Issue.KallaxID, values...))
+}
+
 // FindByClosedAt adds a new filter to the query that will require that
 // the ClosedAt property is equal to the passed value.
 func (q *IssueQuery) FindByClosedAt(cond kallax.ScalarCond, v time.Time) *IssueQuery {
@@ -668,14 +686,16 @@ func NewIssueComment() (record *IssueComment) {
 
 // GetID returns the primary key of the model.
 func (r *IssueComment) GetID() kallax.Identifier {
-	return (*kallax.NumericID)(r.ID)
+	return (*kallax.NumericID)(&r.KallaxID)
 }
 
 // ColumnAddress returns the pointer to the value of the given column.
 func (r *IssueComment) ColumnAddress(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return (*kallax.NumericID)(&r.KallaxID), nil
 	case "id":
-		return (*kallax.NumericID)(r.IssueComment.ID), nil
+		return types.Nullable(&r.IssueComment.ID), nil
 	case "node_id":
 		return types.Nullable(&r.IssueComment.NodeID), nil
 	case "body":
@@ -712,6 +732,8 @@ func (r *IssueComment) ColumnAddress(col string) (interface{}, error) {
 // Value returns the value of the given column.
 func (r *IssueComment) Value(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return r.KallaxID, nil
 	case "id":
 		if r.IssueComment.ID == (*int64)(nil) {
 			return nil, nil
@@ -1044,6 +1066,20 @@ func (q *IssueCommentQuery) Where(cond kallax.Condition) *IssueCommentQuery {
 	return q
 }
 
+// FindByKallaxID adds a new filter to the query that will require that
+// the KallaxID property is equal to one of the passed values; if no passed values,
+// it will do nothing.
+func (q *IssueCommentQuery) FindByKallaxID(v ...int64) *IssueCommentQuery {
+	if len(v) == 0 {
+		return q
+	}
+	values := make([]interface{}, len(v))
+	for i, val := range v {
+		values[i] = val
+	}
+	return q.Where(kallax.In(Schema.IssueComment.KallaxID, values...))
+}
+
 // FindByCreatedAt adds a new filter to the query that will require that
 // the CreatedAt property is equal to the passed value.
 func (q *IssueCommentQuery) FindByCreatedAt(cond kallax.ScalarCond, v time.Time) *IssueCommentQuery {
@@ -1201,16 +1237,18 @@ func NewOrganization() (record *Organization) {
 
 // GetID returns the primary key of the model.
 func (r *Organization) GetID() kallax.Identifier {
-	return (*kallax.NumericID)(r.ID)
+	return (*kallax.NumericID)(&r.KallaxID)
 }
 
 // ColumnAddress returns the pointer to the value of the given column.
 func (r *Organization) ColumnAddress(col string) (interface{}, error) {
 	switch col {
-	case "id":
-		return (*kallax.NumericID)(r.Organization.ID), nil
+	case "kallax_id":
+		return (*kallax.NumericID)(&r.KallaxID), nil
 	case "login":
 		return types.Nullable(&r.Organization.Login), nil
+	case "id":
+		return types.Nullable(&r.Organization.ID), nil
 	case "node_id":
 		return types.Nullable(&r.Organization.NodeID), nil
 	case "avatar_url":
@@ -1266,16 +1304,18 @@ func (r *Organization) ColumnAddress(col string) (interface{}, error) {
 // Value returns the value of the given column.
 func (r *Organization) Value(col string) (interface{}, error) {
 	switch col {
-	case "id":
-		if r.Organization.ID == (*int64)(nil) {
-			return nil, nil
-		}
-		return r.Organization.ID, nil
+	case "kallax_id":
+		return r.KallaxID, nil
 	case "login":
 		if r.Organization.Login == (*string)(nil) {
 			return nil, nil
 		}
 		return r.Organization.Login, nil
+	case "id":
+		if r.Organization.ID == (*int64)(nil) {
+			return nil, nil
+		}
+		return r.Organization.ID, nil
 	case "node_id":
 		if r.Organization.NodeID == (*string)(nil) {
 			return nil, nil
@@ -1460,6 +1500,10 @@ func (s *OrganizationStore) Insert(record *Organization) error {
 		record.UpdatedAt = func(t time.Time) *time.Time { return &t }(record.UpdatedAt.Truncate(time.Microsecond))
 	}
 
+	if err := record.BeforeSave(); err != nil {
+		return err
+	}
+
 	return s.Store.Insert(Schema.Organization.BaseSchema, record)
 }
 
@@ -1479,6 +1523,10 @@ func (s *OrganizationStore) Update(record *Organization, cols ...kallax.SchemaFi
 
 	record.SetSaving(true)
 	defer record.SetSaving(false)
+
+	if err := record.BeforeSave(); err != nil {
+		return 0, err
+	}
 
 	return s.Store.Update(Schema.Organization.BaseSchema, record, cols...)
 }
@@ -1665,6 +1713,20 @@ func (q *OrganizationQuery) Where(cond kallax.Condition) *OrganizationQuery {
 	return q
 }
 
+// FindByKallaxID adds a new filter to the query that will require that
+// the KallaxID property is equal to one of the passed values; if no passed values,
+// it will do nothing.
+func (q *OrganizationQuery) FindByKallaxID(v ...int64) *OrganizationQuery {
+	if len(v) == 0 {
+		return q
+	}
+	values := make([]interface{}, len(v))
+	for i, val := range v {
+		values[i] = val
+	}
+	return q.Where(kallax.In(Schema.Organization.KallaxID, values...))
+}
+
 // FindByCreatedAt adds a new filter to the query that will require that
 // the CreatedAt property is equal to the passed value.
 func (q *OrganizationQuery) FindByCreatedAt(cond kallax.ScalarCond, v time.Time) *OrganizationQuery {
@@ -1792,14 +1854,16 @@ func NewPullRequest() (record *PullRequest) {
 
 // GetID returns the primary key of the model.
 func (r *PullRequest) GetID() kallax.Identifier {
-	return (*kallax.NumericID)(r.ID)
+	return (*kallax.NumericID)(&r.KallaxID)
 }
 
 // ColumnAddress returns the pointer to the value of the given column.
 func (r *PullRequest) ColumnAddress(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return (*kallax.NumericID)(&r.KallaxID), nil
 	case "id":
-		return (*kallax.NumericID)(r.PullRequest.ID), nil
+		return types.Nullable(&r.PullRequest.ID), nil
 	case "number":
 		return types.Nullable(&r.PullRequest.Number), nil
 	case "state":
@@ -1905,6 +1969,8 @@ func (r *PullRequest) ColumnAddress(col string) (interface{}, error) {
 // Value returns the value of the given column.
 func (r *PullRequest) Value(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return r.KallaxID, nil
 	case "id":
 		if r.PullRequest.ID == (*int64)(nil) {
 			return nil, nil
@@ -2369,6 +2435,20 @@ func (q *PullRequestQuery) Where(cond kallax.Condition) *PullRequestQuery {
 	return q
 }
 
+// FindByKallaxID adds a new filter to the query that will require that
+// the KallaxID property is equal to one of the passed values; if no passed values,
+// it will do nothing.
+func (q *PullRequestQuery) FindByKallaxID(v ...int64) *PullRequestQuery {
+	if len(v) == 0 {
+		return q
+	}
+	values := make([]interface{}, len(v))
+	for i, val := range v {
+		values[i] = val
+	}
+	return q.Where(kallax.In(Schema.PullRequest.KallaxID, values...))
+}
+
 // FindByCreatedAt adds a new filter to the query that will require that
 // the CreatedAt property is equal to the passed value.
 func (q *PullRequestQuery) FindByCreatedAt(cond kallax.ScalarCond, v time.Time) *PullRequestQuery {
@@ -2654,14 +2734,16 @@ func NewPullRequestComment() (record *PullRequestComment) {
 
 // GetID returns the primary key of the model.
 func (r *PullRequestComment) GetID() kallax.Identifier {
-	return (*kallax.NumericID)(r.ID)
+	return (*kallax.NumericID)(&r.KallaxID)
 }
 
 // ColumnAddress returns the pointer to the value of the given column.
 func (r *PullRequestComment) ColumnAddress(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return (*kallax.NumericID)(&r.KallaxID), nil
 	case "id":
-		return (*kallax.NumericID)(r.PullRequestComment.ID), nil
+		return types.Nullable(&r.PullRequestComment.ID), nil
 	case "node_id":
 		return types.Nullable(&r.PullRequestComment.NodeID), nil
 	case "in_reply_to":
@@ -2714,6 +2796,8 @@ func (r *PullRequestComment) ColumnAddress(col string) (interface{}, error) {
 // Value returns the value of the given column.
 func (r *PullRequestComment) Value(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return r.KallaxID, nil
 	case "id":
 		if r.PullRequestComment.ID == (*int64)(nil) {
 			return nil, nil
@@ -3086,6 +3170,20 @@ func (q *PullRequestCommentQuery) Where(cond kallax.Condition) *PullRequestComme
 	return q
 }
 
+// FindByKallaxID adds a new filter to the query that will require that
+// the KallaxID property is equal to one of the passed values; if no passed values,
+// it will do nothing.
+func (q *PullRequestCommentQuery) FindByKallaxID(v ...int64) *PullRequestCommentQuery {
+	if len(v) == 0 {
+		return q
+	}
+	values := make([]interface{}, len(v))
+	for i, val := range v {
+		values[i] = val
+	}
+	return q.Where(kallax.In(Schema.PullRequestComment.KallaxID, values...))
+}
+
 // FindByCreatedAt adds a new filter to the query that will require that
 // the CreatedAt property is equal to the passed value.
 func (q *PullRequestCommentQuery) FindByCreatedAt(cond kallax.ScalarCond, v time.Time) *PullRequestCommentQuery {
@@ -3243,14 +3341,16 @@ func NewPullRequestReview() (record *PullRequestReview) {
 
 // GetID returns the primary key of the model.
 func (r *PullRequestReview) GetID() kallax.Identifier {
-	return (*kallax.NumericID)(r.ID)
+	return (*kallax.NumericID)(&r.KallaxID)
 }
 
 // ColumnAddress returns the pointer to the value of the given column.
 func (r *PullRequestReview) ColumnAddress(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return (*kallax.NumericID)(&r.KallaxID), nil
 	case "id":
-		return (*kallax.NumericID)(r.PullRequestReview.ID), nil
+		return types.Nullable(&r.PullRequestReview.ID), nil
 	case "node_id":
 		return types.Nullable(&r.PullRequestReview.NodeID), nil
 	case "body":
@@ -3282,6 +3382,8 @@ func (r *PullRequestReview) ColumnAddress(col string) (interface{}, error) {
 // Value returns the value of the given column.
 func (r *PullRequestReview) Value(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return r.KallaxID, nil
 	case "id":
 		if r.PullRequestReview.ID == (*int64)(nil) {
 			return nil, nil
@@ -3603,6 +3705,20 @@ func (q *PullRequestReviewQuery) Where(cond kallax.Condition) *PullRequestReview
 	return q
 }
 
+// FindByKallaxID adds a new filter to the query that will require that
+// the KallaxID property is equal to one of the passed values; if no passed values,
+// it will do nothing.
+func (q *PullRequestReviewQuery) FindByKallaxID(v ...int64) *PullRequestReviewQuery {
+	if len(v) == 0 {
+		return q
+	}
+	values := make([]interface{}, len(v))
+	for i, val := range v {
+		values[i] = val
+	}
+	return q.Where(kallax.In(Schema.PullRequestReview.KallaxID, values...))
+}
+
 // FindBySubmittedAt adds a new filter to the query that will require that
 // the SubmittedAt property is equal to the passed value.
 func (q *PullRequestReviewQuery) FindBySubmittedAt(cond kallax.ScalarCond, v time.Time) *PullRequestReviewQuery {
@@ -3754,14 +3870,16 @@ func NewRepository() (record *Repository) {
 
 // GetID returns the primary key of the model.
 func (r *Repository) GetID() kallax.Identifier {
-	return (*kallax.NumericID)(r.ID)
+	return (*kallax.NumericID)(&r.KallaxID)
 }
 
 // ColumnAddress returns the pointer to the value of the given column.
 func (r *Repository) ColumnAddress(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return (*kallax.NumericID)(&r.KallaxID), nil
 	case "id":
-		return (*kallax.NumericID)(r.Repository.ID), nil
+		return types.Nullable(&r.Repository.ID), nil
 	case "node_id":
 		return types.Nullable(&r.Repository.NodeID), nil
 	case "name":
@@ -3888,6 +4006,8 @@ func (r *Repository) ColumnAddress(col string) (interface{}, error) {
 // Value returns the value of the given column.
 func (r *Repository) Value(col string) (interface{}, error) {
 	switch col {
+	case "kallax_id":
+		return r.KallaxID, nil
 	case "id":
 		if r.Repository.ID == (*int64)(nil) {
 			return nil, nil
@@ -4418,6 +4538,20 @@ func (q *RepositoryQuery) Where(cond kallax.Condition) *RepositoryQuery {
 	return q
 }
 
+// FindByKallaxID adds a new filter to the query that will require that
+// the KallaxID property is equal to one of the passed values; if no passed values,
+// it will do nothing.
+func (q *RepositoryQuery) FindByKallaxID(v ...int64) *RepositoryQuery {
+	if len(v) == 0 {
+		return q
+	}
+	values := make([]interface{}, len(v))
+	for i, val := range v {
+		values[i] = val
+	}
+	return q.Where(kallax.In(Schema.Repository.KallaxID, values...))
+}
+
 // FindByCreatedAt adds a new filter to the query that will require that
 // the CreatedAt property is equal to the passed value.
 func (q *RepositoryQuery) FindByCreatedAt(cond kallax.ScalarCond, v github.Timestamp) *RepositoryQuery {
@@ -4595,16 +4729,18 @@ func NewUser() (record *User) {
 
 // GetID returns the primary key of the model.
 func (r *User) GetID() kallax.Identifier {
-	return (*kallax.NumericID)(r.ID)
+	return (*kallax.NumericID)(&r.KallaxID)
 }
 
 // ColumnAddress returns the pointer to the value of the given column.
 func (r *User) ColumnAddress(col string) (interface{}, error) {
 	switch col {
-	case "id":
-		return (*kallax.NumericID)(r.User.ID), nil
+	case "kallax_id":
+		return (*kallax.NumericID)(&r.KallaxID), nil
 	case "login":
 		return types.Nullable(&r.User.Login), nil
+	case "id":
+		return types.Nullable(&r.User.ID), nil
 	case "node_id":
 		return types.Nullable(&r.User.NodeID), nil
 	case "avatar_url":
@@ -4666,16 +4802,18 @@ func (r *User) ColumnAddress(col string) (interface{}, error) {
 // Value returns the value of the given column.
 func (r *User) Value(col string) (interface{}, error) {
 	switch col {
-	case "id":
-		if r.User.ID == (*int64)(nil) {
-			return nil, nil
-		}
-		return r.User.ID, nil
+	case "kallax_id":
+		return r.KallaxID, nil
 	case "login":
 		if r.User.Login == (*string)(nil) {
 			return nil, nil
 		}
 		return r.User.Login, nil
+	case "id":
+		if r.User.ID == (*int64)(nil) {
+			return nil, nil
+		}
+		return r.User.ID, nil
 	case "node_id":
 		if r.User.NodeID == (*string)(nil) {
 			return nil, nil
@@ -4878,6 +5016,10 @@ func (s *UserStore) Insert(record *User) error {
 		record.SuspendedAt.Time = record.SuspendedAt.Time.Truncate(time.Microsecond)
 	}
 
+	if err := record.BeforeSave(); err != nil {
+		return err
+	}
+
 	return s.Store.Insert(Schema.User.BaseSchema, record)
 }
 
@@ -4900,6 +5042,10 @@ func (s *UserStore) Update(record *User, cols ...kallax.SchemaField) (updated in
 
 	record.SetSaving(true)
 	defer record.SetSaving(false)
+
+	if err := record.BeforeSave(); err != nil {
+		return 0, err
+	}
 
 	return s.Store.Update(Schema.User.BaseSchema, record, cols...)
 }
@@ -5086,6 +5232,20 @@ func (q *UserQuery) Where(cond kallax.Condition) *UserQuery {
 	return q
 }
 
+// FindByKallaxID adds a new filter to the query that will require that
+// the KallaxID property is equal to one of the passed values; if no passed values,
+// it will do nothing.
+func (q *UserQuery) FindByKallaxID(v ...int64) *UserQuery {
+	if len(v) == 0 {
+		return q
+	}
+	values := make([]interface{}, len(v))
+	for i, val := range v {
+		values[i] = val
+	}
+	return q.Where(kallax.In(Schema.User.KallaxID, values...))
+}
+
 // FindByCreatedAt adds a new filter to the query that will require that
 // the CreatedAt property is equal to the passed value.
 func (q *UserQuery) FindByCreatedAt(cond kallax.ScalarCond, v github.Timestamp) *UserQuery {
@@ -5225,6 +5385,7 @@ type schema struct {
 
 type schemaIssue struct {
 	*kallax.BaseSchema
+	KallaxID        kallax.SchemaField
 	ID              kallax.SchemaField
 	Number          kallax.SchemaField
 	State           kallax.SchemaField
@@ -5253,6 +5414,7 @@ type schemaIssue struct {
 
 type schemaIssueComment struct {
 	*kallax.BaseSchema
+	KallaxID          kallax.SchemaField
 	ID                kallax.SchemaField
 	NodeID            kallax.SchemaField
 	Body              kallax.SchemaField
@@ -5270,8 +5432,9 @@ type schemaIssueComment struct {
 
 type schemaOrganization struct {
 	*kallax.BaseSchema
-	ID                          kallax.SchemaField
+	KallaxID                    kallax.SchemaField
 	Login                       kallax.SchemaField
+	ID                          kallax.SchemaField
 	NodeID                      kallax.SchemaField
 	AvatarURL                   kallax.SchemaField
 	HTMLURL                     kallax.SchemaField
@@ -5299,6 +5462,7 @@ type schemaOrganization struct {
 
 type schemaPullRequest struct {
 	*kallax.BaseSchema
+	KallaxID               kallax.SchemaField
 	ID                     kallax.SchemaField
 	Number                 kallax.SchemaField
 	State                  kallax.SchemaField
@@ -5352,6 +5516,7 @@ type schemaPullRequest struct {
 
 type schemaPullRequestComment struct {
 	*kallax.BaseSchema
+	KallaxID            kallax.SchemaField
 	ID                  kallax.SchemaField
 	NodeID              kallax.SchemaField
 	InReplyTo           kallax.SchemaField
@@ -5377,6 +5542,7 @@ type schemaPullRequestComment struct {
 
 type schemaPullRequestReview struct {
 	*kallax.BaseSchema
+	KallaxID          kallax.SchemaField
 	ID                kallax.SchemaField
 	NodeID            kallax.SchemaField
 	Body              kallax.SchemaField
@@ -5393,6 +5559,7 @@ type schemaPullRequestReview struct {
 
 type schemaRepository struct {
 	*kallax.BaseSchema
+	KallaxID          kallax.SchemaField
 	ID                kallax.SchemaField
 	NodeID            kallax.SchemaField
 	Name              kallax.SchemaField
@@ -5449,8 +5616,9 @@ type schemaRepository struct {
 
 type schemaUser struct {
 	*kallax.BaseSchema
-	ID                      kallax.SchemaField
+	KallaxID                kallax.SchemaField
 	Login                   kallax.SchemaField
+	ID                      kallax.SchemaField
 	NodeID                  kallax.SchemaField
 	AvatarURL               kallax.SchemaField
 	HTMLURL                 kallax.SchemaField
@@ -5592,12 +5760,13 @@ var Schema = &schema{
 		BaseSchema: kallax.NewBaseSchema(
 			"issues",
 			"__issue",
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.ForeignKeys{},
 			func() kallax.Record {
 				return new(Issue)
 			},
 			false,
+			kallax.NewSchemaField("kallax_id"),
 			kallax.NewSchemaField("id"),
 			kallax.NewSchemaField("number"),
 			kallax.NewSchemaField("state"),
@@ -5623,6 +5792,7 @@ var Schema = &schema{
 			kallax.NewSchemaField("milestone_id"),
 			kallax.NewSchemaField("milestone_title"),
 		),
+		KallaxID:        kallax.NewSchemaField("kallax_id"),
 		ID:              kallax.NewSchemaField("id"),
 		Number:          kallax.NewSchemaField("number"),
 		State:           kallax.NewSchemaField("state"),
@@ -5656,12 +5826,13 @@ var Schema = &schema{
 		BaseSchema: kallax.NewBaseSchema(
 			"issue_comments",
 			"__issuecomment",
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.ForeignKeys{},
 			func() kallax.Record {
 				return new(IssueComment)
 			},
 			false,
+			kallax.NewSchemaField("kallax_id"),
 			kallax.NewSchemaField("id"),
 			kallax.NewSchemaField("node_id"),
 			kallax.NewSchemaField("body"),
@@ -5676,9 +5847,10 @@ var Schema = &schema{
 			kallax.NewSchemaField("repository_owner"),
 			kallax.NewSchemaField("repository_name"),
 		),
-		ID:     kallax.NewSchemaField("id"),
-		NodeID: kallax.NewSchemaField("node_id"),
-		Body:   kallax.NewSchemaField("body"),
+		KallaxID: kallax.NewSchemaField("kallax_id"),
+		ID:       kallax.NewSchemaField("id"),
+		NodeID:   kallax.NewSchemaField("node_id"),
+		Body:     kallax.NewSchemaField("body"),
 		Reactions: &schemaIssueCommentReactions{
 			BaseSchemaField: kallax.NewSchemaField("reactions").(*kallax.BaseSchemaField),
 			TotalCount:      kallax.NewJSONSchemaKey(kallax.JSONInt, "issue_comment", "reactions", "total_count"),
@@ -5703,14 +5875,15 @@ var Schema = &schema{
 		BaseSchema: kallax.NewBaseSchema(
 			"organizations",
 			"__organization",
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.ForeignKeys{},
 			func() kallax.Record {
 				return new(Organization)
 			},
 			false,
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.NewSchemaField("login"),
+			kallax.NewSchemaField("id"),
 			kallax.NewSchemaField("node_id"),
 			kallax.NewSchemaField("avatar_url"),
 			kallax.NewSchemaField("htmlurl"),
@@ -5735,8 +5908,9 @@ var Schema = &schema{
 			kallax.NewSchemaField("type"),
 			kallax.NewSchemaField("two_factor_requirement_enabled"),
 		),
-		ID:                          kallax.NewSchemaField("id"),
+		KallaxID:                    kallax.NewSchemaField("kallax_id"),
 		Login:                       kallax.NewSchemaField("login"),
+		ID:                          kallax.NewSchemaField("id"),
 		NodeID:                      kallax.NewSchemaField("node_id"),
 		AvatarURL:                   kallax.NewSchemaField("avatar_url"),
 		HTMLURL:                     kallax.NewSchemaField("htmlurl"),
@@ -5765,12 +5939,13 @@ var Schema = &schema{
 		BaseSchema: kallax.NewBaseSchema(
 			"pull_requests",
 			"__pullrequest",
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.ForeignKeys{},
 			func() kallax.Record {
 				return new(PullRequest)
 			},
 			false,
+			kallax.NewSchemaField("kallax_id"),
 			kallax.NewSchemaField("id"),
 			kallax.NewSchemaField("number"),
 			kallax.NewSchemaField("state"),
@@ -5821,6 +5996,7 @@ var Schema = &schema{
 			kallax.NewSchemaField("base_repository_owner"),
 			kallax.NewSchemaField("base_repository_name"),
 		),
+		KallaxID:            kallax.NewSchemaField("kallax_id"),
 		ID:                  kallax.NewSchemaField("id"),
 		Number:              kallax.NewSchemaField("number"),
 		State:               kallax.NewSchemaField("state"),
@@ -5883,12 +6059,13 @@ var Schema = &schema{
 		BaseSchema: kallax.NewBaseSchema(
 			"pull_request_comments",
 			"__pullrequestcomment",
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.ForeignKeys{},
 			func() kallax.Record {
 				return new(PullRequestComment)
 			},
 			false,
+			kallax.NewSchemaField("kallax_id"),
 			kallax.NewSchemaField("id"),
 			kallax.NewSchemaField("node_id"),
 			kallax.NewSchemaField("in_reply_to"),
@@ -5911,6 +6088,7 @@ var Schema = &schema{
 			kallax.NewSchemaField("repository_owner"),
 			kallax.NewSchemaField("repository_name"),
 		),
+		KallaxID:            kallax.NewSchemaField("kallax_id"),
 		ID:                  kallax.NewSchemaField("id"),
 		NodeID:              kallax.NewSchemaField("node_id"),
 		InReplyTo:           kallax.NewSchemaField("in_reply_to"),
@@ -5946,12 +6124,13 @@ var Schema = &schema{
 		BaseSchema: kallax.NewBaseSchema(
 			"pull_request_reviews",
 			"__pullrequestreview",
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.ForeignKeys{},
 			func() kallax.Record {
 				return new(PullRequestReview)
 			},
 			false,
+			kallax.NewSchemaField("kallax_id"),
 			kallax.NewSchemaField("id"),
 			kallax.NewSchemaField("node_id"),
 			kallax.NewSchemaField("body"),
@@ -5965,6 +6144,7 @@ var Schema = &schema{
 			kallax.NewSchemaField("repository_owner"),
 			kallax.NewSchemaField("repository_name"),
 		),
+		KallaxID:          kallax.NewSchemaField("kallax_id"),
 		ID:                kallax.NewSchemaField("id"),
 		NodeID:            kallax.NewSchemaField("node_id"),
 		Body:              kallax.NewSchemaField("body"),
@@ -5982,12 +6162,13 @@ var Schema = &schema{
 		BaseSchema: kallax.NewBaseSchema(
 			"repositories",
 			"__repository",
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.ForeignKeys{},
 			func() kallax.Record {
 				return new(Repository)
 			},
 			false,
+			kallax.NewSchemaField("kallax_id"),
 			kallax.NewSchemaField("id"),
 			kallax.NewSchemaField("node_id"),
 			kallax.NewSchemaField("name"),
@@ -6041,6 +6222,7 @@ var Schema = &schema{
 			kallax.NewSchemaField("organization_id"),
 			kallax.NewSchemaField("organization_name"),
 		),
+		KallaxID:    kallax.NewSchemaField("kallax_id"),
 		ID:          kallax.NewSchemaField("id"),
 		NodeID:      kallax.NewSchemaField("node_id"),
 		Name:        kallax.NewSchemaField("name"),
@@ -6134,14 +6316,15 @@ var Schema = &schema{
 		BaseSchema: kallax.NewBaseSchema(
 			"users",
 			"__user",
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.ForeignKeys{},
 			func() kallax.Record {
 				return new(User)
 			},
 			false,
-			kallax.NewSchemaField("id"),
+			kallax.NewSchemaField("kallax_id"),
 			kallax.NewSchemaField("login"),
+			kallax.NewSchemaField("id"),
 			kallax.NewSchemaField("node_id"),
 			kallax.NewSchemaField("avatar_url"),
 			kallax.NewSchemaField("htmlurl"),
@@ -6169,8 +6352,9 @@ var Schema = &schema{
 			kallax.NewSchemaField("collaborators"),
 			kallax.NewSchemaField("two_factor_authentication"),
 		),
-		ID:                      kallax.NewSchemaField("id"),
+		KallaxID:                kallax.NewSchemaField("kallax_id"),
 		Login:                   kallax.NewSchemaField("login"),
+		ID:                      kallax.NewSchemaField("id"),
 		NodeID:                  kallax.NewSchemaField("node_id"),
 		AvatarURL:               kallax.NewSchemaField("avatar_url"),
 		HTMLURL:                 kallax.NewSchemaField("htmlurl"),
