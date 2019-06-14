@@ -25,14 +25,14 @@ func NewRepositorySyncer(db *sql.DB, c *github.Client) *RepositorySyncer {
 }
 
 func (s *RepositorySyncer) QueueOrganization(q queue.Queue, owner string) error {
-	opts := &github.RepositoryListOptions{}
+	opts := &github.RepositoryListByOrgOptions{}
 	opts.ListOptions.PerPage = listOptionsPerPage
 
 	logger := log.New(log.Fields{"type": RepositorySyncTask, "owner": owner})
 	logger.Infof("starting to publish queue jobs")
 
 	for {
-		repositories, r, err := s.c.Repositories.List(context.TODO(), owner, opts)
+		repositories, r, err := s.c.Repositories.ListByOrg(context.TODO(), owner, opts)
 		if err != nil {
 			return err
 		}
