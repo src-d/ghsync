@@ -14,25 +14,28 @@ import (
 
 type UserSyncer struct {
 	db     *sql.DB
-	store  *models.UserStore
 	client *github.Client
 }
 
 func NewUserSyncer(db *sql.DB, c *github.Client) *UserSyncer {
 	return &UserSyncer{
 		db:     db,
-		store:  models.NewUserStore(db),
 		client: c,
 	}
 }
 
 func (s *UserSyncer) Sync(org string, logger log.Logger) error {
+	store := models.NewUserStore(s.db)
+	return store.Transaction(func(store *models.UserStore) error {
+		return s.doUsers(store, org, logger)
+	})
+}
+
+func (s *UserSyncer) doUsers(store *models.UserStore, org string, logger log.Logger) error {
 	opts := &github.ListMembersOptions{}
 	opts.ListOptions.PerPage = listOptionsPerPage
 
 	logger.Infof("starting to retrieve users")
-
-	// TODO transaction for faster times
 
 	// Get the list of all users
 	for {
@@ -44,7 +47,7 @@ func (s *UserSyncer) Sync(org string, logger log.Logger) error {
 		for _, user := range users {
 			logger := logger.With(log.Fields{"user": user.GetLogin()})
 
-			_, err := s.store.FindOne(models.NewUserQuery().
+			_, err := store.FindOne(models.NewUserQuery().
 				Where(kallax.And(
 					kallax.Eq(models.Schema.User.ID, user.GetID()),
 				)),
@@ -62,7 +65,7 @@ func (s *UserSyncer) Sync(org string, logger log.Logger) error {
 			record := models.NewUser()
 			record.User = *user
 
-			err = s.store.Insert(record)
+			err = store.Insert(record)
 			if err != nil {
 				logger.Errorf(err, "failed to write the resource into the DB")
 				return fmt.Errorf("failed to write the resource into the DB: %v", err)
