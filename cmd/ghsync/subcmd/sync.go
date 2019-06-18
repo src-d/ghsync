@@ -11,7 +11,7 @@ import (
 )
 
 type SyncCommand struct {
-	cli.Command `name:"sync"`
+	cli.Command `name:"deep" short-description:"Deep sync of GitHub data" long-description:"Deep sync of GitHub data"`
 
 	Token string `long:"token" env:"GHSYNC_TOKEN" description:"GitHub personal access token" required:"true"`
 	Org   string `long:"org" env:"GHSYNC_ORG" description:"Name of the GitHub organization" required:"true"`
