@@ -1,7 +1,7 @@
 package subcmd
 
 import (
-	"github.com/src-d/ghsync"
+	"github.com/src-d/ghsync/deep"
 
 	"gopkg.in/src-d/go-cli.v0"
 	"gopkg.in/src-d/go-log.v1"
@@ -50,7 +50,7 @@ func (c *SyncCommand) Execute(args []string) error {
 		return err
 	}
 
-	syncer := ghsync.NewSyncer(db, client, queue)
+	syncer := deep.NewSyncer(db, client, queue)
 
 	go func() {
 		err := syncer.DoOrganization(c.Org)

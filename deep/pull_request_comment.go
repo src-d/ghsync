@@ -1,4 +1,4 @@
-package ghsync
+package deep
 
 import (
 	"context"
