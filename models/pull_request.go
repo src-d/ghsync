@@ -112,5 +112,10 @@ func (i *PullRequest) BeforeSave() error {
 		}
 	}
 
+	if i.Body != nil {
+		body := utils.UTF8String(i.GetBody())
+		i.Body = &body
+	}
+
 	return nil
 }

@@ -34,5 +34,10 @@ func (i *PullRequestComment) BeforeSave() error {
 		i.UserLogin = i.User.GetLogin()
 	}
 
+	if i.Body != nil {
+		body := utils.UTF8String(i.GetBody())
+		i.Body = &body
+	}
+
 	return nil
 }
