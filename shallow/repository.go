@@ -82,14 +82,14 @@ func (s *RepositorySyncer) doRepo(repository *github.Repository, parentLogger lo
 		return nil
 	}
 
-	issueSyncer := NewIssueSyncer(s.db, s.client)
-	err = issueSyncer.Sync(repository.GetOwner().GetLogin(), repository.GetName(), logger)
+	prSyncer := NewPullRequestSyncer(s.db, s.client)
+	err = prSyncer.Sync(repository.GetOwner().GetLogin(), repository.GetName(), logger)
 	if err != nil {
 		return err
 	}
 
-	prSyncer := NewPullRequestSyncer(s.db, s.client)
-	err = prSyncer.Sync(repository.GetOwner().GetLogin(), repository.GetName(), logger)
+	issueSyncer := NewIssueSyncer(s.db, s.client)
+	err = issueSyncer.Sync(repository.GetOwner().GetLogin(), repository.GetName(), logger)
 	if err != nil {
 		return err
 	}
