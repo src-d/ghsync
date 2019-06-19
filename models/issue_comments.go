@@ -34,5 +34,10 @@ func (i *IssueComment) BeforeSave() error {
 
 	i.KallaxID = i.IssueComment.GetID()
 
+	if i.Body != nil {
+		body := utils.UTF8String(i.GetBody())
+		i.Body = &body
+	}
+
 	return nil
 }

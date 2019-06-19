@@ -66,5 +66,10 @@ func (i *Issue) BeforeSave() error {
 		i.MilestoneTitle = i.Milestone.GetTitle()
 	}
 
+	if i.Body != nil {
+		body := utils.UTF8String(i.GetBody())
+		i.Body = &body
+	}
+
 	return nil
 }
