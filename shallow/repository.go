@@ -82,28 +82,36 @@ func (s *RepositorySyncer) doRepo(repository *github.Repository, parentLogger lo
 		return nil
 	}
 
-	issueSyncer := NewIssueSyncer(s.db, s.client)
-	err = issueSyncer.Sync(repository.GetOwner().GetLogin(), repository.GetName(), logger)
-	if err != nil {
-		return err
-	}
+	return s.store.Transaction(func(store *models.RepositoryStore) error {
+		var issueStore models.IssueStore
+		kallax.StoreFrom(&issueStore, store)
 
-	prSyncer := NewPullRequestSyncer(s.db, s.client)
-	err = prSyncer.Sync(repository.GetOwner().GetLogin(), repository.GetName(), logger)
-	if err != nil {
-		return err
-	}
+		issueSyncer := NewIssueSyncer(&issueStore, s.client)
+		err = issueSyncer.Sync(repository.GetOwner().GetLogin(), repository.GetName(), logger)
+		if err != nil {
+			return err
+		}
 
-	record := models.NewRepository()
-	record.Repository = *repository
+		var prStore models.PullRequestStore
+		kallax.StoreFrom(&prStore, store)
 
-	err = s.store.Insert(record)
-	if err != nil {
-		logger.Errorf(err, "failed to write the resource into the DB")
-		return fmt.Errorf("failed to write the resource into the DB: %v", err)
-	}
+		prSyncer := NewPullRequestSyncer(&prStore, s.client)
+		err = prSyncer.Sync(repository.GetOwner().GetLogin(), repository.GetName(), logger)
+		if err != nil {
+			return err
+		}
 
-	logger.Debugf("resource written in the DB")
+		record := models.NewRepository()
+		record.Repository = *repository
 
-	return nil
+		err = s.store.Insert(record)
+		if err != nil {
+			logger.Errorf(err, "failed to write the resource into the DB")
+			return fmt.Errorf("failed to write the resource into the DB: %v", err)
+		}
+
+		logger.Debugf("resource written in the DB")
+
+		return nil
+	})
 }

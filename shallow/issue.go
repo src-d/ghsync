@@ -2,31 +2,28 @@ package shallow
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 
 	"github.com/src-d/ghsync/models"
 
 	"github.com/google/go-github/github"
-	"gopkg.in/src-d/go-kallax.v1"
 	"gopkg.in/src-d/go-log.v1"
 )
 
 type IssueSyncer struct {
-	db     *sql.DB
+	store  *models.IssueStore
 	client *github.Client
 }
 
-func NewIssueSyncer(db *sql.DB, c *github.Client) *IssueSyncer {
+func NewIssueSyncer(s *models.IssueStore, c *github.Client) *IssueSyncer {
 	return &IssueSyncer{
-		db:     db,
+		store:  s,
 		client: c,
 	}
 }
 
 func (s *IssueSyncer) Sync(owner, repo string, logger log.Logger) error {
-	store := models.NewIssueStore(s.db)
-	return store.Transaction(func(store *models.IssueStore) error {
+	return s.store.Transaction(func(store *models.IssueStore) error {
 		return s.doIssues(store, owner, repo, logger)
 	})
 }
@@ -51,24 +48,6 @@ func (s *IssueSyncer) doIssues(store *models.IssueStore, owner, repo string, log
 			}
 
 			logger := logger.With(log.Fields{"issue": i.GetNumber()})
-
-			_, err := store.FindOne(models.NewIssueQuery().
-				Where(kallax.And(
-					kallax.Eq(models.Schema.Issue.RepositoryOwner, owner),
-					kallax.Eq(models.Schema.Issue.RepositoryName, repo),
-					kallax.Eq(models.Schema.Issue.Number, i.GetNumber()),
-				)),
-			)
-
-			if err != nil && err != kallax.ErrNotFound {
-				logger.Errorf(err, "failed to read the resource from the DB")
-				return fmt.Errorf("failed to read the resource from the DB: %v", err)
-			}
-
-			if err == nil {
-				logger.Infof("resource already exists, skipping")
-				continue
-			}
 
 			record := models.NewIssue()
 			record.Issue = *i
