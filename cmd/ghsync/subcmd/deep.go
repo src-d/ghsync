@@ -10,7 +10,7 @@ import (
 	_ "gopkg.in/src-d/go-queue.v1/memory"
 )
 
-type SyncCommand struct {
+type DeepCommand struct {
 	cli.Command `name:"deep" short-description:"Deep sync of GitHub data" long-description:"Deep sync of GitHub data"`
 
 	Token string `long:"token" env:"GHSYNC_TOKEN" description:"GitHub personal access token" required:"true"`
@@ -24,7 +24,7 @@ type SyncCommand struct {
 	Postgres PostgresOpt `group:"PostgreSQL connection options"`
 }
 
-func (c *SyncCommand) Execute(args []string) error {
+func (c *DeepCommand) Execute(args []string) error {
 	db, err := c.Postgres.initDB()
 	if err != nil {
 		return err
