@@ -99,6 +99,7 @@ func (o PostgresOpt) createStatusTable() error {
     org VARCHAR (50) NOT NULL,
     part VARCHAR (20) NOT NULL,
     done INTEGER NOT NULL DEFAULT 0,
+    failed INTEGER NOT NULL DEFAULT 0,
     total INTEGER DEFAULT NULL,
     UNIQUE (org, part)
 );`, statusTableName)

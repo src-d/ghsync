@@ -66,19 +66,33 @@ func (s *RepositorySyncer) Sync(owner string, logger log.Logger) error {
 	for _, repository := range repos {
 		err := s.doRepo(repository, logger)
 		if err != nil {
+			stm := fmt.Sprintf("UPDATE %s SET failed=failed + 1 WHERE org='%s' AND part='repository'",
+				s.statusTableName, owner)
+			if err = s.updateStatus(stm); err != nil {
+				return err
+			}
+
 			return err
 		}
 
 		stm := fmt.Sprintf("UPDATE %s SET done=done + 1 WHERE org='%s' AND part='repository'",
 			s.statusTableName, owner)
-		log.Debugf("running statement: %s", stm)
-		if _, err := s.db.Exec(stm); err != nil {
-			return fmt.Errorf("an error occured while updating %s table: %v",
-				s.statusTableName, err)
+		if err = s.updateStatus(stm); err != nil {
+			return err
 		}
 	}
 
 	logger.Infof("finished to retrieve repositories")
+
+	return nil
+}
+
+func (s *RepositorySyncer) updateStatus(stm string) error {
+	log.Debugf("running statement: %s", stm)
+	if _, err := s.db.Exec(stm); err != nil {
+		return fmt.Errorf("an error occured while updating %s table: %v",
+			s.statusTableName, err)
+	}
 
 	return nil
 }
