@@ -102,7 +102,7 @@ func newClient(token string) (*github.Client, error) {
 
 	t := httpcache.NewTransport(diskcache.New(dirPath))
 	t.Transport = &RemoveHeaderTransport{utils.NewRateLimitTransport(http.Transport)}
-	http.Transport = t
+	http.Transport = &RetryTransport{T: t}
 
 	return github.NewClient(http), nil
 }
@@ -116,4 +116,19 @@ func (t *RemoveHeaderTransport) RoundTrip(req *http.Request) (*http.Response, er
 	req.Header.Del("X-Ratelimit-Remaining")
 	req.Header.Del("X-Ratelimit-Reset")
 	return t.T.RoundTrip(req)
+}
+
+type RetryTransport struct {
+	T http.RoundTripper
+}
+
+func (t *RetryTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	var r *http.Response
+	var err error
+	utils.Retry(func() error {
+		r, err = t.T.RoundTrip(req)
+		return err
+	})
+
+	return r, err
 }
