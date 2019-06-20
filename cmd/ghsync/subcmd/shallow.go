@@ -11,9 +11,7 @@ import (
 type ShallowCommand struct {
 	cli.Command `name:"shallow" short-description:"Shallow sync of GitHub data" long-description:"Shallow sync of GitHub data"`
 
-	Token string `long:"token" env:"GHSYNC_TOKEN" description:"GitHub personal access token" required:"true"`
-	Orgs  string `long:"orgs" env:"GHSYNC_ORGS" description:"Comma-separated list of GitHub organization names" required:"true"`
-
+	GithubOptions
 	Postgres PostgresOpt `group:"PostgreSQL connection options"`
 }
 
