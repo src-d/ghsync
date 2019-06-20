@@ -37,7 +37,7 @@ func (c *ShallowCommand) Execute(args []string) error {
 		return err
 	}
 
-	orgSyncer := shallow.NewOrganizationSyncer(db, client)
+	orgSyncer := shallow.NewOrganizationSyncer(db, client, statusTableName)
 	for _, o := range orgs {
 		err = orgSyncer.Sync(o)
 		if err != nil {

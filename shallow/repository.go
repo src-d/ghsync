@@ -13,16 +13,18 @@ import (
 )
 
 type RepositorySyncer struct {
-	db     *sql.DB
-	store  *models.RepositoryStore
-	client *github.Client
+	db              *sql.DB
+	store           *models.RepositoryStore
+	client          *github.Client
+	statusTableName string
 }
 
-func NewRepositorySyncer(db *sql.DB, c *github.Client) *RepositorySyncer {
+func NewRepositorySyncer(db *sql.DB, c *github.Client, statusTableName string) *RepositorySyncer {
 	return &RepositorySyncer{
-		db:     db,
-		store:  models.NewRepositoryStore(db),
-		client: c,
+		db:              db,
+		store:           models.NewRepositoryStore(db),
+		client:          c,
+		statusTableName: statusTableName,
 	}
 }
 
@@ -52,11 +54,27 @@ func (s *RepositorySyncer) Sync(owner string, logger log.Logger) error {
 		opts.Page = r.NextPage
 	}
 
+	stm := fmt.Sprintf("UPDATE %s SET total=%d WHERE org='%s' AND part='repository'",
+		s.statusTableName, len(repos), owner)
+	log.Debugf("running statement: %s", stm)
+	if _, err := s.db.Exec(stm); err != nil {
+		return fmt.Errorf("an error occured while updating %s table: %v",
+			s.statusTableName, err)
+	}
+
 	// Process each one of them
 	for _, repository := range repos {
 		err := s.doRepo(repository, logger)
 		if err != nil {
 			return err
+		}
+
+		stm := fmt.Sprintf("UPDATE %s SET done=done + 1 WHERE org='%s' AND part='repository'",
+			s.statusTableName, owner)
+		log.Debugf("running statement: %s", stm)
+		if _, err := s.db.Exec(stm); err != nil {
+			return fmt.Errorf("an error occured while updating %s table: %v",
+				s.statusTableName, err)
 		}
 	}
 

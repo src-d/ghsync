@@ -13,14 +13,16 @@ import (
 )
 
 type UserSyncer struct {
-	db     *sql.DB
-	client *github.Client
+	db              *sql.DB
+	client          *github.Client
+	statusTableName string
 }
 
-func NewUserSyncer(db *sql.DB, c *github.Client) *UserSyncer {
+func NewUserSyncer(db *sql.DB, c *github.Client, statusTableName string) *UserSyncer {
 	return &UserSyncer{
-		db:     db,
-		client: c,
+		db:              db,
+		client:          c,
+		statusTableName: statusTableName,
 	}
 }
 
@@ -37,6 +39,8 @@ func (s *UserSyncer) doUsers(store *models.UserStore, org string, logger log.Log
 
 	logger.Infof("starting to retrieve users")
 
+	allUsers := make([]*github.User, 0)
+
 	// Get the list of all users
 	for {
 		users, r, err := s.client.Organizations.ListMembers(context.TODO(), org, opts)
@@ -44,34 +48,8 @@ func (s *UserSyncer) doUsers(store *models.UserStore, org string, logger log.Log
 			return err
 		}
 
-		for _, user := range users {
-			logger := logger.With(log.Fields{"user": user.GetLogin()})
-
-			_, err := store.FindOne(models.NewUserQuery().
-				Where(kallax.And(
-					kallax.Eq(models.Schema.User.ID, user.GetID()),
-				)),
-			)
-			if err != nil && err != kallax.ErrNotFound {
-				logger.With(log.Fields{"user": user.GetLogin()}).Errorf(err, "failed to read the resource from the DB")
-				return fmt.Errorf("failed to read the resource from the DB: %v", err)
-			}
-
-			if err == nil {
-				logger.With(log.Fields{"user": user.GetLogin()}).Infof("resource already exists, skipping")
-				continue
-			}
-
-			record := models.NewUser()
-			record.User = *user
-
-			err = store.Insert(record)
-			if err != nil {
-				logger.Errorf(err, "failed to write the resource into the DB")
-				return fmt.Errorf("failed to write the resource into the DB: %v", err)
-			}
-
-			logger.Debugf("resource written in the DB")
+		for _, u := range users {
+			allUsers = append(allUsers, u)
 		}
 
 		if r.NextPage == 0 {
@@ -79,6 +57,52 @@ func (s *UserSyncer) doUsers(store *models.UserStore, org string, logger log.Log
 		}
 
 		opts.Page = r.NextPage
+	}
+
+	stm := fmt.Sprintf("UPDATE %s SET total=%d WHERE org='%s' AND part='user'",
+		s.statusTableName, len(allUsers), org)
+	log.Debugf("running statement: %s", stm)
+	if _, err := s.db.Exec(stm); err != nil {
+		return fmt.Errorf("an error occured while updating %s table: %v",
+			s.statusTableName, err)
+	}
+
+	for _, user := range allUsers {
+		logger := logger.With(log.Fields{"user": user.GetLogin()})
+
+		_, err := store.FindOne(models.NewUserQuery().
+			Where(kallax.And(
+				kallax.Eq(models.Schema.User.ID, user.GetID()),
+			)),
+		)
+		if err != nil && err != kallax.ErrNotFound {
+			logger.With(log.Fields{"user": user.GetLogin()}).Errorf(err, "failed to read the resource from the DB")
+			return fmt.Errorf("failed to read the resource from the DB: %v", err)
+		}
+
+		if err == nil {
+			logger.With(log.Fields{"user": user.GetLogin()}).Infof("resource already exists, skipping")
+			continue
+		}
+
+		record := models.NewUser()
+		record.User = *user
+
+		err = store.Insert(record)
+		if err != nil {
+			logger.Errorf(err, "failed to write the resource into the DB")
+			return fmt.Errorf("failed to write the resource into the DB: %v", err)
+		}
+
+		logger.Debugf("resource written in the DB")
+
+		stm := fmt.Sprintf("UPDATE %s SET done=done + 1 WHERE org='%s' AND part='user'",
+			s.statusTableName, org)
+		log.Debugf("running statement: %s", stm)
+		if _, err := s.db.Exec(stm); err != nil {
+			return fmt.Errorf("an error occured while updating %s table: %v",
+				s.statusTableName, err)
+		}
 	}
 
 	logger.Infof("finished to retrieve users")
