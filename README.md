@@ -56,3 +56,20 @@ kallax migrate --input models --out models/sql --name some_name
 # Update bindata
 make bindata
 ```
+
+
+## Contribute
+
+[Contributions](https://github.com/src-d/ghsync/issues) are more than welcome, if you are interested please take a look to
+our [source{d} Contributing Guidelines](https://github.com/src-d/guide/blob/master/engineering/documents/CONTRIBUTING.md).
+
+
+## Code of Conduct
+
+All activities under source{d} projects are governed by the
+[source{d} code of conduct](https://github.com/src-d/guide/blob/master/.github/CODE_OF_CONDUCT.md).
+
+
+## License
+
+GPL v3.0, see [LICENSE](LICENSE.md).
