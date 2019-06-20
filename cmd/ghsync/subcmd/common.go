@@ -22,6 +22,7 @@ import (
 )
 
 const maxVersion uint = 1560510971
+const statusTableName = "status"
 
 type PostgresOpt struct {
 	DB       string `long:"postgres-db" env:"GHSYNC_POSTGRES_DB" description:"PostgreSQL DB" default:"ghsync"`
@@ -72,7 +73,44 @@ func (o PostgresOpt) initDB() (db *sql.DB, err error) {
 
 	log.With(log.Fields{"db-version": dbVersion}).Debugf("the DB version is up to date")
 	log.Infof("connection with the DB established")
+	if err = o.createStatusTable(); err != nil {
+		return db, err
+	}
+
 	return db, nil
+}
+
+func (o PostgresOpt) createStatusTable() error {
+	log.Debugf(fmt.Sprintf("creating status table '%s'", statusTableName))
+
+	db, err := sql.Open("postgres", o.URL())
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err != nil {
+			db.Close()
+		}
+	}()
+
+	stm := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
+    id serial PRIMARY KEY,
+    org VARCHAR (50) NOT NULL,
+    part VARCHAR (20) NOT NULL,
+    done INTEGER NOT NULL DEFAULT 0,
+    total INTEGER DEFAULT NULL,
+    UNIQUE (org, part)
+);`, statusTableName)
+	log.Debugf("running statement: %s", stm)
+	_, err = db.Exec(stm)
+	if err != nil {
+		return fmt.Errorf("an error occured while ensureing the status table: %v", err)
+	}
+
+	log.Infof("status table '%s' created", statusTableName)
+
+	return nil
 }
 
 func newMigrate(url string) (*migrate.Migrate, error) {
