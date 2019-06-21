@@ -60,7 +60,7 @@ func (s *UserSyncer) doUsers(store *models.UserStore, org string, logger log.Log
 		opts.Page = r.NextPage
 	}
 
-	stm := fmt.Sprintf("UPDATE %s SET total=%d WHERE org='%s' AND part='user'",
+	stm := fmt.Sprintf("UPDATE %s SET total=%d WHERE org='%s' AND entity='user'",
 		s.statusTableName, len(allUsers), org)
 	log.Debugf("running statement: %s", stm)
 	if _, err := s.db.Exec(stm); err != nil {
@@ -71,7 +71,7 @@ func (s *UserSyncer) doUsers(store *models.UserStore, org string, logger log.Log
 	for _, user := range allUsers {
 		err := s.doUser(user, logger)
 		if err != nil {
-			stm := fmt.Sprintf("UPDATE %s SET failed=failed + 1 WHERE org='%s' AND part='user'",
+			stm := fmt.Sprintf("UPDATE %s SET failed=failed + 1 WHERE org='%s' AND entity='user'",
 				s.statusTableName, org)
 			if err = s.updateStatus(stm); err != nil {
 				return err
@@ -80,7 +80,7 @@ func (s *UserSyncer) doUsers(store *models.UserStore, org string, logger log.Log
 			return err
 		}
 
-		stm := fmt.Sprintf("UPDATE %s SET done=done + 1 WHERE org='%s' AND part='user'",
+		stm := fmt.Sprintf("UPDATE %s SET done=done + 1 WHERE org='%s' AND entity='user'",
 			s.statusTableName, org)
 		if err = s.updateStatus(stm); err != nil {
 			return err

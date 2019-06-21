@@ -54,7 +54,7 @@ func (s *RepositorySyncer) Sync(owner string, logger log.Logger) error {
 		opts.Page = r.NextPage
 	}
 
-	stm := fmt.Sprintf("UPDATE %s SET total=%d WHERE org='%s' AND part='repository'",
+	stm := fmt.Sprintf("UPDATE %s SET total=%d WHERE org='%s' AND entity='repository'",
 		s.statusTableName, len(repos), owner)
 	log.Debugf("running statement: %s", stm)
 	if _, err := s.db.Exec(stm); err != nil {
@@ -66,7 +66,7 @@ func (s *RepositorySyncer) Sync(owner string, logger log.Logger) error {
 	for _, repository := range repos {
 		err := s.doRepo(repository, logger)
 		if err != nil {
-			stm := fmt.Sprintf("UPDATE %s SET failed=failed + 1 WHERE org='%s' AND part='repository'",
+			stm := fmt.Sprintf("UPDATE %s SET failed=failed + 1 WHERE org='%s' AND entity='repository'",
 				s.statusTableName, owner)
 			if err = s.updateStatus(stm); err != nil {
 				return err
@@ -75,7 +75,7 @@ func (s *RepositorySyncer) Sync(owner string, logger log.Logger) error {
 			return err
 		}
 
-		stm := fmt.Sprintf("UPDATE %s SET done=done + 1 WHERE org='%s' AND part='repository'",
+		stm := fmt.Sprintf("UPDATE %s SET done=done + 1 WHERE org='%s' AND entity='repository'",
 			s.statusTableName, owner)
 		if err = s.updateStatus(stm); err != nil {
 			return err

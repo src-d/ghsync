@@ -97,11 +97,11 @@ func (o PostgresOpt) createStatusTable() error {
 	stm := fmt.Sprintf(`CREATE TABLE IF NOT EXISTS %s(
     id serial PRIMARY KEY,
     org VARCHAR (50) NOT NULL,
-    part VARCHAR (20) NOT NULL,
+    entity VARCHAR (20) NOT NULL,
     done INTEGER NOT NULL DEFAULT 0,
     failed INTEGER NOT NULL DEFAULT 0,
     total INTEGER DEFAULT NULL,
-    UNIQUE (org, part)
+    UNIQUE (org, entity)
 );`, statusTableName)
 	log.Debugf("running statement: %s", stm)
 	_, err = db.Exec(stm)

@@ -59,7 +59,7 @@ func (c *ShallowCommand) initStatus(db *sql.DB, tableName string, orgs []string)
 	b.WriteString(fmt.Sprintf("('%s', 'repository'),", orgs[len(orgs)-1]))
 	b.WriteString(fmt.Sprintf("('%s', 'user')", orgs[len(orgs)-1]))
 
-	stm := fmt.Sprintf("INSERT INTO %s (org, part) VALUES %s ON CONFLICT (org, part) DO UPDATE SET failed=0, done=0, total=NULL;", tableName, b.String())
+	stm := fmt.Sprintf("INSERT INTO %s (org, entity) VALUES %s ON CONFLICT (org, entity) DO UPDATE SET failed=0, done=0, total=NULL;", tableName, b.String())
 	log.Debugf("running statement: %s", stm)
 	_, err := db.Exec(stm)
 	if err != nil {
