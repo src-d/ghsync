@@ -1,12 +1,9 @@
 package utils
 
 import (
-	"bytes"
-	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -55,45 +52,37 @@ func (rlt *rateLimitTransport) RoundTrip(req *http.Request) (*http.Response, err
 		return resp, err
 	}
 
-	// Make response body accessible for retries & debugging
-	// (work around bug in GitHub SDK)
-	// See https://github.com/google/go-github/pull/986
-	r1, r2, err := drainBody(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	resp.Body = r1
-	ghErr := github.CheckResponse(resp)
-	resp.Body = r2
-
-	// When you have been limited, use the Retry-After response header to slow down.
-	if arlErr, ok := ghErr.(*github.AbuseRateLimitError); ok {
+	if resp.Header.Get("X-RateLimit-Remaining") == "0" {
 		rlt.delayNextRequest = false
-		retryAfter := arlErr.GetRetryAfter()
-		log.Printf("[DEBUG] Abuse detection mechanism triggered, sleeping for %s before retrying",
-			retryAfter)
-		time.Sleep(retryAfter)
-		rlt.unlock(req)
-		return rlt.RoundTrip(req)
-	}
 
-	if rlErr, ok := ghErr.(*github.RateLimitError); ok {
-		rlt.delayNextRequest = false
-		retryAfter := rlErr.Rate.Reset.Sub(time.Now())
-
-		if retryAfter < 0 {
-			fmt.Println("what!", rlErr.Rate.Reset, time.Now())
+		var limit int
+		if limitHeader := resp.Header.Get("X-RateLimit-Limit"); limitHeader != "" {
+			limit, _ = strconv.Atoi(limitHeader)
 		}
 
+		var reset github.Timestamp
+		if resetHeader := resp.Header.Get("X-RateLimit-Reset"); resetHeader != "" {
+			if v, _ := strconv.ParseInt(resetHeader, 10, 64); v != 0 {
+				reset = github.Timestamp{time.Unix(v, 0)}
+			}
+		}
+
+		retryAfter := reset.Sub(time.Now())
+
 		log.Printf("[DEBUG] Rate limit %d reached, sleeping for %s before retrying",
-			rlErr.Rate.Limit, retryAfter)
-		time.Sleep(retryAfter)
+			limit, retryAfter)
+		if retryAfter < 0 {
+			log.Printf("[WARN] retryAfter < 0. reset: %v | now: %v",
+				reset, time.Now())
+		} else {
+			time.Sleep(retryAfter)
+		}
+
 		rlt.unlock(req)
 		return rlt.RoundTrip(req)
 	}
 
 	rlt.unlock(req)
-
 	return resp, nil
 }
 
@@ -103,23 +92,6 @@ func (rlt *rateLimitTransport) lock(req *http.Request) {
 
 func (rlt *rateLimitTransport) unlock(req *http.Request) {
 	rlt.m.Unlock()
-}
-
-// drainBody reads all of b to memory and then returns two equivalent
-// ReadClosers yielding the same bytes.
-func drainBody(b io.ReadCloser) (r1, r2 io.ReadCloser, err error) {
-	if b == http.NoBody {
-		// No copying needed. Preserve the magic sentinel meaning of NoBody.
-		return http.NoBody, http.NoBody, nil
-	}
-	var buf bytes.Buffer
-	if _, err = buf.ReadFrom(b); err != nil {
-		return nil, b, err
-	}
-	if err = b.Close(); err != nil {
-		return nil, b, err
-	}
-	return ioutil.NopCloser(&buf), ioutil.NopCloser(bytes.NewReader(buf.Bytes())), nil
 }
 
 func isWriteMethod(method string) bool {
