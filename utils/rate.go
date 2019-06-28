@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"bytes"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -52,6 +55,28 @@ func (rlt *rateLimitTransport) RoundTrip(req *http.Request) (*http.Response, err
 		return resp, err
 	}
 
+	// Make response body accessible for retries & debugging
+	// (work around bug in GitHub SDK)
+	// See https://github.com/google/go-github/pull/986
+	r1, r2, err := drainBody(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	resp.Body = r1
+	ghErr := github.CheckResponse(resp)
+	resp.Body = r2
+
+	// When you have been limited, use the Retry-After response header to slow down.
+	if arlErr, ok := ghErr.(*github.AbuseRateLimitError); ok {
+		rlt.delayNextRequest = false
+		retryAfter := arlErr.GetRetryAfter()
+		log.Printf("[DEBUG] Abuse detection mechanism triggered, sleeping for %s before retrying",
+			retryAfter)
+		time.Sleep(retryAfter)
+		rlt.unlock(req)
+		return rlt.RoundTrip(req)
+	}
+
 	if resp.Header.Get("X-RateLimit-Remaining") == "0" {
 		rlt.delayNextRequest = false
 
@@ -92,6 +117,23 @@ func (rlt *rateLimitTransport) lock(req *http.Request) {
 
 func (rlt *rateLimitTransport) unlock(req *http.Request) {
 	rlt.m.Unlock()
+}
+
+// drainBody reads all of b to memory and then returns two equivalent
+// ReadClosers yielding the same bytes.
+func drainBody(b io.ReadCloser) (r1, r2 io.ReadCloser, err error) {
+	if b == http.NoBody {
+		// No copying needed. Preserve the magic sentinel meaning of NoBody.
+		return http.NoBody, http.NoBody, nil
+	}
+	var buf bytes.Buffer
+	if _, err = buf.ReadFrom(b); err != nil {
+		return nil, b, err
+	}
+	if err = b.Close(); err != nil {
+		return nil, b, err
+	}
+	return ioutil.NopCloser(&buf), ioutil.NopCloser(bytes.NewReader(buf.Bytes())), nil
 }
 
 func isWriteMethod(method string) bool {
