@@ -2,11 +2,11 @@ package utils
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -77,23 +77,37 @@ func (rlt *rateLimitTransport) RoundTrip(req *http.Request) (*http.Response, err
 		return rlt.RoundTrip(req)
 	}
 
-	if rlErr, ok := ghErr.(*github.RateLimitError); ok {
+	if resp.Header.Get("X-RateLimit-Remaining") == "0" {
 		rlt.delayNextRequest = false
-		retryAfter := rlErr.Rate.Reset.Sub(time.Now())
 
-		if retryAfter < 0 {
-			fmt.Println("what!", rlErr.Rate.Reset, time.Now())
+		var limit int
+		if limitHeader := resp.Header.Get("X-RateLimit-Limit"); limitHeader != "" {
+			limit, _ = strconv.Atoi(limitHeader)
 		}
 
+		var reset github.Timestamp
+		if resetHeader := resp.Header.Get("X-RateLimit-Reset"); resetHeader != "" {
+			if v, _ := strconv.ParseInt(resetHeader, 10, 64); v != 0 {
+				reset = github.Timestamp{time.Unix(v, 0)}
+			}
+		}
+
+		retryAfter := reset.Sub(time.Now())
+
 		log.Printf("[DEBUG] Rate limit %d reached, sleeping for %s before retrying",
-			rlErr.Rate.Limit, retryAfter)
-		time.Sleep(retryAfter)
+			limit, retryAfter)
+		if retryAfter < 0 {
+			log.Printf("[WARN] retryAfter < 0. reset: %v | now: %v",
+				reset, time.Now())
+		} else {
+			time.Sleep(retryAfter)
+		}
+
 		rlt.unlock(req)
 		return rlt.RoundTrip(req)
 	}
 
 	rlt.unlock(req)
-
 	return resp, nil
 }
 
