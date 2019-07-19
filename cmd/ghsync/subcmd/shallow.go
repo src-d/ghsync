@@ -21,6 +21,13 @@ type ShallowCommand struct {
 }
 
 func (c *ShallowCommand) Execute(args []string) error {
+	if c.Orgs == "" {
+		log.Warningf("no organizations found, at least one " +
+			"organization must be provided")
+
+		return nil
+	}
+
 	db, err := c.Postgres.initDB()
 	if err != nil {
 		return err
