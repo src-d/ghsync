@@ -20,6 +20,7 @@ func main() {
 	app.AddCommand(&subcmd.ShallowCommand{})
 	app.AddCommand(&subcmd.DeepCommand{})
 	app.AddCommand(&subcmd.MigrateCommand{})
+	app.AddCommand(&subcmd.ValidateCommand{})
 
 	app.RunMain()
 }
