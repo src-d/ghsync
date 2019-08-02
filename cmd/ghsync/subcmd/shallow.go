@@ -17,6 +17,8 @@ type ShallowCommand struct {
 	Token string `long:"token" env:"GHSYNC_TOKEN" description:"GitHub personal access token" required:"true"`
 	Orgs  string `long:"orgs" env:"GHSYNC_ORGS" description:"Comma-separated list of GitHub organization names" required:"true"`
 
+	NoForks bool `long:"no-forks"  env:"GHSYNC_NO_FORKS" description:"github forked repositories will be skipped"`
+
 	Postgres PostgresOpt `group:"PostgreSQL connection options"`
 }
 
@@ -44,7 +46,7 @@ func (c *ShallowCommand) Execute(args []string) error {
 		return err
 	}
 
-	orgSyncer := shallow.NewOrganizationSyncer(db, client, statusTableName)
+	orgSyncer := shallow.NewOrganizationSyncer(db, client, statusTableName, c.NoForks)
 	for _, o := range orgs {
 		err = orgSyncer.Sync(o)
 		if err != nil {

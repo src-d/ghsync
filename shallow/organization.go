@@ -17,14 +17,16 @@ type OrganizationSyncer struct {
 	store           *models.OrganizationStore
 	client          *github.Client
 	statusTableName string
+	skipForks       bool
 }
 
-func NewOrganizationSyncer(db *sql.DB, c *github.Client, statusTableName string) *OrganizationSyncer {
+func NewOrganizationSyncer(db *sql.DB, c *github.Client, statusTableName string, skipForks bool) *OrganizationSyncer {
 	return &OrganizationSyncer{
 		db:              db,
 		store:           models.NewOrganizationStore(db),
 		client:          c,
 		statusTableName: statusTableName,
+		skipForks:       skipForks,
 	}
 }
 
@@ -56,7 +58,7 @@ func (s *OrganizationSyncer) Sync(login string) error {
 		return err
 	}
 
-	repoSyncer := NewRepositorySyncer(s.db, s.client, s.statusTableName)
+	repoSyncer := NewRepositorySyncer(s.db, s.client, s.statusTableName, s.skipForks)
 	err = repoSyncer.Sync(login, logger)
 	if err != nil {
 		return err

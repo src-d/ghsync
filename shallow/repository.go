@@ -17,14 +17,16 @@ type RepositorySyncer struct {
 	store           *models.RepositoryStore
 	client          *github.Client
 	statusTableName string
+	skipForks       bool
 }
 
-func NewRepositorySyncer(db *sql.DB, c *github.Client, statusTableName string) *RepositorySyncer {
+func NewRepositorySyncer(db *sql.DB, c *github.Client, statusTableName string, skipForks bool) *RepositorySyncer {
 	return &RepositorySyncer{
 		db:              db,
 		store:           models.NewRepositoryStore(db),
 		client:          c,
 		statusTableName: statusTableName,
+		skipForks:       skipForks,
 	}
 }
 
@@ -44,6 +46,9 @@ func (s *RepositorySyncer) Sync(owner string, logger log.Logger) error {
 		}
 
 		for _, r := range repositories {
+			if s.skipForks && r.GetFork() {
+				continue
+			}
 			repos = append(repos, r)
 		}
 
