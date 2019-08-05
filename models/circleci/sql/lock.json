@@ -1,0 +1,643 @@
+{
+  "Tables": [
+    {
+      "Name": "builds",
+      "Columns": [
+        {
+          "Name": "id",
+          "Type": "serial",
+          "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "author_date",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "author_email",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "author_name",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "body",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "branch",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "build_num",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "build_parameters",
+          "Type": "jsonb",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "build_time_millis",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "build_url",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "canceled",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "circle_yml",
+          "Type": "jsonb",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "committer_date",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "committer_email",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "committer_name",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "compare",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "dont_build",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "failed",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "feature_flags",
+          "Type": "jsonb",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "infrastructure_fail",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "is_first_green_build",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "job_name",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "lifecycle",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "oss",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "outcome",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "parallel",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "platform",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "queued_at",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "reponame",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "retries",
+          "Type": "bigint[]",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "retry_of",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "start_time",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "status",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "stop_time",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "subject",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "timedout",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "usage_queued_at",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "username",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "vcs_revision",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "vcs_tag",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "vcsurl",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "why",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "previous_build_num",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "previous_successful_build_num",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "pull_request_urls",
+          "Type": "text[]",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        }
+      ]
+    },
+    {
+      "Name": "outputs",
+      "Columns": [
+        {
+          "Name": "id",
+          "Type": "serial",
+          "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "type",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "time",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "message",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "url",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "build_num",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "username",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "reponame",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        }
+      ]
+    },
+    {
+      "Name": "steps",
+      "Columns": [
+        {
+          "Name": "id",
+          "Type": "serial",
+          "PrimaryKey": true,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "background",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "bash_command",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "canceled",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "continue",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "end_time",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "exit_code",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "failed",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "has_output",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "_index",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "infrastructure_fail",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "messages",
+          "Type": "text[]",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "name",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "output_url",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "parallel",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "run_time_millis",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "start_time",
+          "Type": "timestamptz",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "status",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "step",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "timedout",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": false,
+          "Unique": false
+        },
+        {
+          "Name": "truncated",
+          "Type": "boolean",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "type",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "build_num",
+          "Type": "bigint",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "username",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        },
+        {
+          "Name": "reponame",
+          "Type": "text",
+          "PrimaryKey": false,
+          "Reference": null,
+          "NotNull": true,
+          "Unique": false
+        }
+      ]
+    }
+  ]
+}
