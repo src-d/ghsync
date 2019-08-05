@@ -25,5 +25,5 @@ func (c *CircleCICommand) Execute(args []string) error {
 	client := &client.Client{} // Token not rquired to query info for public projects
 
 	syncer := circleci.NewBuildSyncer(db, client)
-	return syncer.Sync("pytorch", "pytorch")
+	return syncer.Sync("pytorch", "pytorch", false)
 }

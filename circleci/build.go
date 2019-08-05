@@ -31,59 +31,77 @@ func NewBuildSyncer(db *sql.DB, c *circleci.Client) *BuildSyncer {
 	}
 }
 
-func (s *BuildSyncer) Sync(account, repository string) error {
-	builds, err := s.c.ListRecentBuildsForProject(account, repository, "", "", 100, 0)
-	if err != nil {
-		return err
-	}
+func (s *BuildSyncer) Sync(account, repository string, update bool) error {
+	var limit, offset int
+	limit = 500
 
-	fmt.Println(account, repository)
-	for _, build := range builds {
-		if err := s.SyncOne(account, repository, build.BuildNum); err != nil {
+	for {
+		count, err := s.doSync(account, repository, update, limit, offset)
+		if err != nil {
 			return err
 		}
 
-		continue
-
-		if err := s.doSyncBuild(build); err != nil {
+		if count == 0 || err != nil {
 			return err
 		}
+
+		offset += count
 	}
 
-	return err
+	return nil
 }
 
-func (s *BuildSyncer) SyncOne(account, repository string, buildNum int) error {
+func (s *BuildSyncer) doSync(account, repository string, update bool, limit, offset int) (int, error) {
+	builds, err := s.c.ListRecentBuildsForProject(account, repository, "", "", limit, offset)
+	if err != nil {
+		return 0, err
+	}
+
+	fmt.Printf("Syncing %s/%s builds limit %d, offset %d\n", account, repository, limit, offset)
+	for _, build := range builds {
+		if err := s.SyncOne(account, repository, build.BuildNum, update); err != nil {
+			return 0, err
+		}
+	}
+
+	return len(builds), err
+}
+
+func (s *BuildSyncer) SyncOne(account, repository string, buildNum int, update bool) error {
+	fmt.Printf("Syncing %s/%s (%d) ...", account, repository, buildNum)
+	record, err := s.builds.FindOne(models.NewBuildQuery().
+		Where(kallax.And(
+			kallax.Eq(models.Schema.Build.BuildNum, buildNum),
+			kallax.Eq(models.Schema.Build.Reponame, repository),
+			kallax.Eq(models.Schema.Build.Username, account),
+		)),
+	)
+
+	if record != nil && !update {
+		fmt.Println("ignored")
+		return nil
+	}
+
 	build, err := s.c.GetBuild(account, repository, buildNum)
 	if err != nil {
-		return err
+		fmt.Printf("errored (%s)\n", err)
+		return nil
 	}
 
-	fmt.Println(build.Steps)
-	return s.doSyncBuild(build)
-}
-
-func (s *BuildSyncer) doSyncBuild(build *circleci.Build) error {
 	if err := s.doSyncSteps(build); err != nil {
 		return err
 	}
-
-	record, err := s.builds.FindOne(models.NewBuildQuery().
-		Where(kallax.And(
-			kallax.Eq(models.Schema.Build.BuildNum, build.BuildNum),
-			kallax.Eq(models.Schema.Build.Reponame, build.Reponame),
-			kallax.Eq(models.Schema.Build.Username, build.Username),
-		)),
-	)
 
 	if record == nil {
 		record = models.NewBuild()
 		record.Build = *build
 
+		fmt.Println("inserted")
 		return s.builds.Insert(record)
 	}
 
 	record.Build = *build
+	fmt.Println("updated")
 	_, err = s.builds.Update(record)
 	return err
 }

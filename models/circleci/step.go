@@ -1,6 +1,8 @@
 package circleci
 
 import (
+	"net/url"
+
 	"github.com/jszwedko/go-circleci"
 	"gopkg.in/src-d/go-kallax.v1"
 )
@@ -19,6 +21,10 @@ func (b *Step) BeforeSave() error {
 	if len(b.Messages) == 0 {
 		b.Messages = []string{}
 	}
+
+	url, _ := url.Parse(b.OutputURL)
+	url.RawQuery = ""
+	b.OutputURL = url.String()
 
 	return nil
 }
