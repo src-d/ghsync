@@ -3900,11 +3900,20 @@ func (r *Repository) ColumnAddress(col string) (interface{}, error) {
 	case "master_branch":
 		return types.Nullable(&r.Repository.MasterBranch), nil
 	case "created_at":
-		return (*types.Timestamp)(r.Repository.CreatedAt), nil
+		if r.CreatedAt == nil {
+			r.CreatedAt = new(github.Timestamp)
+		}
+		return types.JSON(r.Repository.CreatedAt), nil
 	case "pushed_at":
-		return (*types.Timestamp)(r.Repository.PushedAt), nil
+		if r.PushedAt == nil {
+			r.PushedAt = new(github.Timestamp)
+		}
+		return types.JSON(r.Repository.PushedAt), nil
 	case "updated_at":
-		return (*types.Timestamp)(r.Repository.UpdatedAt), nil
+		if r.UpdatedAt == nil {
+			r.UpdatedAt = new(github.Timestamp)
+		}
+		return types.JSON(r.Repository.UpdatedAt), nil
 	case "htmlurl":
 		return types.Nullable(&r.Repository.HTMLURL), nil
 	case "clone_url":
@@ -4057,17 +4066,17 @@ func (r *Repository) Value(col string) (interface{}, error) {
 		if r.Repository.CreatedAt == (*github.Timestamp)(nil) {
 			return nil, nil
 		}
-		return (*types.Timestamp)(r.Repository.CreatedAt), nil
+		return types.JSON(r.Repository.CreatedAt), nil
 	case "pushed_at":
 		if r.Repository.PushedAt == (*github.Timestamp)(nil) {
 			return nil, nil
 		}
-		return (*types.Timestamp)(r.Repository.PushedAt), nil
+		return types.JSON(r.Repository.PushedAt), nil
 	case "updated_at":
 		if r.Repository.UpdatedAt == (*github.Timestamp)(nil) {
 			return nil, nil
 		}
-		return (*types.Timestamp)(r.Repository.UpdatedAt), nil
+		return types.JSON(r.Repository.UpdatedAt), nil
 	case "htmlurl":
 		if r.Repository.HTMLURL == (*string)(nil) {
 			return nil, nil
@@ -4312,16 +4321,6 @@ func (s *RepositoryStore) Insert(record *Repository) error {
 	record.SetSaving(true)
 	defer record.SetSaving(false)
 
-	if record.CreatedAt != nil {
-		record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
-	}
-	if record.PushedAt != nil {
-		record.PushedAt.Time = record.PushedAt.Time.Truncate(time.Microsecond)
-	}
-	if record.UpdatedAt != nil {
-		record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
-	}
-
 	if err := record.BeforeSave(); err != nil {
 		return err
 	}
@@ -4336,16 +4335,6 @@ func (s *RepositoryStore) Insert(record *Repository) error {
 // Only writable records can be updated. Writable objects are those that have
 // been just inserted or retrieved using a query with no custom select fields.
 func (s *RepositoryStore) Update(record *Repository, cols ...kallax.SchemaField) (updated int64, err error) {
-	if record.CreatedAt != nil {
-		record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
-	}
-	if record.PushedAt != nil {
-		record.PushedAt.Time = record.PushedAt.Time.Truncate(time.Microsecond)
-	}
-	if record.UpdatedAt != nil {
-		record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
-	}
-
 	record.SetSaving(true)
 	defer record.SetSaving(false)
 
@@ -4552,24 +4541,6 @@ func (q *RepositoryQuery) FindByKallaxID(v ...int64) *RepositoryQuery {
 	return q.Where(kallax.In(Schema.Repository.KallaxID, values...))
 }
 
-// FindByCreatedAt adds a new filter to the query that will require that
-// the CreatedAt property is equal to the passed value.
-func (q *RepositoryQuery) FindByCreatedAt(cond kallax.ScalarCond, v github.Timestamp) *RepositoryQuery {
-	return q.Where(cond(Schema.Repository.CreatedAt, v))
-}
-
-// FindByPushedAt adds a new filter to the query that will require that
-// the PushedAt property is equal to the passed value.
-func (q *RepositoryQuery) FindByPushedAt(cond kallax.ScalarCond, v github.Timestamp) *RepositoryQuery {
-	return q.Where(cond(Schema.Repository.PushedAt, v))
-}
-
-// FindByUpdatedAt adds a new filter to the query that will require that
-// the UpdatedAt property is equal to the passed value.
-func (q *RepositoryQuery) FindByUpdatedAt(cond kallax.ScalarCond, v github.Timestamp) *RepositoryQuery {
-	return q.Where(cond(Schema.Repository.UpdatedAt, v))
-}
-
 // FindByTopics adds a new filter to the query that will require that
 // the Topics property contains all the passed values; if no passed values,
 // it will do nothing.
@@ -4772,11 +4743,20 @@ func (r *User) ColumnAddress(col string) (interface{}, error) {
 	case "following":
 		return types.Nullable(&r.User.Following), nil
 	case "created_at":
-		return (*types.Timestamp)(r.User.CreatedAt), nil
+		if r.CreatedAt == nil {
+			r.CreatedAt = new(github.Timestamp)
+		}
+		return types.JSON(r.User.CreatedAt), nil
 	case "updated_at":
-		return (*types.Timestamp)(r.User.UpdatedAt), nil
+		if r.UpdatedAt == nil {
+			r.UpdatedAt = new(github.Timestamp)
+		}
+		return types.JSON(r.User.UpdatedAt), nil
 	case "suspended_at":
-		return (*types.Timestamp)(r.User.SuspendedAt), nil
+		if r.SuspendedAt == nil {
+			r.SuspendedAt = new(github.Timestamp)
+		}
+		return types.JSON(r.User.SuspendedAt), nil
 	case "type":
 		return types.Nullable(&r.User.Type), nil
 	case "site_admin":
@@ -4893,17 +4873,17 @@ func (r *User) Value(col string) (interface{}, error) {
 		if r.User.CreatedAt == (*github.Timestamp)(nil) {
 			return nil, nil
 		}
-		return (*types.Timestamp)(r.User.CreatedAt), nil
+		return types.JSON(r.User.CreatedAt), nil
 	case "updated_at":
 		if r.User.UpdatedAt == (*github.Timestamp)(nil) {
 			return nil, nil
 		}
-		return (*types.Timestamp)(r.User.UpdatedAt), nil
+		return types.JSON(r.User.UpdatedAt), nil
 	case "suspended_at":
 		if r.User.SuspendedAt == (*github.Timestamp)(nil) {
 			return nil, nil
 		}
-		return (*types.Timestamp)(r.User.SuspendedAt), nil
+		return types.JSON(r.User.SuspendedAt), nil
 	case "type":
 		if r.User.Type == (*string)(nil) {
 			return nil, nil
@@ -5006,16 +4986,6 @@ func (s *UserStore) Insert(record *User) error {
 	record.SetSaving(true)
 	defer record.SetSaving(false)
 
-	if record.CreatedAt != nil {
-		record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
-	}
-	if record.UpdatedAt != nil {
-		record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
-	}
-	if record.SuspendedAt != nil {
-		record.SuspendedAt.Time = record.SuspendedAt.Time.Truncate(time.Microsecond)
-	}
-
 	if err := record.BeforeSave(); err != nil {
 		return err
 	}
@@ -5030,16 +5000,6 @@ func (s *UserStore) Insert(record *User) error {
 // Only writable records can be updated. Writable objects are those that have
 // been just inserted or retrieved using a query with no custom select fields.
 func (s *UserStore) Update(record *User, cols ...kallax.SchemaField) (updated int64, err error) {
-	if record.CreatedAt != nil {
-		record.CreatedAt.Time = record.CreatedAt.Time.Truncate(time.Microsecond)
-	}
-	if record.UpdatedAt != nil {
-		record.UpdatedAt.Time = record.UpdatedAt.Time.Truncate(time.Microsecond)
-	}
-	if record.SuspendedAt != nil {
-		record.SuspendedAt.Time = record.SuspendedAt.Time.Truncate(time.Microsecond)
-	}
-
 	record.SetSaving(true)
 	defer record.SetSaving(false)
 
@@ -5244,24 +5204,6 @@ func (q *UserQuery) FindByKallaxID(v ...int64) *UserQuery {
 		values[i] = val
 	}
 	return q.Where(kallax.In(Schema.User.KallaxID, values...))
-}
-
-// FindByCreatedAt adds a new filter to the query that will require that
-// the CreatedAt property is equal to the passed value.
-func (q *UserQuery) FindByCreatedAt(cond kallax.ScalarCond, v github.Timestamp) *UserQuery {
-	return q.Where(cond(Schema.User.CreatedAt, v))
-}
-
-// FindByUpdatedAt adds a new filter to the query that will require that
-// the UpdatedAt property is equal to the passed value.
-func (q *UserQuery) FindByUpdatedAt(cond kallax.ScalarCond, v github.Timestamp) *UserQuery {
-	return q.Where(cond(Schema.User.UpdatedAt, v))
-}
-
-// FindBySuspendedAt adds a new filter to the query that will require that
-// the SuspendedAt property is equal to the passed value.
-func (q *UserQuery) FindBySuspendedAt(cond kallax.ScalarCond, v github.Timestamp) *UserQuery {
-	return q.Where(cond(Schema.User.SuspendedAt, v))
 }
 
 // UserResultSet is the set of results returned by a query to the
@@ -5569,9 +5511,9 @@ type schemaRepository struct {
 	CodeOfConduct     *schemaRepositoryCodeOfConduct
 	DefaultBranch     kallax.SchemaField
 	MasterBranch      kallax.SchemaField
-	CreatedAt         kallax.SchemaField
-	PushedAt          kallax.SchemaField
-	UpdatedAt         kallax.SchemaField
+	CreatedAt         *schemaRepositoryCreatedAt
+	PushedAt          *schemaRepositoryPushedAt
+	UpdatedAt         *schemaRepositoryUpdatedAt
 	HTMLURL           kallax.SchemaField
 	CloneURL          kallax.SchemaField
 	GitURL            kallax.SchemaField
@@ -5634,9 +5576,9 @@ type schemaUser struct {
 	PublicGists             kallax.SchemaField
 	Followers               kallax.SchemaField
 	Following               kallax.SchemaField
-	CreatedAt               kallax.SchemaField
-	UpdatedAt               kallax.SchemaField
-	SuspendedAt             kallax.SchemaField
+	CreatedAt               *schemaUserCreatedAt
+	UpdatedAt               *schemaUserUpdatedAt
+	SuspendedAt             *schemaUserSuspendedAt
 	Type                    kallax.SchemaField
 	SiteAdmin               kallax.SchemaField
 	TotalPrivateRepos       kallax.SchemaField
@@ -5718,6 +5660,10 @@ type schemaRepositoryCodeOfConduct struct {
 	Body kallax.SchemaField
 }
 
+type schemaRepositoryCreatedAt struct {
+	*kallax.BaseSchemaField
+}
+
 type schemaRepositoryLicense struct {
 	*kallax.BaseSchemaField
 	Key            kallax.SchemaField
@@ -5744,6 +5690,10 @@ type schemaRepositoryParentRepository struct {
 	OwnerID    kallax.SchemaField
 }
 
+type schemaRepositoryPushedAt struct {
+	*kallax.BaseSchemaField
+}
+
 type schemaRepositorySourceRepository struct {
 	*kallax.BaseSchemaField
 	ID         kallax.SchemaField
@@ -5753,6 +5703,22 @@ type schemaRepositorySourceRepository struct {
 	OwnerLogin kallax.SchemaField
 	OwnerType  kallax.SchemaField
 	OwnerID    kallax.SchemaField
+}
+
+type schemaRepositoryUpdatedAt struct {
+	*kallax.BaseSchemaField
+}
+
+type schemaUserCreatedAt struct {
+	*kallax.BaseSchemaField
+}
+
+type schemaUserSuspendedAt struct {
+	*kallax.BaseSchemaField
+}
+
+type schemaUserUpdatedAt struct {
+	*kallax.BaseSchemaField
 }
 
 var Schema = &schema{
@@ -6235,11 +6201,17 @@ var Schema = &schema{
 			Key:             kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "code_of_conduct", "key"),
 			Body:            kallax.NewJSONSchemaKey(kallax.JSONText, "repository", "code_of_conduct", "body"),
 		},
-		DefaultBranch:    kallax.NewSchemaField("default_branch"),
-		MasterBranch:     kallax.NewSchemaField("master_branch"),
-		CreatedAt:        kallax.NewSchemaField("created_at"),
-		PushedAt:         kallax.NewSchemaField("pushed_at"),
-		UpdatedAt:        kallax.NewSchemaField("updated_at"),
+		DefaultBranch: kallax.NewSchemaField("default_branch"),
+		MasterBranch:  kallax.NewSchemaField("master_branch"),
+		CreatedAt: &schemaRepositoryCreatedAt{
+			BaseSchemaField: kallax.NewSchemaField("created_at").(*kallax.BaseSchemaField),
+		},
+		PushedAt: &schemaRepositoryPushedAt{
+			BaseSchemaField: kallax.NewSchemaField("pushed_at").(*kallax.BaseSchemaField),
+		},
+		UpdatedAt: &schemaRepositoryUpdatedAt{
+			BaseSchemaField: kallax.NewSchemaField("updated_at").(*kallax.BaseSchemaField),
+		},
 		HTMLURL:          kallax.NewSchemaField("htmlurl"),
 		CloneURL:         kallax.NewSchemaField("clone_url"),
 		GitURL:           kallax.NewSchemaField("git_url"),
@@ -6352,27 +6324,33 @@ var Schema = &schema{
 			kallax.NewSchemaField("collaborators"),
 			kallax.NewSchemaField("two_factor_authentication"),
 		),
-		KallaxID:                kallax.NewSchemaField("kallax_id"),
-		Login:                   kallax.NewSchemaField("login"),
-		ID:                      kallax.NewSchemaField("id"),
-		NodeID:                  kallax.NewSchemaField("node_id"),
-		AvatarURL:               kallax.NewSchemaField("avatar_url"),
-		HTMLURL:                 kallax.NewSchemaField("htmlurl"),
-		GravatarID:              kallax.NewSchemaField("gravatar_id"),
-		Name:                    kallax.NewSchemaField("name"),
-		Company:                 kallax.NewSchemaField("company"),
-		Blog:                    kallax.NewSchemaField("blog"),
-		Location:                kallax.NewSchemaField("location"),
-		Email:                   kallax.NewSchemaField("email"),
-		Hireable:                kallax.NewSchemaField("hireable"),
-		Bio:                     kallax.NewSchemaField("bio"),
-		PublicRepos:             kallax.NewSchemaField("public_repos"),
-		PublicGists:             kallax.NewSchemaField("public_gists"),
-		Followers:               kallax.NewSchemaField("followers"),
-		Following:               kallax.NewSchemaField("following"),
-		CreatedAt:               kallax.NewSchemaField("created_at"),
-		UpdatedAt:               kallax.NewSchemaField("updated_at"),
-		SuspendedAt:             kallax.NewSchemaField("suspended_at"),
+		KallaxID:    kallax.NewSchemaField("kallax_id"),
+		Login:       kallax.NewSchemaField("login"),
+		ID:          kallax.NewSchemaField("id"),
+		NodeID:      kallax.NewSchemaField("node_id"),
+		AvatarURL:   kallax.NewSchemaField("avatar_url"),
+		HTMLURL:     kallax.NewSchemaField("htmlurl"),
+		GravatarID:  kallax.NewSchemaField("gravatar_id"),
+		Name:        kallax.NewSchemaField("name"),
+		Company:     kallax.NewSchemaField("company"),
+		Blog:        kallax.NewSchemaField("blog"),
+		Location:    kallax.NewSchemaField("location"),
+		Email:       kallax.NewSchemaField("email"),
+		Hireable:    kallax.NewSchemaField("hireable"),
+		Bio:         kallax.NewSchemaField("bio"),
+		PublicRepos: kallax.NewSchemaField("public_repos"),
+		PublicGists: kallax.NewSchemaField("public_gists"),
+		Followers:   kallax.NewSchemaField("followers"),
+		Following:   kallax.NewSchemaField("following"),
+		CreatedAt: &schemaUserCreatedAt{
+			BaseSchemaField: kallax.NewSchemaField("created_at").(*kallax.BaseSchemaField),
+		},
+		UpdatedAt: &schemaUserUpdatedAt{
+			BaseSchemaField: kallax.NewSchemaField("updated_at").(*kallax.BaseSchemaField),
+		},
+		SuspendedAt: &schemaUserSuspendedAt{
+			BaseSchemaField: kallax.NewSchemaField("suspended_at").(*kallax.BaseSchemaField),
+		},
 		Type:                    kallax.NewSchemaField("type"),
 		SiteAdmin:               kallax.NewSchemaField("site_admin"),
 		TotalPrivateRepos:       kallax.NewSchemaField("total_private_repos"),

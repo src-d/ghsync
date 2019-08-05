@@ -54,6 +54,8 @@ func (o PostgresOpt) initDB() (db *sql.DB, err error) {
 		return db, err
 	}
 
+	return db, nil
+
 	m, err := newMigrate(o.URL())
 	if err != nil {
 		return db, err
