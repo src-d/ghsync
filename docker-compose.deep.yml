@@ -12,12 +12,20 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    restart: always
+    ports:
+      - '8081:15672'
+      - '5672:5672'
+
   ghsync:
     image: srcd/ghsync:latest
     entrypoint: ['/bin/sh']
-    command: ['-c', 'sleep 5 && ghsync migrate && ghsync shallow']
+    command: ['-c', 'sleep 15s && ghsync migrate && ghsync deep']
     depends_on:
       - postgres
+      - rabbitmq
     environment:
       GHSYNC_TOKEN: ${GHSYNC_TOKEN}
       GHSYNC_ORG: ${GHSYNC_ORG}
@@ -27,6 +35,8 @@ services:
       GHSYNC_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-superset}
       GHSYNC_POSTGRES_HOST: postgres
       GHSYNC_POSTGRES_PORT: 5432
+
+      GHSYNC_BROKER: amqp://rabbitmq:5672
 
 volumes:
   postgres:
