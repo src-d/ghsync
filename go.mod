@@ -37,6 +37,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/src-d/envconfig v1.0.0 // indirect
 	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94 // indirect
+	github.com/stretchr/testify v1.3.0
 	github.com/x-cray/logrus-prefixed-formatter v0.5.2 // indirect
 	golang.org/x/crypto v0.0.0-20190530122614-20be4c3c3ed5 // indirect
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
